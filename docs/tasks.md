@@ -40,16 +40,16 @@
 | Status | Task |
 |--------|------|
 | ✅ | Initialize Laravel project |
-| ⬜ | Install and configure Laravel Boost |
+| ✅ | Install and configure Laravel Boost |
 | ✅ | Configure PostgreSQL connection |
 | ✅ | Configure Redis (cache/queue/sessions) |
 | ✅ | Configure Mailpit for local email |
 | ✅ | Install Laravel Sanctum |
-| ⬜ | Install PDF parsing package |
-| ⬜ | Configure Anthropic HTTP client |
-| ⬜ | Configure Laravel Pint |
-| ⬜ | Configure Pest for testing |
-| ⬜ | Create base test configuration |
+| ✅ | Install PDF parsing package |
+| ✅ | Configure Anthropic HTTP client |
+| ✅ | Configure Laravel Pint |
+| ✅ | Configure Pest for testing |
+| ✅ | Create base test configuration |
 
 ### Frontend Setup (Vue)
 | Status | Task |
@@ -269,18 +269,25 @@
 
 ## Current Sprint
 
-**Sprint:** Phase 0 - Project Setup
-**Goal:** Complete Docker setup and initialize Laravel + Vue projects
+**Sprint:** Phase 2 - Contract Upload & Storage
+**Goal:** Implement contract upload, storage, and basic CRUD operations
 
 ### Active Tasks
 
 | Status | Task | Notes |
 |--------|------|-------|
-| ✅ | Initialize Git repository | Completed |
-| ✅ | Create Docker configuration | Completed |
-| ✅ | Verify containers start | All containers running |
-| ✅ | Initialize Laravel project | Laravel 12 with Sanctum |
-| ✅ | Initialize Vue project | Vue 3 + TypeScript + Tailwind |
+| ⬜ | Create database migrations | contracts, analyses, clauses, deadlines, reminders |
+| ⬜ | Create Enums | ContractStatus, ClauseType, RiskLevel, etc. |
+| ⬜ | Create Models | Contract, ContractAnalysis, etc. |
+| ⬜ | Create ContractController | Upload, list, view, delete |
+| ⬜ | Create frontend components | Upload, list, card components |
+
+### Completed Phases
+
+| Phase | Status | Notes |
+|-------|--------|-------|
+| Phase 0 | ✅ Complete | Project setup, Docker, Laravel, Vue |
+| Phase 1 | ✅ Complete | Authentication (Sanctum, login, register, password reset) |
 
 ### Blocked
 
@@ -294,14 +301,14 @@
 
 | Phase | Total | Done | In Progress | Blocked | Todo | Backlog |
 |-------|-------|------|-------------|---------|------|---------|
-| Phase 0 | 32 | 28 | 0 | 0 | 4 | 0 |
+| Phase 0 | 32 | 32 | 0 | 0 | 0 | 0 |
 | Phase 1 | 23 | 23 | 0 | 0 | 0 | 0 |
 | Phase 2 | 34 | 0 | 0 | 0 | 0 | 34 |
 | Phase 3 | 30 | 0 | 0 | 0 | 0 | 30 |
 | Phase 4 | 19 | 0 | 0 | 0 | 0 | 19 |
 | Phase 5 | 14 | 0 | 0 | 0 | 0 | 14 |
 | Phase 6 | 9 | 0 | 0 | 0 | 0 | 9 |
-| **Total** | **161** | **51** | **0** | **0** | **4** | **106** |
+| **Total** | **161** | **55** | **0** | **0** | **0** | **106** |
 
 ---
 
