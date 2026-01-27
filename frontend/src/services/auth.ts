@@ -19,6 +19,13 @@ export interface AuthResponse {
   message?: string
 }
 
+export interface ResetPasswordData {
+  token: string
+  email: string
+  password: string
+  password_confirmation: string
+}
+
 /**
  * Get CSRF cookie from Laravel Sanctum
  */
@@ -70,4 +77,20 @@ export async function checkAuth(): Promise<User | null> {
   } catch {
     return null
   }
+}
+
+/**
+ * Send password reset link
+ */
+export async function forgotPassword(email: string): Promise<void> {
+  await getCsrfCookie()
+  await api.post('/forgot-password', { email })
+}
+
+/**
+ * Reset password with token
+ */
+export async function resetPassword(data: ResetPasswordData): Promise<void> {
+  await getCsrfCookie()
+  await api.post('/reset-password', data)
 }
