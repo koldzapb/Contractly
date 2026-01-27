@@ -3,15 +3,18 @@
 declare(strict_types=1);
 
 use App\Enums\ContractStatus;
+use App\Jobs\AnalyzeContractJob;
 use App\Models\Contract;
 use App\Models\User;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Queue;
 use Illuminate\Support\Facades\Storage;
 
-uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
+uses(Illuminate\Foundation\Testing\RefreshDatabase::class);
 
 beforeEach(function () {
     Storage::fake('contracts');
+    Queue::fake();
     $this->user = User::factory()->create();
 });
 
@@ -49,8 +52,13 @@ describe('upload contract', function () {
         ]);
 
         Storage::disk('contracts')->assertExists(
-            Contract::first()->file_path
+            Contract::first()->file_path,
         );
+
+        // Verify analysis job was dispatched
+        Queue::assertPushed(AnalyzeContractJob::class, function ($job) {
+            return $job->contract->original_filename === 'contract.pdf';
+        });
     });
 
     it('generates title from filename when not provided', function () {

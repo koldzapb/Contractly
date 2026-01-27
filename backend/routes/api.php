@@ -57,5 +57,6 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::put('/{id}', [ContractController::class, 'update']);
         Route::delete('/{id}', [ContractController::class, 'destroy']);
         Route::get('/{id}/status', [ContractController::class, 'status']);
+        Route::post('/{id}/retry', [ContractController::class, 'retryAnalysis']);
     });
 });

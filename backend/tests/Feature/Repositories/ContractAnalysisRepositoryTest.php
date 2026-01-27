@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-use App\Enums\ContractStatus;
 use App\Enums\RiskLevel;
 use App\Models\Contract;
 use App\Models\ContractAnalysis;

@@ -104,6 +104,17 @@ export async function deleteContract(id: string): Promise<void> {
 }
 
 /**
+ * Retry analysis for a failed contract
+ */
+export async function retryAnalysis(id: string): Promise<{ id: string; status: string }> {
+  const response = await api.post<ApiResponse<{ id: string; status: string }>>(
+    `/contracts/${id}/retry`,
+  )
+
+  return response.data.data
+}
+
+/**
  * Validate file before upload
  */
 export function validateFile(file: File): { valid: boolean; error?: string } {

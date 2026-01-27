@@ -214,6 +214,43 @@ export const useContractsStore = defineStore('contracts', () => {
   }
 
   /**
+   * Retry analysis for a failed contract
+   */
+  async function retryAnalysis(id: string): Promise<void> {
+    loading.value = true
+    error.value = null
+
+    try {
+      const result = await contractsService.retryAnalysis(id)
+
+      // Update contract in list
+      const index = contracts.value.findIndex((c) => c.id === id)
+      if (index !== -1) {
+        contracts.value[index] = {
+          ...contracts.value[index],
+          status: result.status as Contract['status'],
+          error_message: undefined,
+        }
+      }
+
+      // Update current if it matches
+      if (currentContract.value?.id === id) {
+        currentContract.value = {
+          ...currentContract.value,
+          status: result.status as Contract['status'],
+          error_message: undefined,
+        }
+      }
+    } catch (e: unknown) {
+      const err = e as { response?: { data?: { message?: string } } }
+      error.value = err.response?.data?.message ?? 'Failed to retry analysis'
+      throw e
+    } finally {
+      loading.value = false
+    }
+  }
+
+  /**
    * Reset upload state
    */
   function resetUpload(): void {
@@ -260,6 +297,7 @@ export const useContractsStore = defineStore('contracts', () => {
     updateContract,
     deleteContract,
     pollContractStatus,
+    retryAnalysis,
     resetUpload,
     clearError,
     goToPage,

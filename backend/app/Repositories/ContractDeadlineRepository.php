@@ -117,7 +117,7 @@ class ContractDeadlineRepository extends BaseRepository implements ContractDeadl
 
     public function createMany(array $deadlines): Collection
     {
-        $created = new Collection();
+        $created = new Collection;
 
         foreach ($deadlines as $deadlineData) {
             $created->push($this->create($deadlineData));

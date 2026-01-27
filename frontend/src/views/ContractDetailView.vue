@@ -112,8 +112,15 @@ function stopPolling(): void {
 }
 
 async function handleRetryAnalysis(): Promise<void> {
-  // TODO: Implement retry analysis endpoint
-  console.log('Retry analysis not yet implemented')
+  if (!currentContract.value) return
+
+  try {
+    await contractsStore.retryAnalysis(currentContract.value.id)
+    // Start polling after retry
+    startPolling()
+  } catch {
+    // Error is handled by the store
+  }
 }
 
 async function handleLogout(): Promise<void> {

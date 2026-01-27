@@ -6,7 +6,7 @@ use App\Models\Contract;
 use App\Models\User;
 use Illuminate\Support\Facades\Storage;
 
-uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
+uses(Illuminate\Foundation\Testing\RefreshDatabase::class);
 
 beforeEach(function () {
     Storage::fake('contracts');

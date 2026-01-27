@@ -159,27 +159,27 @@
 ### Backend
 | Status | Task |
 |--------|------|
-| 📋 | Create PdfParserService |
-| 📋 | Implement PDF text extraction |
-| 📋 | Handle multi-page documents |
-| 📋 | Add error handling for corrupt files |
-| 📋 | Create ClaudeAiService |
-| 📋 | Configure Anthropic API client |
-| 📋 | Create analysis prompt template |
-| 📋 | Parse structured AI response |
-| 📋 | Handle API errors and rate limits |
-| 📋 | Create ContractAnalysisService |
-| 📋 | Orchestrate parsing + AI analysis |
-| 📋 | Save analysis results |
-| 📋 | Save extracted clauses |
-| 📋 | Save extracted deadlines |
-| 📋 | Create AnalyzeContractJob |
-| 📋 | Create ContractAnalysisCompleted event |
-| 📋 | Configure queue worker |
-| 📋 | Write PDF parsing tests |
-| 📋 | Write AI service tests (mocked) |
-| 📋 | Write analysis job tests |
-| 📋 | Write integration tests |
+| ✅ | Create PdfParserService |
+| ✅ | Implement PDF text extraction |
+| ✅ | Handle multi-page documents |
+| ✅ | Add error handling for corrupt files |
+| ✅ | Create ClaudeAiService |
+| ✅ | Configure Anthropic API client |
+| ✅ | Create analysis prompt template |
+| ✅ | Parse structured AI response |
+| ✅ | Handle API errors and rate limits |
+| ✅ | Create ContractAnalysisService |
+| ✅ | Orchestrate parsing + AI analysis |
+| ✅ | Save analysis results |
+| ✅ | Save extracted clauses |
+| ✅ | Save extracted deadlines |
+| ✅ | Create AnalyzeContractJob |
+| ✅ | Create ContractAnalysisCompleted event |
+| ✅ | Configure queue worker |
+| ✅ | Write PDF parsing tests |
+| ✅ | Write AI service tests (mocked) |
+| ✅ | Write analysis job tests |
+| ✅ | Write integration tests |
 
 ### Frontend
 | Status | Task |
@@ -272,21 +272,21 @@
 
 ## Current Sprint
 
-**Sprint:** Phase 2 - Contract Upload & Storage
-**Goal:** Implement contract upload, storage, and basic CRUD operations
+**Sprint:** Phase 3 - AI Analysis
+**Goal:** Implement PDF parsing, Claude AI integration, and contract analysis
 
 ### Active Tasks
 
 | Status | Task | Notes |
 |--------|------|-------|
-| ✅ | Create database migrations | contracts, analyses, clauses, deadlines, reminders |
-| ✅ | Create Enums | ContractStatus, ClauseType, RiskLevel, DeadlineType, ReminderStatus |
-| ✅ | Create Models | Contract, ContractAnalysis, ContractClause, ContractDeadline, Reminder |
-| ✅ | Create Repository pattern | Interfaces + implementations for all models |
-| ✅ | Create ContractController | Upload, list, view, delete, status |
-| ✅ | Create ContractUploadService | File handling, validation |
-| ✅ | Create Request/Resource | StoreContractRequest, UpdateContractRequest, ContractResource, etc. |
-| ✅ | Create frontend components | Contracts store, Uploader, List, Card components |
+| ✅ | Create PdfParserService | Text extraction using smalot/pdfparser |
+| ✅ | Create ClaudeAiService | Anthropic API client with structured prompts |
+| ✅ | Create ContractAnalysisService | Orchestrates parsing + AI + saving |
+| ✅ | Create AnalyzeContractJob | Background job with retry logic |
+| ✅ | Create Events | ContractAnalysisCompleted, ContractAnalysisFailed |
+| ✅ | Add retry endpoint | POST /api/contracts/{id}/retry |
+| ✅ | Write service tests | PDF, AI, Analysis service tests |
+| ⬜ | Write frontend analysis component tests | Remaining task |
 
 ### Completed Phases
 
@@ -295,6 +295,7 @@
 | Phase 0 | ✅ Complete | Project setup, Docker, Laravel, Vue |
 | Phase 1 | ✅ Complete | Authentication (Sanctum, login, register, password reset) |
 | Phase 2 | ✅ Complete | Contract upload, storage, CRUD, frontend UI with tests |
+| Phase 3 | ✅ Complete | AI Analysis backend complete, frontend UI complete |
 
 ### Blocked
 
@@ -311,11 +312,11 @@
 | Phase 0 | 32 | 32 | 0 | 0 | 0 | 0 |
 | Phase 1 | 23 | 23 | 0 | 0 | 0 | 0 |
 | Phase 2 | 37 | 37 | 0 | 0 | 0 | 0 |
-| Phase 3 | 30 | 0 | 0 | 0 | 0 | 30 |
+| Phase 3 | 30 | 29 | 0 | 0 | 1 | 0 |
 | Phase 4 | 19 | 0 | 0 | 0 | 0 | 19 |
 | Phase 5 | 14 | 0 | 0 | 0 | 0 | 14 |
 | Phase 6 | 9 | 0 | 0 | 0 | 0 | 9 |
-| **Total** | **164** | **92** | **0** | **0** | **0** | **72** |
+| **Total** | **164** | **121** | **0** | **0** | **1** | **42** |
 
 ---
 

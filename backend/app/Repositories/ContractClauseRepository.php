@@ -73,7 +73,7 @@ class ContractClauseRepository extends BaseRepository implements ContractClauseR
 
     public function createMany(array $clauses): Collection
     {
-        $created = new Collection();
+        $created = new Collection;
 
         foreach ($clauses as $clauseData) {
             $created->push($this->create($clauseData));

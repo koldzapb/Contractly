@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
+use App\Enums\ContractStatus;
 use App\Http\Requests\StoreContractRequest;
 use App\Http\Requests\UpdateContractRequest;
 use App\Http\Resources\ContractResource;
+use App\Jobs\AnalyzeContractJob;
 use App\Models\Contract;
 use App\Repositories\Contracts\ContractRepositoryInterface;
 use App\Services\ContractUploadService;
@@ -28,7 +30,7 @@ class ContractController extends Controller
     {
         $contracts = $this->contracts->paginateForUser(
             $request->user(),
-            $request->integer('per_page', 15)
+            $request->integer('per_page', 15),
         );
 
         return ContractResource::collection($contracts);
@@ -42,8 +44,11 @@ class ContractController extends Controller
         $contract = $this->uploadService->upload(
             $request->file('file'),
             $request->user(),
-            $request->validated('title')
+            $request->validated('title'),
         );
+
+        // Dispatch the analysis job
+        AnalyzeContractJob::dispatch($contract);
 
         return ContractResource::make($contract)
             ->response()
@@ -129,6 +134,52 @@ class ContractController extends Controller
                 'id' => $contract->id,
                 'status' => $contract->status->value,
                 'error_message' => $contract->isFailed() ? $contract->error_message : null,
+            ],
+        ]);
+    }
+
+    /**
+     * Retry analysis for a failed contract.
+     */
+    public function retryAnalysis(Request $request, string $id): JsonResponse
+    {
+        $contract = $this->contracts->findForUser($id, $request->user());
+
+        if (! $contract) {
+            return response()->json([
+                'message' => 'Contract not found.',
+            ], 404);
+        }
+
+        // Only allow retry for failed contracts
+        if ($contract->status !== ContractStatus::FAILED) {
+            return response()->json([
+                'message' => 'Only failed contracts can be retried.',
+            ], 422);
+        }
+
+        // Delete existing analysis if any
+        $contract->load('analysis.clauses', 'analysis.deadlines');
+        $analysis = $contract->analysis;
+        if ($analysis instanceof \App\Models\ContractAnalysis) {
+            $analysis->clauses()->delete();
+            $analysis->deadlines()->delete();
+            $analysis->delete();
+        }
+
+        // Reset status and dispatch new job
+        $this->contracts->update($contract, [
+            'status' => ContractStatus::PENDING,
+            'error_message' => null,
+        ]);
+
+        AnalyzeContractJob::dispatch($contract->fresh());
+
+        return response()->json([
+            'message' => 'Analysis retry started.',
+            'data' => [
+                'id' => $contract->id,
+                'status' => 'pending',
             ],
         ]);
     }

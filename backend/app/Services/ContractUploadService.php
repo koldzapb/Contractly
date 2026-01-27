@@ -33,7 +33,7 @@ class ContractUploadService
         $file->storeAs(
             dirname($storagePath),
             basename($storagePath),
-            'contracts'
+            'contracts',
         );
 
         // Create the contract record
@@ -88,7 +88,7 @@ class ContractUploadService
             $user->id,
             now()->format('Y/m'),
             $uuid,
-            $extension
+            $extension,
         );
     }
 

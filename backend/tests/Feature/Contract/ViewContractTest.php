@@ -8,7 +8,7 @@ use App\Models\ContractClause;
 use App\Models\ContractDeadline;
 use App\Models\User;
 
-uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
+uses(Illuminate\Foundation\Testing\RefreshDatabase::class);
 
 beforeEach(function () {
     $this->user = User::factory()->create();
