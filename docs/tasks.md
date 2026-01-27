@@ -128,29 +128,29 @@
 | ✅ | Create Repository interfaces |
 | ✅ | Create Repository implementations |
 | ✅ | Create RepositoryServiceProvider |
-| 📋 | Create ContractController |
-| 📋 | Create ContractUploadService |
-| 📋 | Create StoreContractRequest |
-| 📋 | Create ContractResource |
-| 📋 | Configure file storage (S3/local) |
-| 📋 | Write upload contract test |
-| 📋 | Write list contracts test |
-| 📋 | Write view contract test |
-| 📋 | Write delete contract test |
+| ✅ | Create ContractController |
+| ✅ | Create ContractUploadService |
+| ✅ | Create StoreContractRequest |
+| ✅ | Create ContractResource |
+| ✅ | Configure file storage (S3/local) |
+| ✅ | Write upload contract test |
+| ✅ | Write list contracts test |
+| ✅ | Write view contract test |
+| ✅ | Write delete contract test |
 
 ### Frontend
 | Status | Task |
 |--------|------|
-| 📋 | Create contracts store |
-| 📋 | Create ContractUploadView |
-| 📋 | Create ContractUploader component |
-| 📋 | Create UploadProgress component |
-| 📋 | Create ContractList component |
-| 📋 | Create ContractCard component |
-| 📋 | Implement file validation |
-| 📋 | Handle upload errors |
-| 📋 | Write contracts store tests |
-| 📋 | Write upload component tests |
+| ✅ | Create contracts store |
+| ✅ | Create ContractUploadView |
+| ✅ | Create ContractUploader component |
+| ✅ | Create UploadProgress component |
+| ✅ | Create ContractList component |
+| ✅ | Create ContractCard component |
+| ✅ | Implement file validation |
+| ✅ | Handle upload errors |
+| ✅ | Write contracts store tests |
+| ⬜ | Write upload component tests |
 
 ---
 
@@ -283,10 +283,10 @@
 | ✅ | Create Enums | ContractStatus, ClauseType, RiskLevel, DeadlineType, ReminderStatus |
 | ✅ | Create Models | Contract, ContractAnalysis, ContractClause, ContractDeadline, Reminder |
 | ✅ | Create Repository pattern | Interfaces + implementations for all models |
-| ⬜ | Create ContractController | Upload, list, view, delete |
-| ⬜ | Create ContractUploadService | File handling, validation |
-| ⬜ | Create Request/Resource | StoreContractRequest, ContractResource |
-| ⬜ | Create frontend components | Upload, list, card components |
+| ✅ | Create ContractController | Upload, list, view, delete, status |
+| ✅ | Create ContractUploadService | File handling, validation |
+| ✅ | Create Request/Resource | StoreContractRequest, UpdateContractRequest, ContractResource, etc. |
+| ✅ | Create frontend components | Contracts store, Uploader, List, Card components |
 
 ### Completed Phases
 
@@ -309,12 +309,12 @@
 |-------|-------|------|-------------|---------|------|---------|
 | Phase 0 | 32 | 32 | 0 | 0 | 0 | 0 |
 | Phase 1 | 23 | 23 | 0 | 0 | 0 | 0 |
-| Phase 2 | 37 | 18 | 0 | 0 | 0 | 19 |
+| Phase 2 | 37 | 36 | 0 | 0 | 1 | 0 |
 | Phase 3 | 30 | 0 | 0 | 0 | 0 | 30 |
 | Phase 4 | 19 | 0 | 0 | 0 | 0 | 19 |
 | Phase 5 | 14 | 0 | 0 | 0 | 0 | 14 |
 | Phase 6 | 9 | 0 | 0 | 0 | 0 | 9 |
-| **Total** | **164** | **73** | **0** | **0** | **0** | **91** |
+| **Total** | **164** | **91** | **0** | **0** | **1** | **72** |
 
 ---
 
