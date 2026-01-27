@@ -7,7 +7,6 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class LoginController extends Controller
@@ -16,7 +15,10 @@ class LoginController extends Controller
     {
         $request->authenticate();
 
-        $request->session()->regenerate();
+        // Regenerate session if available (SPA stateful auth)
+        if ($request->hasSession()) {
+            $request->session()->regenerate();
+        }
 
         $user = Auth::user();
 

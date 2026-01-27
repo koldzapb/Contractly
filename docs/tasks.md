@@ -84,10 +84,10 @@
 | ✅ | Create LoginRequest |
 | ✅ | Configure Sanctum for SPA |
 | ✅ | Create API routes |
-| ⬜ | Write registration test |
-| ⬜ | Write login test |
-| ⬜ | Write logout test |
-| ⬜ | Write password reset test |
+| ✅ | Write registration test |
+| ✅ | Write login test |
+| ✅ | Write logout test |
+| ✅ | Write password reset test |
 
 ### Frontend
 | Status | Task |
@@ -100,8 +100,8 @@
 | ✅ | Create RegisterForm component |
 | ✅ | Configure route guards |
 | ✅ | Handle auth state persistence |
-| ⬜ | Write auth store tests |
-| ⬜ | Write auth component tests |
+| ✅ | Write auth store tests |
+| ✅ | Write auth component tests |
 
 ---
 
@@ -295,13 +295,13 @@
 | Phase | Total | Done | In Progress | Blocked | Todo | Backlog |
 |-------|-------|------|-------------|---------|------|---------|
 | Phase 0 | 32 | 28 | 0 | 0 | 4 | 0 |
-| Phase 1 | 23 | 17 | 0 | 0 | 6 | 0 |
+| Phase 1 | 23 | 23 | 0 | 0 | 0 | 0 |
 | Phase 2 | 34 | 0 | 0 | 0 | 0 | 34 |
 | Phase 3 | 30 | 0 | 0 | 0 | 0 | 30 |
 | Phase 4 | 19 | 0 | 0 | 0 | 0 | 19 |
 | Phase 5 | 14 | 0 | 0 | 0 | 0 | 14 |
 | Phase 6 | 9 | 0 | 0 | 0 | 0 | 9 |
-| **Total** | **161** | **45** | **0** | **0** | **10** | **106** |
+| **Total** | **161** | **51** | **0** | **0** | **4** | **106** |
 
 ---
 
