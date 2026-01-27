@@ -7,6 +7,7 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\LogoutController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\ResetPasswordController;
+use App\Http\Controllers\ContractController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -46,5 +47,15 @@ Route::middleware('auth:sanctum')->group(function () {
                 'email' => $user->email,
             ],
         ]);
+    });
+
+    // Contracts
+    Route::prefix('contracts')->group(function () {
+        Route::get('/', [ContractController::class, 'index']);
+        Route::post('/', [ContractController::class, 'store']);
+        Route::get('/{id}', [ContractController::class, 'show']);
+        Route::put('/{id}', [ContractController::class, 'update']);
+        Route::delete('/{id}', [ContractController::class, 'destroy']);
+        Route::get('/{id}/status', [ContractController::class, 'status']);
     });
 });

@@ -40,6 +40,13 @@ return [
             'report' => false,
         ],
 
+        'contracts' => [
+            'driver' => env('CONTRACTS_DISK_DRIVER', 'local'),
+            'root' => storage_path('app/contracts'),
+            'throw' => true,
+            'report' => false,
+        ],
+
         'public' => [
             'driver' => 'local',
             'root' => storage_path('app/public'),

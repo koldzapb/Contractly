@@ -1,0 +1,40 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Http\Resources;
+
+use App\Models\Contract;
+use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\JsonResource;
+
+/**
+ * @mixin Contract
+ */
+class ContractResource extends JsonResource
+{
+    /**
+     * @return array<string, mixed>
+     */
+    public function toArray(Request $request): array
+    {
+        return [
+            'id' => $this->id,
+            'title' => $this->title,
+            'original_filename' => $this->original_filename,
+            'file_size' => $this->file_size,
+            'file_size_human' => $this->file_size_for_humans,
+            'page_count' => $this->page_count,
+            'status' => $this->status->value,
+            'overall_risk_level' => $this->overall_risk_level?->value,
+            'language_detected' => $this->language_detected,
+            'error_message' => $this->when($this->isFailed(), $this->error_message),
+            'analyzed_at' => $this->analyzed_at?->toIso8601String(),
+            'created_at' => $this->created_at->toIso8601String(),
+            'updated_at' => $this->updated_at->toIso8601String(),
+
+            // Relationships (when loaded)
+            'analysis' => ContractAnalysisResource::make($this->whenLoaded('analysis')),
+        ];
+    }
+}
