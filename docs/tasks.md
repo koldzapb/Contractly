@@ -184,16 +184,16 @@
 ### Frontend
 | Status | Task |
 |--------|------|
-| 📋 | Create ContractDetailView |
-| 📋 | Create AnalysisProgress component |
-| 📋 | Create AnalysisSummary component |
-| 📋 | Create ClauseList component |
-| 📋 | Create ClauseCard component |
-| 📋 | Create RiskBadge component |
-| 📋 | Create DeadlineList component |
-| 📋 | Implement status polling |
-| 📋 | Display analysis results |
-| 📋 | Write analysis component tests |
+| ✅ | Create ContractDetailView |
+| ✅ | Create AnalysisProgress component |
+| ✅ | Create AnalysisSummary component |
+| ✅ | Create ClauseList component |
+| ✅ | Create ClauseCard component |
+| ✅ | Create RiskBadge component |
+| ✅ | Create DeadlineList component |
+| ✅ | Implement status polling |
+| ✅ | Display analysis results |
+| ⬜ | Write analysis component tests |
 
 ---
 
