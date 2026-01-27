@@ -1,5 +1,5 @@
 .PHONY: help up down restart build logs logs-app logs-queue shell shell-node tinker \
-        install migrate migrate-fresh seed test test-coverage pint \
+        install migrate migrate-fresh seed test test-coverage pint phpstan check \
         npm-install npm-dev npm-build npm-test npm-lint \
         db-reset queue-restart queue-failed queue-retry fresh
 
@@ -36,6 +36,8 @@ help:
 	@echo "  make test            Run PHP tests"
 	@echo "  make test-coverage   Run tests with coverage"
 	@echo "  make pint            Format PHP code with Pint"
+	@echo "  make phpstan         Run PHPStan static analysis"
+	@echo "  make check           Run all checks (PHPStan + tests)"
 	@echo ""
 	@echo "Frontend (Vue):"
 	@echo "  make npm-install     Install npm packages"
@@ -126,6 +128,20 @@ test-coverage:
 
 pint:
 	docker compose exec app ./vendor/bin/pint
+
+phpstan:
+	docker compose exec app ./vendor/bin/phpstan analyse --memory-limit=512M
+
+check:
+	@echo "Running all checks..."
+	@echo ""
+	@echo "=== PHPStan ===" && docker compose exec -T app ./vendor/bin/phpstan analyse --memory-limit=512M
+	@echo ""
+	@echo "=== Backend Tests ===" && docker compose exec -T app php artisan test
+	@echo ""
+	@echo "=== Frontend Tests ===" && docker compose exec -T node npm run test -- --run
+	@echo ""
+	@echo "All checks passed!"
 
 # ============================================
 # Frontend Commands
