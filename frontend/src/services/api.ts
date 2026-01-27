@@ -34,10 +34,8 @@ api.interceptors.request.use(
 api.interceptors.response.use(
   (response) => response,
   (error: AxiosError) => {
-    if (error.response?.status === 401) {
-      // Handle unauthorized - redirect to login
-      window.location.href = '/login'
-    }
+    // Let the error propagate - auth handling is done by the router guard
+    // and individual components/stores that catch the error
     return Promise.reject(error)
   },
 )

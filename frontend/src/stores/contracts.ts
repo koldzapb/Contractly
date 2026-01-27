@@ -18,7 +18,10 @@ export const useContractsStore = defineStore('contracts', () => {
   function updateContract(id: number, data: Partial<Contract>): void {
     const index = contracts.value.findIndex((c) => c.id === id)
     if (index !== -1) {
-      contracts.value[index] = { ...contracts.value[index], ...data }
+      const current = contracts.value[index]
+      if (current) {
+        contracts.value[index] = { ...current, ...data } as Contract
+      }
     }
   }
 
