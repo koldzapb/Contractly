@@ -13,7 +13,11 @@ import ThemeToggle from '@/components/ThemeToggle.vue'
         </div>
         <div class="flex items-center space-x-4">
           <ThemeToggle />
-          <RouterLink to="/login" class="text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white">Sign in</RouterLink>
+          <RouterLink
+            to="/login"
+            class="text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white"
+            >Sign in</RouterLink
+          >
           <RouterLink to="/register" class="btn-primary">Get started</RouterLink>
         </div>
       </nav>
@@ -42,7 +46,9 @@ import ThemeToggle from '@/components/ThemeToggle.vue'
 
     <!-- Footer -->
     <footer class="bg-gray-50 dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 text-center text-gray-500 dark:text-gray-400">
+      <div
+        class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 text-center text-gray-500 dark:text-gray-400"
+      >
         <p>&copy; 2024 Contractly. All rights reserved.</p>
       </div>
     </footer>

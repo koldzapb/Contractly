@@ -20,7 +20,11 @@ const router = createRouter({
     { path: '/login', name: 'login', component: LoginView },
     { path: '/dashboard', name: 'dashboard', component: { template: '<div>Dashboard</div>' } },
     { path: '/register', name: 'register', component: { template: '<div>Register</div>' } },
-    { path: '/forgot-password', name: 'forgot-password', component: { template: '<div>Forgot</div>' } },
+    {
+      path: '/forgot-password',
+      name: 'forgot-password',
+      component: { template: '<div>Forgot</div>' },
+    },
   ],
 })
 

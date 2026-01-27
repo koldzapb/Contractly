@@ -55,14 +55,20 @@ function goToLogin(): void {
 </script>
 
 <template>
-  <div class="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 py-12 px-4 sm:px-6 lg:px-8">
+  <div
+    class="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 py-12 px-4 sm:px-6 lg:px-8"
+  >
     <div class="absolute top-4 right-4">
       <ThemeToggle />
     </div>
     <div class="max-w-md w-full space-y-8">
       <div>
-        <h1 class="text-center text-2xl font-bold text-indigo-600 dark:text-indigo-400">Contractly</h1>
-        <h2 class="mt-6 text-center text-3xl font-bold text-gray-900 dark:text-white">Set new password</h2>
+        <h1 class="text-center text-2xl font-bold text-indigo-600 dark:text-indigo-400">
+          Contractly
+        </h1>
+        <h2 class="mt-6 text-center text-3xl font-bold text-gray-900 dark:text-white">
+          Set new password
+        </h2>
         <p class="mt-2 text-center text-sm text-gray-600 dark:text-gray-400">
           Enter your new password below.
         </p>
@@ -130,7 +136,10 @@ function goToLogin(): void {
         </button>
 
         <div class="text-center">
-          <RouterLink to="/login" class="text-sm font-medium text-indigo-600 hover:text-indigo-500 dark:text-indigo-400 dark:hover:text-indigo-300">
+          <RouterLink
+            to="/login"
+            class="text-sm font-medium text-indigo-600 hover:text-indigo-500 dark:text-indigo-400 dark:hover:text-indigo-300"
+          >
             Back to sign in
           </RouterLink>
         </div>
@@ -143,13 +152,13 @@ function goToLogin(): void {
           <CheckCircleIcon class="h-5 w-5 flex-shrink-0 mt-0.5" />
           <div>
             <p class="font-medium">Password reset successful</p>
-            <p class="mt-1 text-sm">Your password has been updated. You can now sign in with your new password.</p>
+            <p class="mt-1 text-sm">
+              Your password has been updated. You can now sign in with your new password.
+            </p>
           </div>
         </div>
 
-        <button type="button" class="w-full btn-primary py-3" @click="goToLogin">
-          Sign in
-        </button>
+        <button type="button" class="w-full btn-primary py-3" @click="goToLogin">Sign in</button>
       </div>
     </div>
   </div>

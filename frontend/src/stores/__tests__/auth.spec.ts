@@ -103,9 +103,9 @@ describe('Auth Store', () => {
 
       const store = useAuthStore()
 
-      await expect(
-        store.login({ email: 'test@example.com', password: 'wrong' }),
-      ).rejects.toEqual(error)
+      await expect(store.login({ email: 'test@example.com', password: 'wrong' })).rejects.toEqual(
+        error,
+      )
 
       expect(store.error).toBe('Invalid credentials')
       expect(store.user).toBeNull()
@@ -113,7 +113,10 @@ describe('Auth Store', () => {
 
     it('should set loading state during login', async () => {
       vi.mocked(authService.login).mockImplementation(
-        () => new Promise((resolve) => setTimeout(() => resolve({ id: 1, name: 'Test', email: 'test@example.com' }), 100)),
+        () =>
+          new Promise((resolve) =>
+            setTimeout(() => resolve({ id: 1, name: 'Test', email: 'test@example.com' }), 100),
+          ),
       )
 
       const store = useAuthStore()

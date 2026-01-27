@@ -37,7 +37,10 @@ async function handleLogout(): Promise<void> {
             >
               Dashboard
             </RouterLink>
-            <RouterLink to="/contracts" class="text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white">
+            <RouterLink
+              to="/contracts"
+              class="text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white"
+            >
               Contracts
             </RouterLink>
           </nav>

@@ -30,17 +30,26 @@ async function handleSubmit(): Promise<void> {
 </script>
 
 <template>
-  <div class="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 py-12 px-4 sm:px-6 lg:px-8">
+  <div
+    class="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 py-12 px-4 sm:px-6 lg:px-8"
+  >
     <div class="absolute top-4 right-4">
       <ThemeToggle />
     </div>
     <div class="max-w-md w-full space-y-8">
       <div>
-        <h1 class="text-center text-2xl font-bold text-indigo-600 dark:text-indigo-400">Contractly</h1>
-        <h2 class="mt-6 text-center text-3xl font-bold text-gray-900 dark:text-white">Sign in to your account</h2>
+        <h1 class="text-center text-2xl font-bold text-indigo-600 dark:text-indigo-400">
+          Contractly
+        </h1>
+        <h2 class="mt-6 text-center text-3xl font-bold text-gray-900 dark:text-white">
+          Sign in to your account
+        </h2>
         <p class="mt-2 text-center text-sm text-gray-600 dark:text-gray-400">
           Or
-          <RouterLink to="/register" class="font-medium text-indigo-600 hover:text-indigo-500 dark:text-indigo-400 dark:hover:text-indigo-300">
+          <RouterLink
+            to="/register"
+            class="font-medium text-indigo-600 hover:text-indigo-500 dark:text-indigo-400 dark:hover:text-indigo-300"
+          >
             create a new account
           </RouterLink>
         </p>
@@ -96,7 +105,9 @@ async function handleSubmit(): Promise<void> {
               type="checkbox"
               class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded dark:border-gray-600 dark:bg-gray-800"
             />
-            <label for="remember" class="ml-2 block text-sm text-gray-900 dark:text-gray-300">Remember me</label>
+            <label for="remember" class="ml-2 block text-sm text-gray-900 dark:text-gray-300"
+              >Remember me</label
+            >
           </div>
 
           <RouterLink
