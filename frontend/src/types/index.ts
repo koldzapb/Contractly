@@ -83,7 +83,7 @@ export type DeadlineType =
   | 'milestone'
   | 'other'
 
-export type DeadlineUrgency = 'overdue' | 'urgent' | 'soon' | 'normal' | 'far'
+export type DeadlineUrgency = 'overdue' | 'critical' | 'high' | 'medium' | 'low' | 'unknown'
 
 export interface ContractDeadline {
   id: string

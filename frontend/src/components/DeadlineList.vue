@@ -12,9 +12,9 @@ const props = defineProps<Props>()
 const sortedDeadlines = computed(() => {
   return [...props.deadlines].sort((a, b) => {
     // Sort by urgency priority, then by date
-    const urgencyOrder = { overdue: 0, urgent: 1, soon: 2, normal: 3, far: 4 }
-    const urgencyA = urgencyOrder[a.urgency || 'normal']
-    const urgencyB = urgencyOrder[b.urgency || 'normal']
+    const urgencyOrder: Record<string, number> = { overdue: 0, critical: 1, high: 2, medium: 3, low: 4, unknown: 5 }
+    const urgencyA = urgencyOrder[a.urgency || 'low'] ?? 5
+    const urgencyB = urgencyOrder[b.urgency || 'low'] ?? 5
 
     if (urgencyA !== urgencyB) {
       return urgencyA - urgencyB
