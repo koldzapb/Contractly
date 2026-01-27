@@ -1,17 +1,19 @@
 <script setup lang="ts">
 import { RouterLink } from 'vue-router'
+import ThemeToggle from '@/components/ThemeToggle.vue'
 </script>
 
 <template>
-  <div class="min-h-screen flex flex-col">
+  <div class="min-h-screen flex flex-col bg-gray-50 dark:bg-gray-900">
     <!-- Header -->
-    <header class="bg-white shadow-sm">
+    <header class="bg-white dark:bg-gray-800 shadow-sm">
       <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
         <div class="flex items-center">
-          <span class="text-xl font-bold text-indigo-600">Contractly</span>
+          <span class="text-xl font-bold text-indigo-600 dark:text-indigo-400">Contractly</span>
         </div>
         <div class="flex items-center space-x-4">
-          <RouterLink to="/login" class="text-gray-600 hover:text-gray-900">Sign in</RouterLink>
+          <ThemeToggle />
+          <RouterLink to="/login" class="text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white">Sign in</RouterLink>
           <RouterLink to="/register" class="btn-primary">Get started</RouterLink>
         </div>
       </nav>
@@ -20,10 +22,10 @@ import { RouterLink } from 'vue-router'
     <!-- Hero Section -->
     <main class="flex-1 flex items-center justify-center">
       <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        <h1 class="text-4xl sm:text-5xl font-bold text-gray-900 mb-6">
+        <h1 class="text-4xl sm:text-5xl font-bold text-gray-900 dark:text-white mb-6">
           AI-Powered Contract Analysis
         </h1>
-        <p class="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
+        <p class="text-xl text-gray-600 dark:text-gray-300 mb-8 max-w-2xl mx-auto">
           Upload your contracts and let AI identify risky clauses, extract important deadlines, and
           provide actionable insights.
         </p>
@@ -39,8 +41,8 @@ import { RouterLink } from 'vue-router'
     </main>
 
     <!-- Footer -->
-    <footer class="bg-gray-50 border-t border-gray-200">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 text-center text-gray-500">
+    <footer class="bg-gray-50 dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 text-center text-gray-500 dark:text-gray-400">
         <p>&copy; 2024 Contractly. All rights reserved.</p>
       </div>
     </footer>

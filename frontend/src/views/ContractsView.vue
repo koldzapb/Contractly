@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { RouterLink } from 'vue-router'
+import ThemeToggle from '@/components/ThemeToggle.vue'
 
 const dragOver = ref(false)
 
@@ -26,44 +27,49 @@ function handleFiles(files: FileList): void {
 </script>
 
 <template>
-  <div class="min-h-screen bg-gray-50">
+  <div class="min-h-screen bg-gray-50 dark:bg-gray-900">
     <!-- Header -->
-    <header class="bg-white shadow-sm">
+    <header class="bg-white dark:bg-gray-800 shadow-sm">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-        <span class="text-xl font-bold text-indigo-600">Contractly</span>
-        <nav class="flex items-center space-x-6">
-          <RouterLink to="/dashboard" class="text-gray-600 hover:text-gray-900">
-            Dashboard
-          </RouterLink>
-          <RouterLink
-            to="/contracts"
-            class="text-gray-900 font-medium"
-            active-class="text-indigo-600"
-          >
-            Contracts
-          </RouterLink>
-        </nav>
+        <div class="flex items-center gap-8">
+          <span class="text-xl font-bold text-indigo-600 dark:text-indigo-400">Contractly</span>
+          <nav class="hidden md:flex items-center space-x-6">
+            <RouterLink to="/dashboard" class="text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white">
+              Dashboard
+            </RouterLink>
+            <RouterLink
+              to="/contracts"
+              class="text-gray-900 dark:text-white font-medium"
+              active-class="text-indigo-600 dark:text-indigo-400"
+            >
+              Contracts
+            </RouterLink>
+          </nav>
+        </div>
+        <div class="flex items-center gap-4">
+          <ThemeToggle />
+        </div>
       </div>
     </header>
 
     <!-- Main Content -->
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <div class="mb-8">
-        <h1 class="text-2xl font-bold text-gray-900">Contracts</h1>
-        <p class="text-gray-600">Upload and manage your contracts.</p>
+        <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Contracts</h1>
+        <p class="text-gray-600 dark:text-gray-400">Upload and manage your contracts.</p>
       </div>
 
       <!-- Upload Area -->
       <div
         class="card mb-8"
-        :class="{ 'border-indigo-500 border-2': dragOver }"
+        :class="{ 'border-indigo-500 dark:border-indigo-400 border-2': dragOver }"
         @dragover.prevent="dragOver = true"
         @dragleave="dragOver = false"
         @drop.prevent="handleDrop"
       >
         <div class="text-center py-12">
           <svg
-            class="mx-auto h-12 w-12 text-gray-400"
+            class="mx-auto h-12 w-12 text-gray-400 dark:text-gray-500"
             stroke="currentColor"
             fill="none"
             viewBox="0 0 48 48"
@@ -78,7 +84,7 @@ function handleFiles(files: FileList): void {
           <div class="mt-4">
             <label
               for="file-upload"
-              class="cursor-pointer font-medium text-indigo-600 hover:text-indigo-500"
+              class="cursor-pointer font-medium text-indigo-600 hover:text-indigo-500 dark:text-indigo-400 dark:hover:text-indigo-300"
             >
               Upload a file
             </label>
@@ -90,16 +96,16 @@ function handleFiles(files: FileList): void {
               class="sr-only"
               @change="handleFileSelect"
             />
-            <span class="text-gray-500"> or drag and drop</span>
+            <span class="text-gray-500 dark:text-gray-400"> or drag and drop</span>
           </div>
-          <p class="mt-1 text-sm text-gray-500">PDF files up to 10MB</p>
+          <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">PDF files up to 10MB</p>
         </div>
       </div>
 
       <!-- Contract List -->
       <div class="card">
-        <h2 class="text-lg font-semibold text-gray-900 mb-4">Your Contracts</h2>
-        <div class="text-center py-12 text-gray-500">
+        <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Your Contracts</h2>
+        <div class="text-center py-12 text-gray-500 dark:text-gray-400">
           <p>No contracts uploaded yet.</p>
           <p class="text-sm">Upload your first contract to get started.</p>
         </div>
