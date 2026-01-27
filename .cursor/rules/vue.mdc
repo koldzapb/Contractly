@@ -1,0 +1,146 @@
+# Vue 3 Development Rules for Contractly
+
+## General
+
+- Use Composition API with `<script setup>` exclusively - no Options API
+- TypeScript strict mode enabled - no `any` types
+- Use Vite for development and building
+- Follow Vue style guide naming conventions
+
+## Component Structure
+
+```vue
+<script setup lang="ts">
+// 1. Imports
+import { ref, computed, onMounted } from 'vue'
+import { useContractStore } from '@/stores/contracts'
+import type { Contract } from '@/types'
+
+// 2. Props & Emits
+interface Props {
+  contractId: string
+  showDetails?: boolean
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  showDetails: false
+})
+
+const emit = defineEmits<{
+  select: [contract: Contract]
+  delete: [id: string]
+}>()
+
+// 3. Composables & Stores
+const store = useContractStore()
+
+// 4. Reactive State
+const isLoading = ref(false)
+const error = ref<string | null>(null)
+
+// 5. Computed Properties
+const contract = computed(() => store.getById(props.contractId))
+
+// 6. Methods
+const handleSelect = () => {
+  if (contract.value) {
+    emit('select', contract.value)
+  }
+}
+
+// 7. Lifecycle Hooks
+onMounted(async () => {
+  await store.fetchContract(props.contractId)
+})
+</script>
+
+<template>
+  <!-- Template content -->
+</template>
+
+<style scoped>
+/* Scoped styles or Tailwind */
+</style>
+```
+
+## Naming Conventions
+
+| Type | Convention | Example |
+|------|------------|---------|
+| Components | PascalCase | `ContractCard.vue` |
+| Composables | camelCase with use prefix | `useContractAnalysis.ts` |
+| Stores | camelCase | `contracts.ts` |
+| Types/Interfaces | PascalCase | `ContractAnalysis` |
+| Event handlers | handle prefix | `handleSubmit` |
+| Boolean refs | is/has/can prefix | `isLoading`, `hasError` |
+
+## Reactivity
+
+```typescript
+// Use ref for primitives
+const count = ref(0)
+const name = ref('')
+const isLoading = ref(false)
+
+// Use reactive for objects (sparingly)
+const form = reactive({
+  title: '',
+  file: null as File | null
+})
+
+// Use computed for derived state
+const fullName = computed(() => `${firstName.value} ${lastName.value}`)
+
+// Use toRefs when destructuring props
+const { contractId } = toRefs(props)
+```
+
+## State Management (Pinia)
+
+```typescript
+export const useContractStore = defineStore('contracts', () => {
+  // State
+  const contracts = ref<Contract[]>([])
+  const isLoading = ref(false)
+
+  // Getters
+  const getById = computed(() => {
+    return (id: string) => contracts.value.find(c => c.id === id)
+  })
+
+  // Actions
+  const fetchContracts = async () => {
+    isLoading.value = true
+    try {
+      contracts.value = await api.contracts.list()
+    } finally {
+      isLoading.value = false
+    }
+  }
+
+  return { contracts, isLoading, getById, fetchContracts }
+})
+```
+
+## File Structure
+
+```
+src/
+├── components/           # Reusable components
+│   ├── common/          # Generic (Button, Modal)
+│   └── contracts/       # Feature-specific
+├── views/               # Page components (routed)
+├── composables/         # Shared composition functions
+├── stores/              # Pinia stores
+├── services/            # API services
+├── types/               # TypeScript interfaces
+└── router/              # Vue Router config
+```
+
+## Best Practices
+
+- Define explicit interfaces for props, emits, API responses
+- Use `storeToRefs` when destructuring store state
+- Proper cleanup for watchers and composables
+- Add `data-testid` attributes for E2E testing
+- Follow WCAG 2.1 AA accessibility guidelines
