@@ -40,6 +40,44 @@ class UploadContractController extends Controller
 - Inject in method parameter if used once
 - Inject in constructor if used multiple times
 
+**Repository Pattern:**
+```php
+// Interface in app/Repositories/Contracts/
+interface ContractRepositoryInterface
+{
+    public function find(string $id): ?Contract;
+    public function getAllForUser(User|int $user): Collection;
+    public function create(array $data): Contract;
+}
+
+// Implementation in app/Repositories/
+class ContractRepository extends BaseRepository implements ContractRepositoryInterface
+{
+    public function __construct()
+    {
+        parent::__construct(Contract::class);
+    }
+
+    public function getAllForUser(User|int $user): Collection
+    {
+        return $this->query()
+            ->where('user_id', $this->resolveUserId($user))
+            ->latest()
+            ->get();
+    }
+}
+
+// Inject interface in controllers/services (not implementation)
+public function __construct(
+    private ContractRepositoryInterface $contracts,
+) {}
+```
+
+**Repositories vs Models:**
+- **Models:** Define relationships, casts, accessors, simple state checks (`isPending()`, `isCompleted()`)
+- **Repositories:** All query logic (scopes moved here), CRUD operations, complex filters
+- **Services:** Business logic, orchestration, validation beyond form requests
+
 **Models:**
 ```php
 // Enums in app/Enums/

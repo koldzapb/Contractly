@@ -64,7 +64,10 @@ backend/
 │   │   ├── Requests/       # Form request validation
 │   │   └── Resources/      # JSON API resources (always use these)
 │   ├── Jobs/               # AnalyzeContractJob (async AI processing)
-│   ├── Models/             # User, Contract, ContractAnalysis, etc.
+│   ├── Models/             # Relationships, casts, accessors (no query logic)
+│   ├── Repositories/       # Data access layer
+│   │   ├── Contracts/      # Repository interfaces
+│   │   └── *.php           # Repository implementations
 │   └── Services/           # Business logic layer
 ├── routes/api.php          # API endpoints
 └── tests/                  # Pest tests
@@ -88,6 +91,22 @@ frontend/src/
 - **ContractClause** - Extracted clauses with risk levels
 - **ContractDeadline** - Dates extracted from contract
 - **Reminder** - Scheduled notifications
+
+### Repository Pattern
+All data access uses the Repository pattern with interfaces for testability:
+```php
+// Inject interface, not implementation
+public function __construct(
+    private ContractRepositoryInterface $contracts,
+) {}
+
+// Query via repository
+$contracts = $this->contracts->getAllForUser($user);
+$pending = $this->contracts->getByStatusForUser(ContractStatus::PENDING, $user);
+```
+- **Models:** Relationships, casts, accessors, simple state checks
+- **Repositories:** All query logic, CRUD operations, complex filters
+- **Services:** Business logic, orchestration
 
 ## Coding Standards
 

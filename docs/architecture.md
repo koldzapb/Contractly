@@ -284,6 +284,19 @@ backend/
 │   │   └── ReminderStatus.php
 │   ├── Events/
 │   │   └── ContractAnalysisCompleted.php
+│   ├── Repositories/
+│   │   ├── Contracts/              # Repository interfaces
+│   │   │   ├── ContractRepositoryInterface.php
+│   │   │   ├── ContractAnalysisRepositoryInterface.php
+│   │   │   ├── ContractClauseRepositoryInterface.php
+│   │   │   ├── ContractDeadlineRepositoryInterface.php
+│   │   │   └── ReminderRepositoryInterface.php
+│   │   ├── BaseRepository.php      # Generic base repository
+│   │   ├── ContractRepository.php
+│   │   ├── ContractAnalysisRepository.php
+│   │   ├── ContractClauseRepository.php
+│   │   ├── ContractDeadlineRepository.php
+│   │   └── ReminderRepository.php
 │   ├── Http/
 │   │   ├── Controllers/
 │   │   │   ├── Auth/
@@ -342,12 +355,49 @@ backend/
         └── Services/
 ```
 
+### Repository Layer
+
+Repositories encapsulate all data access logic, providing a clean abstraction between services and the database. All repositories implement interfaces for dependency injection and easy mocking in tests.
+
+**BaseRepository**
+- Generic CRUD operations (find, all, create, update, delete)
+- Query builder access via `query()` method
+- Helper methods for resolving model IDs
+
+**ContractRepository**
+- User-scoped contract queries
+- Filtering by status
+- Search functionality
+- Pagination support
+
+**ContractAnalysisRepository**
+- Find analysis by contract
+- Load with clauses/deadlines
+- Filter by risk level
+
+**ContractClauseRepository**
+- Filter clauses by type and risk level
+- Get high-risk clauses
+- Count clauses by risk level
+
+**ContractDeadlineRepository**
+- Get upcoming/past/overdue deadlines
+- User-scoped deadline queries
+- Filter by deadline type
+
+**ReminderRepository**
+- Get due reminders for sending
+- User-scoped queries
+- Status management (mark as sent/failed/cancelled)
+
 ### Service Layer
+
+Services contain business logic and orchestrate operations across repositories.
 
 **ContractAnalysisService**
 - Orchestrates the full analysis pipeline
 - Coordinates PDF parsing and AI analysis
-- Saves results to database
+- Uses repositories to save results
 
 **PdfParserService**
 - Extracts text from PDF files
@@ -362,7 +412,7 @@ backend/
 
 **ReminderService**
 - Creates and manages reminders
-- Finds due reminders
+- Finds due reminders via repository
 - Handles reminder delivery
 
 ---
