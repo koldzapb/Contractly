@@ -1,7 +1,7 @@
-.PHONY: help up down restart build logs logs-app logs-queue shell shell-node tinker \
+.PHONY: help up down restart build logs logs-app logs-horizon shell shell-node tinker \
         install migrate migrate-fresh seed test test-coverage pint phpstan check \
         npm-install npm-dev npm-build npm-test npm-lint \
-        db-reset queue-restart queue-failed queue-retry fresh
+        db-reset horizon horizon-restart horizon-status horizon-pause horizon-continue fresh
 
 # Default target
 help:
@@ -20,7 +20,7 @@ help:
 	@echo "  make build           Rebuild Docker images"
 	@echo "  make logs            View all container logs"
 	@echo "  make logs-app        View PHP app logs"
-	@echo "  make logs-queue      View queue worker logs"
+	@echo "  make logs-horizon    View Horizon logs"
 	@echo ""
 	@echo "Shell Access:"
 	@echo "  make shell           Open shell in PHP container"
@@ -49,10 +49,14 @@ help:
 	@echo "Database:"
 	@echo "  make db-reset        Drop, migrate, and seed"
 	@echo ""
-	@echo "Queue:"
-	@echo "  make queue-restart   Restart queue worker"
-	@echo "  make queue-failed    List failed jobs"
-	@echo "  make queue-retry     Retry all failed jobs"
+	@echo "Horizon (Queue):"
+	@echo "  make horizon         Start Horizon (foreground)"
+	@echo "  make horizon-restart Restart Horizon container"
+	@echo "  make horizon-status  Show Horizon status"
+	@echo "  make horizon-pause   Pause job processing"
+	@echo "  make horizon-continue Resume job processing"
+	@echo ""
+	@echo "  Dashboard: http://localhost/horizon"
 
 # ============================================
 # Docker Commands
@@ -76,8 +80,8 @@ logs:
 logs-app:
 	docker compose logs -f app
 
-logs-queue:
-	docker compose logs -f queue
+logs-horizon:
+	docker compose logs -f horizon
 
 # ============================================
 # Shell Access
@@ -170,17 +174,26 @@ db-reset:
 	docker compose exec app php artisan migrate:fresh --seed
 
 # ============================================
-# Queue Commands
+# Horizon Commands
 # ============================================
 
-queue-restart:
-	docker compose restart queue
+horizon:
+	docker compose exec app php artisan horizon
 
-queue-failed:
-	docker compose exec app php artisan queue:failed
+horizon-restart:
+	docker compose restart horizon
 
-queue-retry:
-	docker compose exec app php artisan queue:retry all
+horizon-status:
+	docker compose exec app php artisan horizon:status
+
+horizon-pause:
+	docker compose exec app php artisan horizon:pause
+
+horizon-continue:
+	docker compose exec app php artisan horizon:continue
+
+horizon-terminate:
+	docker compose exec app php artisan horizon:terminate
 
 # ============================================
 # Artisan Shortcuts
