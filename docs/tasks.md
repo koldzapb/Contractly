@@ -150,7 +150,7 @@
 | ✅ | Implement file validation |
 | ✅ | Handle upload errors |
 | ✅ | Write contracts store tests |
-| ⬜ | Write upload component tests |
+| ✅ | Write upload component tests |
 
 ---
 
@@ -294,6 +294,7 @@
 |-------|--------|-------|
 | Phase 0 | ✅ Complete | Project setup, Docker, Laravel, Vue |
 | Phase 1 | ✅ Complete | Authentication (Sanctum, login, register, password reset) |
+| Phase 2 | ✅ Complete | Contract upload, storage, CRUD, frontend UI with tests |
 
 ### Blocked
 
@@ -309,12 +310,12 @@
 |-------|-------|------|-------------|---------|------|---------|
 | Phase 0 | 32 | 32 | 0 | 0 | 0 | 0 |
 | Phase 1 | 23 | 23 | 0 | 0 | 0 | 0 |
-| Phase 2 | 37 | 36 | 0 | 0 | 1 | 0 |
+| Phase 2 | 37 | 37 | 0 | 0 | 0 | 0 |
 | Phase 3 | 30 | 0 | 0 | 0 | 0 | 30 |
 | Phase 4 | 19 | 0 | 0 | 0 | 0 | 19 |
 | Phase 5 | 14 | 0 | 0 | 0 | 0 | 14 |
 | Phase 6 | 9 | 0 | 0 | 0 | 0 | 9 |
-| **Total** | **164** | **91** | **0** | **0** | **1** | **72** |
+| **Total** | **164** | **92** | **0** | **0** | **0** | **72** |
 
 ---
 
