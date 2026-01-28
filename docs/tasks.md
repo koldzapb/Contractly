@@ -202,29 +202,29 @@
 ### Backend
 | Status | Task |
 |--------|------|
-| 📋 | Create ReminderController |
-| 📋 | Create ReminderService |
-| 📋 | Create StoreReminderRequest |
-| 📋 | Create ReminderResource |
-| 📋 | Create SendReminderJob |
-| 📋 | Create reminder email template |
-| 📋 | Configure scheduler for daily check |
-| 📋 | Write create reminder test |
-| 📋 | Write update reminder test |
-| 📋 | Write delete reminder test |
-| 📋 | Write send reminder test |
+| ✅ | Create ReminderController |
+| ✅ | Create ReminderService |
+| ✅ | Create StoreReminderRequest |
+| ✅ | Create ReminderResource |
+| ✅ | Create SendReminderJob |
+| ✅ | Create reminder email template |
+| ✅ | Configure scheduler for daily check |
+| ✅ | Write create reminder test |
+| ✅ | Write update reminder test |
+| ✅ | Write delete reminder test |
+| ✅ | Write send reminder test |
 
 ### Frontend
 | Status | Task |
 |--------|------|
-| 📋 | Create reminders store |
-| 📋 | Create RemindersView |
-| 📋 | Create ReminderForm component |
-| 📋 | Create ReminderList component |
-| 📋 | Create ReminderCard component |
-| 📋 | Integrate reminders with deadlines |
-| 📋 | Write reminders store tests |
-| 📋 | Write reminder component tests |
+| ✅ | Create reminders store |
+| ✅ | Create RemindersView |
+| ✅ | Create ReminderForm component |
+| ✅ | Create ReminderList component |
+| ✅ | Create ReminderCard component |
+| ✅ | Integrate reminders with deadlines |
+| ✅ | Write reminders store tests |
+| ✅ | Write reminder component tests |
 
 ---
 
@@ -408,21 +408,29 @@ analyzed_with_override BOOLEAN DEFAULT FALSE
 
 ## Current Sprint
 
-**Sprint:** Phase 3 - AI Analysis
-**Goal:** Implement PDF parsing, Claude AI integration, and contract analysis
+**Sprint:** Phase 4 - Reminders (COMPLETE)
+**Goal:** Implement email reminder system for contract deadlines
 
 ### Active Tasks
 
 | Status | Task | Notes |
 |--------|------|-------|
-| ✅ | Create PdfParserService | Text extraction using smalot/pdfparser |
-| ✅ | Create ClaudeAiService | Anthropic API client with structured prompts |
-| ✅ | Create ContractAnalysisService | Orchestrates parsing + AI + saving |
-| ✅ | Create AnalyzeContractJob | Background job with retry logic |
-| ✅ | Create Events | ContractAnalysisCompleted, ContractAnalysisFailed |
-| ✅ | Add retry endpoint | POST /api/contracts/{id}/retry |
-| ✅ | Write service tests | PDF, AI, Analysis service tests |
-| ✅ | Write frontend analysis component tests | 7 test files, 97 tests |
+| ✅ | Create ReminderController | Full CRUD + cancel endpoint |
+| ✅ | Create ReminderService | Calculate remind_at, validate deadlines |
+| ✅ | Create Request Validators | StoreReminderRequest, UpdateReminderRequest |
+| ✅ | Create ReminderResource | JSON transformation with relationships |
+| ✅ | Create SendReminderJob | Queued job for email delivery |
+| ✅ | Create ReminderDueMail | Email mailable with blade template |
+| ✅ | Create ProcessDueRemindersCommand | Daily scheduler command |
+| ✅ | Write backend tests | 7 test files covering all functionality |
+| ✅ | Create reminders API service | Frontend API methods |
+| ✅ | Create reminders store | Pinia store with full state management |
+| ✅ | Create ReminderCard component | Display with cancel/delete actions |
+| ✅ | Create ReminderList component | Paginated list with empty state |
+| ✅ | Create ReminderForm component | Create/edit with day selection |
+| ✅ | Create RemindersView | Main page with filter tabs |
+| ✅ | Integrate with DeadlineCard | "Set Reminder" button on deadlines |
+| ✅ | Write frontend tests | Store tests + component tests |
 
 ### Completed Phases
 
@@ -432,12 +440,12 @@ analyzed_with_override BOOLEAN DEFAULT FALSE
 | Phase 1 | ✅ Complete | Authentication (Sanctum, login, register, password reset) |
 | Phase 2 | ✅ Complete | Contract upload, storage, CRUD, frontend UI with tests |
 | Phase 3 | ✅ Complete | AI Analysis backend complete, frontend UI complete |
+| Phase 4 | ✅ Complete | Reminders - email notifications for deadlines |
 
 ### Upcoming Phases
 
 | Phase | Status | Notes |
 |-------|--------|-------|
-| Phase 4 | 📋 Backlog | Reminders - email notifications for deadlines |
 | Phase 5 | 📋 Backlog | Dashboard & Polish - stats, UX improvements |
 | Phase 6 | 📋 Backlog | Deployment Preparation - production setup |
 | Phase 7 | 📋 Backlog | Document Intelligence - validation & PII redaction |
@@ -458,11 +466,11 @@ analyzed_with_override BOOLEAN DEFAULT FALSE
 | Phase 1 | 23 | 23 | 0 | 0 | 0 | 0 |
 | Phase 2 | 37 | 37 | 0 | 0 | 0 | 0 |
 | Phase 3 | 30 | 30 | 0 | 0 | 0 | 0 |
-| Phase 4 | 19 | 0 | 0 | 0 | 0 | 19 |
+| Phase 4 | 19 | 19 | 0 | 0 | 0 | 0 |
 | Phase 5 | 14 | 0 | 0 | 0 | 0 | 14 |
 | Phase 6 | 9 | 0 | 0 | 0 | 0 | 9 |
 | Phase 7 | 40 | 0 | 0 | 0 | 0 | 40 |
-| **Total** | **204** | **122** | **0** | **0** | **0** | **82** |
+| **Total** | **204** | **141** | **0** | **0** | **0** | **63** |
 
 ---
 

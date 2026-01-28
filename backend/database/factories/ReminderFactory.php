@@ -63,7 +63,6 @@ class ReminderFactory extends Factory
     {
         return $this->state(fn (array $attributes) => [
             'status' => ReminderStatus::FAILED,
-            'error_message' => fake()->sentence(),
         ]);
     }
 

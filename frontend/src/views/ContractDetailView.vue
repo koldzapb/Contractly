@@ -4,23 +4,33 @@ import { useRoute, useRouter, RouterLink } from 'vue-router'
 import { storeToRefs } from 'pinia'
 import { useContractsStore } from '@/stores/contracts'
 import { useAuthStore } from '@/stores/auth'
+import { useRemindersStore } from '@/stores/reminders'
 import ThemeToggle from '@/components/ThemeToggle.vue'
 import RiskBadge from '@/components/RiskBadge.vue'
 import AnalysisProgress from '@/components/AnalysisProgress.vue'
 import AnalysisSummary from '@/components/AnalysisSummary.vue'
 import ClauseList from '@/components/ClauseList.vue'
 import DeadlineList from '@/components/DeadlineList.vue'
+import ReminderForm from '@/components/ReminderForm.vue'
+import type { ContractDeadline, CreateReminderData } from '@/types'
 
 const route = useRoute()
 const router = useRouter()
 const contractsStore = useContractsStore()
 const authStore = useAuthStore()
+const remindersStore = useRemindersStore()
 
 const { currentContract, loading, error } = storeToRefs(contractsStore)
 const { user } = storeToRefs(authStore)
 
 const contractId = computed(() => route.params.id as string)
 const pollingInterval = ref<ReturnType<typeof setInterval> | null>(null)
+
+// Reminder modal state
+const showReminderModal = ref(false)
+const selectedDeadline = ref<ContractDeadline | null>(null)
+const creatingReminder = ref(false)
+const reminderError = ref<string | null>(null)
 
 const isAnalyzing = computed(() => {
   return (
@@ -141,6 +151,34 @@ async function handleDelete(): Promise<void> {
   }
 }
 
+function handleSetReminder(deadline: ContractDeadline): void {
+  selectedDeadline.value = deadline
+  reminderError.value = null
+  showReminderModal.value = true
+}
+
+async function handleCreateReminder(data: CreateReminderData): Promise<void> {
+  creatingReminder.value = true
+  reminderError.value = null
+
+  try {
+    await remindersStore.createReminder(data)
+    showReminderModal.value = false
+    selectedDeadline.value = null
+  } catch (e: unknown) {
+    const err = e as { response?: { data?: { message?: string } } }
+    reminderError.value = err.response?.data?.message ?? 'Failed to create reminder'
+  } finally {
+    creatingReminder.value = false
+  }
+}
+
+function closeReminderModal(): void {
+  showReminderModal.value = false
+  selectedDeadline.value = null
+  reminderError.value = null
+}
+
 // Watch for status changes to start/stop polling
 watch(
   () => currentContract.value?.status,
@@ -184,6 +222,12 @@ onUnmounted(() => {
               class="text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white"
             >
               Contracts
+            </RouterLink>
+            <RouterLink
+              to="/reminders"
+              class="text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white"
+            >
+              Reminders
             </RouterLink>
           </nav>
         </div>
@@ -321,7 +365,10 @@ onUnmounted(() => {
             <ClauseList :clauses="currentContract.analysis.clauses || []" />
 
             <!-- Deadlines -->
-            <DeadlineList :deadlines="currentContract.analysis.deadlines || []" />
+            <DeadlineList
+              :deadlines="currentContract.analysis.deadlines || []"
+              @set-reminder="handleSetReminder"
+            />
           </div>
         </template>
 
@@ -335,5 +382,60 @@ onUnmounted(() => {
         </div>
       </div>
     </main>
+
+    <!-- Set Reminder Modal -->
+    <Teleport to="body">
+      <div
+        v-if="showReminderModal"
+        class="fixed inset-0 z-50 overflow-y-auto"
+        aria-labelledby="reminder-modal-title"
+        role="dialog"
+        aria-modal="true"
+      >
+        <div
+          class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0"
+        >
+          <div
+            class="fixed inset-0 bg-gray-500 dark:bg-gray-900 bg-opacity-75 dark:bg-opacity-75 transition-opacity"
+            aria-hidden="true"
+            @click="closeReminderModal"
+          />
+          <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true"
+            >&#8203;</span
+          >
+          <div
+            class="inline-block align-bottom bg-white dark:bg-gray-800 rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full sm:p-6"
+          >
+            <div class="mb-4">
+              <h3
+                id="reminder-modal-title"
+                class="text-lg leading-6 font-medium text-gray-900 dark:text-white"
+              >
+                Set Reminder
+              </h3>
+              <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                Get notified before this deadline.
+              </p>
+            </div>
+
+            <!-- Error message -->
+            <div
+              v-if="reminderError"
+              class="mb-4 p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg"
+            >
+              <p class="text-sm text-red-600 dark:text-red-400">{{ reminderError }}</p>
+            </div>
+
+            <ReminderForm
+              v-if="selectedDeadline"
+              :deadline="selectedDeadline"
+              :loading="creatingReminder"
+              @submit="handleCreateReminder"
+              @cancel="closeReminderModal"
+            />
+          </div>
+        </div>
+      </div>
+    </Teleport>
   </div>
 </template>

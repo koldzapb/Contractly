@@ -8,6 +8,7 @@ use App\Http\Controllers\Auth\LogoutController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\ContractController;
+use App\Http\Controllers\ReminderController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -58,5 +59,15 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::delete('/{id}', [ContractController::class, 'destroy']);
         Route::get('/{id}/status', [ContractController::class, 'status']);
         Route::post('/{id}/retry', [ContractController::class, 'retryAnalysis']);
+    });
+
+    // Reminders
+    Route::prefix('reminders')->group(function () {
+        Route::get('/', [ReminderController::class, 'index']);
+        Route::post('/', [ReminderController::class, 'store']);
+        Route::get('/{id}', [ReminderController::class, 'show']);
+        Route::put('/{id}', [ReminderController::class, 'update']);
+        Route::delete('/{id}', [ReminderController::class, 'destroy']);
+        Route::post('/{id}/cancel', [ReminderController::class, 'cancel']);
     });
 });

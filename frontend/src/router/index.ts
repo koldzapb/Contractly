@@ -51,6 +51,12 @@ const router = createRouter({
       component: () => import('@/views/ContractDetailView.vue'),
       meta: { requiresAuth: true },
     },
+    {
+      path: '/reminders',
+      name: 'reminders',
+      component: () => import('@/views/RemindersView.vue'),
+      meta: { requiresAuth: true },
+    },
   ],
 })
 

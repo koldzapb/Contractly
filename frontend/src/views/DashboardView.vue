@@ -43,6 +43,12 @@ async function handleLogout(): Promise<void> {
             >
               Contracts
             </RouterLink>
+            <RouterLink
+              to="/reminders"
+              class="text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white"
+            >
+              Reminders
+            </RouterLink>
           </nav>
         </div>
         <div class="flex items-center gap-4">

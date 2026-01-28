@@ -46,7 +46,8 @@ describe('ClauseList', () => {
       global: {
         stubs: {
           ClauseCard: {
-            template: '<div class="clause-card" :data-risk="clause.risk_level">{{ clause.clause_type_label }}</div>',
+            template:
+              '<div class="clause-card" :data-risk="clause.risk_level">{{ clause.clause_type_label }}</div>',
             props: ['clause'],
           },
         },

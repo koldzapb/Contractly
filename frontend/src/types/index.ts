@@ -103,13 +103,46 @@ export interface ContractDeadline {
 // Reminder types
 export type ReminderStatus = 'pending' | 'sent' | 'failed' | 'cancelled'
 
+export interface ReminderContract {
+  id: string
+  title: string
+}
+
+export interface ReminderDeadline {
+  id: string
+  title: string
+  deadline_date: string | null
+  deadline_type: DeadlineType
+  deadline_type_label: string
+}
+
 export interface Reminder {
   id: string
-  contract_deadline_id: string
-  contract_id: string
+  title: string
   remind_at: string
+  days_before: number
+  channel: string
   status: ReminderStatus
+  status_label: string
   sent_at: string | null
+  is_pending: boolean
+  is_sent: boolean
+  is_due: boolean
+  created_at: string
+  updated_at: string
+  contract?: ReminderContract
+  deadline?: ReminderDeadline
+}
+
+export interface CreateReminderData {
+  contract_deadline_id: string
+  days_before: number
+  title?: string
+}
+
+export interface UpdateReminderData {
+  days_before?: number
+  title?: string
 }
 
 // API Response types

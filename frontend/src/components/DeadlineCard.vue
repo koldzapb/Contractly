@@ -8,6 +8,19 @@ interface Props {
 
 const props = defineProps<Props>()
 
+const emit = defineEmits<{
+  'set-reminder': [deadline: ContractDeadline]
+}>()
+
+const canSetReminder = computed(() => {
+  // Can only set reminder for future deadlines with a date
+  return props.deadline.deadline_date && !props.deadline.is_past
+})
+
+function handleSetReminder(): void {
+  emit('set-reminder', props.deadline)
+}
+
 const formattedDate = computed(() => {
   if (!props.deadline.deadline_date) return 'No date specified'
   const date = new Date(props.deadline.deadline_date)
@@ -20,7 +33,10 @@ const formattedDate = computed(() => {
 })
 
 const urgencyConfig = computed(() => {
-  const configs: Record<string, { bgClass: string; borderClass: string; iconClass: string; badgeClass: string; label: string }> = {
+  const configs: Record<
+    string,
+    { bgClass: string; borderClass: string; iconClass: string; badgeClass: string; label: string }
+  > = {
     overdue: {
       bgClass: 'bg-red-50 dark:bg-red-900/20',
       borderClass: 'border-red-200 dark:border-red-800',
@@ -147,6 +163,24 @@ const daysText = computed(() => {
           </svg>
           <span>{{ deadline.recurrence_pattern || 'Recurring' }}</span>
         </div>
+
+        <!-- Set Reminder button -->
+        <button
+          v-if="canSetReminder"
+          type="button"
+          class="mt-3 inline-flex items-center gap-1.5 text-sm text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300 font-medium"
+          @click="handleSetReminder"
+        >
+          <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
+            />
+          </svg>
+          Set Reminder
+        </button>
       </div>
     </div>
   </div>

@@ -8,7 +8,8 @@ const mockClause: ContractClause = {
   clause_type: 'termination',
   clause_type_label: 'Termination',
   original_text: 'Either party may terminate this agreement with 30 days written notice.',
-  plain_explanation: 'You or the company can end the contract by giving 30 days advance notice in writing.',
+  plain_explanation:
+    'You or the company can end the contract by giving 30 days advance notice in writing.',
   risk_level: 'medium',
   risk_reason: 'Short notice period may not be sufficient for finding new employment.',
   page_number: 5,

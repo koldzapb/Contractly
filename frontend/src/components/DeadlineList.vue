@@ -9,10 +9,25 @@ interface Props {
 
 const props = defineProps<Props>()
 
+const emit = defineEmits<{
+  'set-reminder': [deadline: ContractDeadline]
+}>()
+
+function handleSetReminder(deadline: ContractDeadline): void {
+  emit('set-reminder', deadline)
+}
+
 const sortedDeadlines = computed(() => {
   return [...props.deadlines].sort((a, b) => {
     // Sort by urgency priority, then by date
-    const urgencyOrder: Record<string, number> = { overdue: 0, critical: 1, high: 2, medium: 3, low: 4, unknown: 5 }
+    const urgencyOrder: Record<string, number> = {
+      overdue: 0,
+      critical: 1,
+      high: 2,
+      medium: 3,
+      low: 4,
+      unknown: 5,
+    }
     const urgencyA = urgencyOrder[a.urgency || 'low'] ?? 5
     const urgencyB = urgencyOrder[b.urgency || 'low'] ?? 5
 
@@ -80,6 +95,7 @@ const hasPast = computed(() => pastDeadlines.value.length > 0)
             v-for="deadline in upcomingDeadlines"
             :key="deadline.id"
             :deadline="deadline"
+            @set-reminder="handleSetReminder"
           />
         </div>
       </div>
@@ -92,7 +108,12 @@ const hasPast = computed(() => pastDeadlines.value.length > 0)
           Past
         </h3>
         <div class="space-y-3 opacity-60">
-          <DeadlineCard v-for="deadline in pastDeadlines" :key="deadline.id" :deadline="deadline" />
+          <DeadlineCard
+            v-for="deadline in pastDeadlines"
+            :key="deadline.id"
+            :deadline="deadline"
+            @set-reminder="handleSetReminder"
+          />
         </div>
       </div>
     </div>

@@ -97,6 +97,7 @@ class ReminderRepository extends BaseRepository implements ReminderRepositoryInt
     public function paginateForUser(User|int $user, int $perPage = 15): LengthAwarePaginator
     {
         return $this->query()
+            ->with(['contract', 'deadline'])
             ->where('user_id', $this->resolveUserId($user))
             ->orderBy('remind_at')
             ->paginate($perPage);

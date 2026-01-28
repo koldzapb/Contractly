@@ -167,7 +167,9 @@ describe('DeadlineList', () => {
       const wrapper = mountComponent()
 
       // Get upcoming cards (not in opacity-60 container)
-      const upcomingSection = wrapper.findAll('.space-y-3').filter((el) => !el.classes().includes('opacity-60'))
+      const upcomingSection = wrapper
+        .findAll('.space-y-3')
+        .filter((el) => !el.classes().includes('opacity-60'))
       const pastSection = wrapper.find('.opacity-60')
 
       expect(upcomingSection.length).toBeGreaterThan(0)
