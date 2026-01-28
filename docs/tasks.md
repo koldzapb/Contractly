@@ -270,6 +270,142 @@
 
 ---
 
+## Phase 7: Document Intelligence
+
+> **Goal:** Enhance document processing with validation (detect non-legal documents) and privacy protection (PII redaction before AI analysis).
+
+### Phase 7A: Document Validation - Backend
+| Status | Task |
+|--------|------|
+| 📋 | Create `DocumentType` enum with legal/non-legal classification |
+| 📋 | Create migration to add validation fields to `contract_analyses` |
+| 📋 | Update `AiAnalysisResult` DTO with classification fields |
+| 📋 | Update `ClaudeAiService` prompt for document classification |
+| 📋 | Handle classification-first response parsing |
+| 📋 | Update `ContractAnalysisService` for validation flow |
+| 📋 | Add "Analyze Anyway" override endpoint |
+| 📋 | Update `ContractAnalysisResource` with new fields |
+| 📋 | Write document classification tests (various doc types) |
+| 📋 | Write integration tests for rejection flow |
+
+### Phase 7B: Document Validation - Frontend
+| Status | Task |
+|--------|------|
+| 📋 | Add TypeScript types for document classification |
+| 📋 | Create `InvalidDocumentNotice` component |
+| 📋 | Create `DocumentTypeBadge` component |
+| 📋 | Create `DocumentWarningBanner` component |
+| 📋 | Update `ContractDetailView` for rejection state |
+| 📋 | Implement "Analyze Anyway" button flow |
+| 📋 | Update contracts store for new response fields |
+| 📋 | Write validation component tests |
+| 📋 | Write integration tests for full flow |
+
+### Phase 7C: PII Redaction - Backend
+| Status | Task |
+|--------|------|
+| 📋 | Create `PiiType` enum (ssn, email, phone, credit_card, etc.) |
+| 📋 | Create `PiiDetectorService` with regex patterns |
+| 📋 | Create migration for redaction fields on `contracts` |
+| 📋 | Create `DetectedPii` DTO for API response |
+| 📋 | Create endpoint: `POST /contracts/{id}/detect-pii` |
+| 📋 | Create endpoint: `POST /contracts/{id}/apply-redactions` |
+| 📋 | Store extracted text separately from redacted text |
+| 📋 | Update `ContractAnalysisService` to use redacted text |
+| 📋 | Update `ContractResource` with redaction metadata |
+| 📋 | Write PII detection tests (all pattern types) |
+| 📋 | Write redaction application tests |
+
+### Phase 7D: PII Redaction - Frontend
+| Status | Task |
+|--------|------|
+| 📋 | Add TypeScript types for PII detection/redaction |
+| 📋 | Create `RedactionEditor` component (main interface) |
+| 📋 | Create `PiiHighlight` component (highlighted text spans) |
+| 📋 | Create `RedactionControls` component (toggle/bulk actions) |
+| 📋 | Create `RedactionPreview` component (before/after view) |
+| 📋 | Create `RedactionReviewView` page (upload → review flow) |
+| 📋 | Update upload flow to include optional redaction step |
+| 📋 | Handle "Skip Redaction" vs "Review & Redact" paths |
+| 📋 | Write redaction editor component tests |
+| 📋 | Write E2E tests for redaction flow |
+
+---
+
+### Phase 7 Design Decisions
+
+#### Document Classification
+
+**Document Types:**
+| Category | Types | Behavior |
+|----------|-------|----------|
+| **Legal (Full Analysis)** | `contract`, `amendment`, `nda` | Full clause/deadline extraction |
+| **Pre-contractual (Analyze + Warn)** | `mou`, `loi`, `term_sheet` | Analyze but warn about non-binding nature |
+| **Non-legal (Reject)** | `invoice`, `receipt`, `letter`, `policy`, `manual`, `form`, `report`, `unknown` | Show rejection notice, offer override |
+
+**Edge Cases Handled:**
+- Mixed documents (contract + invoice attachment) → Classify by primary intent
+- Templates with placeholders → Detect and warn
+- Amendments/addendums → Classify as `amendment`, note parent context needed
+- Partial documents (signature page only) → Warn about incompleteness
+- Non-English → Still analyze, note language in response
+
+**AI Response Schema Addition:**
+```json
+{
+  "document_classification": {
+    "is_legal_document": true,
+    "document_type": "contract",
+    "confidence": 0.95,
+    "rejection_reason": null,
+    "warnings": []
+  },
+  // ... existing fields only if is_legal_document=true
+}
+```
+
+#### PII Redaction
+
+**Detection Patterns (High Confidence):**
+| Type | Pattern | Example |
+|------|---------|---------|
+| SSN | `\d{3}-\d{2}-\d{4}` | 123-45-6789 |
+| Credit Card | `\d{4}[\s-]?\d{4}[\s-]?\d{4}[\s-]?\d{4}` | 4111-1111-1111-1111 |
+| Email | Standard email regex | john@example.com |
+| Phone (US) | Multiple formats | (555) 123-4567 |
+| Bank Routing | 9 digits in context | 021000021 |
+
+**Redaction Format (Type-Preserving):**
+- `$150,000` → `[REDACTED_AMOUNT]` (AI knows there was a monetary value)
+- `john@example.com` → `[REDACTED_EMAIL]`
+- `123-45-6789` → `[REDACTED_SSN]`
+
+**Privacy Flow:**
+1. PDF uploaded → stored as-is (user's file)
+2. Text extracted → stored temporarily
+3. User reviews PII → selects redactions
+4. Redacted text → stored and sent to AI
+5. Original text → discarded (only PDF retained)
+
+**Database Schema:**
+```sql
+-- contracts table additions
+extracted_text TEXT NULL,
+redacted_text TEXT NULL,
+has_redactions BOOLEAN DEFAULT FALSE,
+redaction_metadata JSONB NULL
+
+-- contract_analyses table additions
+is_legal_document BOOLEAN DEFAULT TRUE,
+document_type VARCHAR(50) DEFAULT 'contract',
+document_type_confidence DECIMAL(3,2) NULL,
+rejection_reason TEXT NULL,
+classification_warnings JSONB NULL,
+analyzed_with_override BOOLEAN DEFAULT FALSE
+```
+
+---
+
 ## Current Sprint
 
 **Sprint:** Phase 3 - AI Analysis
@@ -297,6 +433,15 @@
 | Phase 2 | ✅ Complete | Contract upload, storage, CRUD, frontend UI with tests |
 | Phase 3 | ✅ Complete | AI Analysis backend complete, frontend UI complete |
 
+### Upcoming Phases
+
+| Phase | Status | Notes |
+|-------|--------|-------|
+| Phase 4 | 📋 Backlog | Reminders - email notifications for deadlines |
+| Phase 5 | 📋 Backlog | Dashboard & Polish - stats, UX improvements |
+| Phase 6 | 📋 Backlog | Deployment Preparation - production setup |
+| Phase 7 | 📋 Backlog | Document Intelligence - validation & PII redaction |
+
 ### Blocked
 
 | Task | Blocked By | Notes |
@@ -316,7 +461,8 @@
 | Phase 4 | 19 | 0 | 0 | 0 | 0 | 19 |
 | Phase 5 | 14 | 0 | 0 | 0 | 0 | 14 |
 | Phase 6 | 9 | 0 | 0 | 0 | 0 | 9 |
-| **Total** | **164** | **122** | **0** | **0** | **0** | **42** |
+| Phase 7 | 40 | 0 | 0 | 0 | 0 | 40 |
+| **Total** | **204** | **122** | **0** | **0** | **0** | **82** |
 
 ---
 
