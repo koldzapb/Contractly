@@ -49,6 +49,11 @@ class StoreReminderRequest extends FormRequest
                 'string',
                 'max:255',
             ],
+            'deadline_date' => [
+                'nullable',
+                'date',
+                'after_or_equal:today',
+            ],
         ];
     }
 

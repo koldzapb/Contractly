@@ -25,7 +25,14 @@ class ReminderService
         User $user,
         int $daysBefore,
         ?string $title = null,
+        ?string $deadlineDate = null,
     ): Reminder {
+        // If a deadline date is provided and the deadline doesn't have one, update it
+        if ($deadlineDate !== null && $deadline->deadline_date === null) {
+            $deadline->update(['deadline_date' => $deadlineDate]);
+            $deadline->refresh();
+        }
+
         // Load the contract through the analysis
         $deadline->loadMissing('analysis.contract');
 

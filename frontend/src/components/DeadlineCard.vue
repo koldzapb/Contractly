@@ -13,8 +13,9 @@ const emit = defineEmits<{
 }>()
 
 const canSetReminder = computed(() => {
-  // Can only set reminder for future deadlines with a date
-  return props.deadline.deadline_date && !props.deadline.is_past
+  // Can set reminder for any deadline that's not past
+  // If no date, the form will ask user to provide one
+  return !props.deadline.is_past
 })
 
 function handleSetReminder(): void {

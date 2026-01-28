@@ -19,14 +19,23 @@ const emit = defineEmits<{
 
 const daysBefore = ref(props.reminder?.days_before || 7)
 const title = ref(props.reminder?.title || '')
+const deadlineDate = ref(props.deadline?.deadline_date?.split('T')[0] || '')
 
 const isEditMode = computed(() => !!props.reminder)
+const needsDate = computed(() => !props.deadline?.deadline_date && !isEditMode.value)
 
 const daysOptions = [1, 3, 7, 14, 30, 60, 90]
 
+// Get minimum date (today)
+const minDate = computed(() => {
+  const today = new Date()
+  return today.toISOString().split('T')[0]
+})
+
 const formattedDeadlineDate = computed(() => {
-  if (!props.deadline?.deadline_date) return null
-  const date = new Date(props.deadline.deadline_date)
+  const dateStr = props.deadline?.deadline_date || deadlineDate.value
+  if (!dateStr) return null
+  const date = new Date(dateStr)
   return date.toLocaleDateString('en-US', {
     weekday: 'long',
     month: 'long',
@@ -36,15 +45,22 @@ const formattedDeadlineDate = computed(() => {
 })
 
 const estimatedRemindDate = computed(() => {
-  if (!props.deadline?.deadline_date) return null
-  const deadlineDate = new Date(props.deadline.deadline_date)
-  const remindDate = new Date(deadlineDate)
+  const dateStr = props.deadline?.deadline_date || deadlineDate.value
+  if (!dateStr) return null
+  const targetDate = new Date(dateStr)
+  const remindDate = new Date(targetDate)
   remindDate.setDate(remindDate.getDate() - daysBefore.value)
   return remindDate.toLocaleDateString('en-US', {
     weekday: 'short',
     month: 'short',
     day: 'numeric',
   })
+})
+
+const isFormValid = computed(() => {
+  if (daysBefore.value < 1 || daysBefore.value > 365) return false
+  if (needsDate.value && !deadlineDate.value) return false
+  return true
 })
 
 // Reset form when deadline changes
@@ -54,6 +70,7 @@ watch(
     if (!isEditMode.value) {
       daysBefore.value = 7
       title.value = ''
+      deadlineDate.value = props.deadline?.deadline_date?.split('T')[0] || ''
     }
   },
 )
@@ -76,6 +93,10 @@ function handleSubmit(): void {
     if (title.value) {
       data.title = title.value
     }
+    // Include deadline_date if user provided one
+    if (needsDate.value && deadlineDate.value) {
+      data.deadline_date = deadlineDate.value
+    }
     emit('submit', data)
   }
 }
@@ -93,8 +114,32 @@ function handleCancel(): void {
       <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">
         {{ deadline.deadline_type_label }}
       </p>
-      <p v-if="formattedDeadlineDate" class="text-sm text-gray-600 dark:text-gray-300 mt-2">
+      <p v-if="formattedDeadlineDate && !needsDate" class="text-sm text-gray-600 dark:text-gray-300 mt-2">
         Due: {{ formattedDeadlineDate }}
+      </p>
+      <p v-if="needsDate" class="text-sm text-amber-600 dark:text-amber-400 mt-2">
+        This deadline doesn't have a specific date. Please enter one below.
+      </p>
+    </div>
+
+    <!-- Deadline date input (when no date exists) -->
+    <div v-if="needsDate">
+      <label
+        for="deadline-date"
+        class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+      >
+        When is this deadline? <span class="text-red-500">*</span>
+      </label>
+      <input
+        id="deadline-date"
+        v-model="deadlineDate"
+        type="date"
+        :min="minDate"
+        class="input w-full"
+        required
+      />
+      <p v-if="formattedDeadlineDate" class="text-sm text-gray-600 dark:text-gray-400 mt-1">
+        {{ formattedDeadlineDate }}
       </p>
     </div>
 
@@ -175,7 +220,7 @@ function handleCancel(): void {
       <button
         type="submit"
         class="btn-primary"
-        :disabled="loading || daysBefore < 1 || daysBefore > 365"
+        :disabled="loading || !isFormValid"
       >
         <svg v-if="loading" class="animate-spin -ml-1 mr-2 h-4 w-4" fill="none" viewBox="0 0 24 24">
           <circle

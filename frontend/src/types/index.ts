@@ -138,6 +138,7 @@ export interface CreateReminderData {
   contract_deadline_id: string
   days_before: number
   title?: string
+  deadline_date?: string
 }
 
 export interface UpdateReminderData {

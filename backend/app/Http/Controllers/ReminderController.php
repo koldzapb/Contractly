@@ -46,6 +46,7 @@ class ReminderController extends Controller
             $request->user(),
             $request->validated('days_before'),
             $request->validated('title'),
+            $request->validated('deadline_date'),
         );
 
         $reminder->load(['contract', 'deadline']);

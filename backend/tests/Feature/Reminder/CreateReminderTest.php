@@ -146,4 +146,50 @@ describe('create reminder', function () {
 
         $response->assertStatus(401);
     });
+
+    it('accepts and saves deadline_date for deadlines without a date', function () {
+        // Create a deadline without a date
+        $deadlineWithoutDate = ContractDeadline::factory()
+            ->for($this->analysis, 'analysis')
+            ->create(['deadline_date' => null]);
+
+        $futureDate = now()->addDays(30)->format('Y-m-d');
+
+        $response = $this->actingAs($this->user)
+            ->postJson('/api/reminders', [
+                'contract_deadline_id' => $deadlineWithoutDate->id,
+                'days_before' => 7,
+                'deadline_date' => $futureDate,
+            ]);
+
+        $response->assertStatus(201);
+
+        // Check that the deadline was updated with the date
+        $deadlineWithoutDate->refresh();
+        expect($deadlineWithoutDate->deadline_date)->not->toBeNull();
+        expect($deadlineWithoutDate->deadline_date->toDateString())->toBe($futureDate);
+
+        // Check that remind_at is calculated correctly
+        $reminder = $this->user->reminders()->first();
+        $expectedRemindAt = now()->addDays(30)->subDays(7)->setTime(8, 0, 0);
+        expect($reminder->remind_at->toDateString())->toBe($expectedRemindAt->toDateString());
+    });
+
+    it('validates deadline_date must be today or in the future', function () {
+        $deadlineWithoutDate = ContractDeadline::factory()
+            ->for($this->analysis, 'analysis')
+            ->create(['deadline_date' => null]);
+
+        $pastDate = now()->subDays(5)->format('Y-m-d');
+
+        $response = $this->actingAs($this->user)
+            ->postJson('/api/reminders', [
+                'contract_deadline_id' => $deadlineWithoutDate->id,
+                'days_before' => 7,
+                'deadline_date' => $pastDate,
+            ]);
+
+        $response->assertStatus(422)
+            ->assertJsonValidationErrors(['deadline_date']);
+    });
 });
