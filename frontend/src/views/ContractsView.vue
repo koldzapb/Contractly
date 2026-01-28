@@ -1,18 +1,19 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
-import { RouterLink } from 'vue-router'
+import { RouterLink, useRouter } from 'vue-router'
 import { storeToRefs } from 'pinia'
+import { ArrowRightOnRectangleIcon } from '@heroicons/vue/24/outline'
 import ThemeToggle from '@/components/ThemeToggle.vue'
 import ContractUploader from '@/components/ContractUploader.vue'
 import ContractList from '@/components/ContractList.vue'
 import { useContractsStore } from '@/stores/contracts'
 import { useAuthStore } from '@/stores/auth'
 
+const router = useRouter()
 const contractsStore = useContractsStore()
 const authStore = useAuthStore()
 
 const { contracts, loading, error, pagination } = storeToRefs(contractsStore)
-const { user } = storeToRefs(authStore)
 
 const showDeleteConfirm = ref(false)
 const contractToDelete = ref<string | null>(null)
@@ -48,7 +49,12 @@ async function handlePageChange(page: number): Promise<void> {
 }
 
 async function handleLogout(): Promise<void> {
-  await authStore.logout()
+  try {
+    await authStore.logout()
+    await router.push({ name: 'login' })
+  } catch {
+    // Error handled by store
+  }
 }
 </script>
 
@@ -66,7 +72,11 @@ async function handleLogout(): Promise<void> {
             >
               Dashboard
             </RouterLink>
-            <RouterLink to="/contracts" class="text-indigo-600 dark:text-indigo-400 font-medium">
+            <RouterLink
+              to="/contracts"
+              class="text-gray-900 dark:text-white font-medium"
+              active-class="text-indigo-600 dark:text-indigo-400"
+            >
               Contracts
             </RouterLink>
             <RouterLink
@@ -79,10 +89,15 @@ async function handleLogout(): Promise<void> {
         </div>
         <div class="flex items-center gap-4">
           <ThemeToggle />
-          <span v-if="user" class="text-sm text-gray-600 dark:text-gray-300">
-            {{ user.name }}
-          </span>
-          <button type="button" class="btn-secondary text-sm" @click="handleLogout">Logout</button>
+          <span class="text-sm text-gray-600 dark:text-gray-300">{{ authStore.user?.name }}</span>
+          <button
+            type="button"
+            class="flex items-center gap-2 text-sm text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white"
+            @click="handleLogout"
+          >
+            <ArrowRightOnRectangleIcon class="h-5 w-5" />
+            <span class="hidden sm:inline">Logout</span>
+          </button>
         </div>
       </div>
     </header>

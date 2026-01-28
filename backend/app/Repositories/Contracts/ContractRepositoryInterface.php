@@ -92,4 +92,9 @@ interface ContractRepositoryInterface
      * Search contracts for a user by title or filename.
      */
     public function searchForUser(string $query, User|int $user): Collection;
+
+    /**
+     * Get recent contracts for a user.
+     */
+    public function getRecentForUser(User|int $user, int $limit = 5): Collection;
 }

@@ -8,6 +8,7 @@ use App\Http\Controllers\Auth\LogoutController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\ContractController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ReminderController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -37,6 +38,9 @@ Route::middleware('guest')->group(function () {
 // Authenticated routes
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', LogoutController::class);
+
+    // Dashboard
+    Route::get('/dashboard', DashboardController::class);
 
     Route::get('/user', function (Request $request) {
         $user = $request->user();

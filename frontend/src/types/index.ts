@@ -173,3 +173,40 @@ export interface ApiError {
   message: string
   errors?: Record<string, string[]>
 }
+
+// Dashboard types
+export interface DashboardStats {
+  total_contracts: number
+  pending_analysis: number
+  processing_analysis: number
+  completed_analysis: number
+  failed_analysis: number
+  high_risk_clauses: number
+  overdue_deadlines: number
+}
+
+export interface DashboardDeadline {
+  id: string
+  deadline_type: DeadlineType
+  deadline_type_label: string
+  title: string
+  deadline_date: string | null
+  days_until: number | null
+  urgency: DeadlineUrgency | null
+  is_past: boolean
+  contract: { id: string; title: string }
+}
+
+export interface DashboardContract {
+  id: string
+  title: string
+  status: ContractStatus
+  overall_risk_level: RiskLevel | null
+  created_at: string
+}
+
+export interface DashboardData {
+  stats: DashboardStats
+  upcoming_deadlines: DashboardDeadline[]
+  recent_contracts: DashboardContract[]
+}

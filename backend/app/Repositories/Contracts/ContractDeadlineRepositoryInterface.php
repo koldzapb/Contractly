@@ -77,4 +77,9 @@ interface ContractDeadlineRepositoryInterface
      * Delete a deadline.
      */
     public function delete(ContractDeadline $deadline): bool;
+
+    /**
+     * Count overdue deadlines for a user.
+     */
+    public function countOverdueForUser(User|int $user): int;
 }

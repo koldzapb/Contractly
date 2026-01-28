@@ -1,17 +1,18 @@
 <script setup lang="ts">
 import { onMounted, ref, computed } from 'vue'
-import { RouterLink } from 'vue-router'
+import { RouterLink, useRouter } from 'vue-router'
 import { storeToRefs } from 'pinia'
+import { ArrowRightOnRectangleIcon } from '@heroicons/vue/24/outline'
 import ThemeToggle from '@/components/ThemeToggle.vue'
 import ReminderList from '@/components/ReminderList.vue'
 import { useRemindersStore } from '@/stores/reminders'
 import { useAuthStore } from '@/stores/auth'
 
+const router = useRouter()
 const remindersStore = useRemindersStore()
 const authStore = useAuthStore()
 
 const { reminders, loading, error, pagination, statusFilter } = storeToRefs(remindersStore)
-const { user } = storeToRefs(authStore)
 
 const showDeleteConfirm = ref(false)
 const showCancelConfirm = ref(false)
@@ -85,7 +86,12 @@ async function handlePageChange(page: number): Promise<void> {
 }
 
 async function handleLogout(): Promise<void> {
-  await authStore.logout()
+  try {
+    await authStore.logout()
+    await router.push({ name: 'login' })
+  } catch {
+    // Error handled by store
+  }
 }
 </script>
 
@@ -109,17 +115,26 @@ async function handleLogout(): Promise<void> {
             >
               Contracts
             </RouterLink>
-            <RouterLink to="/reminders" class="text-indigo-600 dark:text-indigo-400 font-medium">
+            <RouterLink
+              to="/reminders"
+              class="text-gray-900 dark:text-white font-medium"
+              active-class="text-indigo-600 dark:text-indigo-400"
+            >
               Reminders
             </RouterLink>
           </nav>
         </div>
         <div class="flex items-center gap-4">
           <ThemeToggle />
-          <span v-if="user" class="text-sm text-gray-600 dark:text-gray-300">
-            {{ user.name }}
-          </span>
-          <button type="button" class="btn-secondary text-sm" @click="handleLogout">Logout</button>
+          <span class="text-sm text-gray-600 dark:text-gray-300">{{ authStore.user?.name }}</span>
+          <button
+            type="button"
+            class="flex items-center gap-2 text-sm text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white"
+            @click="handleLogout"
+          >
+            <ArrowRightOnRectangleIcon class="h-5 w-5" />
+            <span class="hidden sm:inline">Logout</span>
+          </button>
         </div>
       </div>
     </header>

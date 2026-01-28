@@ -69,4 +69,9 @@ interface ContractClauseRepositoryInterface
      * @return array<string, int>
      */
     public function countByRiskLevelForAnalysis(ContractAnalysis|string $analysis): array;
+
+    /**
+     * Count high-risk clauses across all contracts for a user.
+     */
+    public function countHighRiskClausesForUser(\App\Models\User|int $user): int;
 }

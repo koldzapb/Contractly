@@ -1,16 +1,28 @@
 <script setup lang="ts">
+import { onMounted } from 'vue'
 import { RouterLink, useRouter } from 'vue-router'
+import { storeToRefs } from 'pinia'
 import { useAuthStore } from '@/stores/auth'
-import {
-  ArrowRightOnRectangleIcon,
-  DocumentTextIcon,
-  ExclamationTriangleIcon,
-  ClockIcon,
-} from '@heroicons/vue/24/outline'
+import { useDashboardStore } from '@/stores/dashboard'
+import { ArrowRightOnRectangleIcon } from '@heroicons/vue/24/outline'
 import ThemeToggle from '@/components/ThemeToggle.vue'
+import StatsOverview from '@/components/StatsOverview.vue'
+import UpcomingDeadlines from '@/components/UpcomingDeadlines.vue'
+import RecentContracts from '@/components/RecentContracts.vue'
 
 const router = useRouter()
 const authStore = useAuthStore()
+const dashboardStore = useDashboardStore()
+
+const { stats, upcomingDeadlines, recentContracts, loading, error } = storeToRefs(dashboardStore)
+
+onMounted(async () => {
+  try {
+    await dashboardStore.fetchDashboard()
+  } catch {
+    // Error handled by store
+  }
+})
 
 async function handleLogout(): Promise<void> {
   try {
@@ -73,43 +85,51 @@ async function handleLogout(): Promise<void> {
         <p class="text-gray-600 dark:text-gray-400">Welcome back, {{ authStore.user?.name }}!</p>
       </div>
 
+      <!-- Error Message -->
+      <div
+        v-if="error"
+        class="mb-6 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg text-red-600 dark:text-red-400"
+      >
+        {{ error }}
+      </div>
+
       <!-- Stats Grid -->
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-        <div class="card flex items-center gap-4">
-          <div class="p-3 bg-indigo-100 dark:bg-indigo-900/50 rounded-lg">
-            <DocumentTextIcon class="h-6 w-6 text-indigo-600 dark:text-indigo-400" />
-          </div>
-          <div>
-            <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Total Contracts</p>
-            <p class="text-2xl font-bold text-gray-900 dark:text-white">0</p>
-          </div>
-        </div>
-        <div class="card flex items-center gap-4">
-          <div class="p-3 bg-yellow-100 dark:bg-yellow-900/50 rounded-lg">
-            <ClockIcon class="h-6 w-6 text-yellow-600 dark:text-yellow-400" />
-          </div>
-          <div>
-            <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Pending Analysis</p>
-            <p class="text-2xl font-bold text-yellow-600 dark:text-yellow-400">0</p>
-          </div>
-        </div>
-        <div class="card flex items-center gap-4">
-          <div class="p-3 bg-red-100 dark:bg-red-900/50 rounded-lg">
-            <ExclamationTriangleIcon class="h-6 w-6 text-red-600 dark:text-red-400" />
-          </div>
-          <div>
-            <p class="text-sm font-medium text-gray-500 dark:text-gray-400">High Risk Items</p>
-            <p class="text-2xl font-bold text-red-600 dark:text-red-400">0</p>
-          </div>
-        </div>
+      <div class="mb-8">
+        <StatsOverview :stats="stats" :loading="loading" />
+      </div>
+
+      <!-- Two Column Layout for Deadlines and Contracts -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+        <UpcomingDeadlines :deadlines="upcomingDeadlines" :loading="loading" />
+        <RecentContracts :contracts="recentContracts" :loading="loading" />
       </div>
 
       <!-- Quick Actions -->
       <div class="card">
         <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Quick Actions</h2>
-        <div class="flex flex-wrap gap-4">
-          <RouterLink to="/contracts" class="btn-primary"> Upload Contract </RouterLink>
-          <RouterLink to="/contracts" class="btn-secondary"> View All Contracts </RouterLink>
+        <div class="flex flex-wrap gap-3">
+          <RouterLink to="/contracts" class="btn-primary inline-flex items-center gap-2">
+            <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"
+              />
+            </svg>
+            Upload Contract
+          </RouterLink>
+          <RouterLink to="/reminders" class="btn-secondary inline-flex items-center gap-2">
+            <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
+              />
+            </svg>
+            Manage Reminders
+          </RouterLink>
         </div>
       </div>
     </main>

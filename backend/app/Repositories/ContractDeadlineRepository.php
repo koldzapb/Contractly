@@ -130,4 +130,15 @@ class ContractDeadlineRepository extends BaseRepository implements ContractDeadl
     {
         return (bool) $deadline->delete();
     }
+
+    public function countOverdueForUser(User|int $user): int
+    {
+        return $this->query()
+            ->whereHas('analysis.contract', function ($query) use ($user) {
+                $query->where('user_id', $this->resolveUserId($user));
+            })
+            ->whereNotNull('deadline_date')
+            ->where('deadline_date', '<', now())
+            ->count();
+    }
 }

@@ -127,4 +127,13 @@ class ContractRepository extends BaseRepository implements ContractRepositoryInt
             ->orderByDesc('created_at')
             ->get();
     }
+
+    public function getRecentForUser(User|int $user, int $limit = 5): Collection
+    {
+        return $this->query()
+            ->where('user_id', $this->resolveUserId($user))
+            ->orderByDesc('created_at')
+            ->limit($limit)
+            ->get();
+    }
 }

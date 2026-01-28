@@ -152,7 +152,7 @@ const daysText = computed(() => {
         <!-- Recurring badge -->
         <div
           v-if="deadline.is_recurring"
-          class="mt-2 inline-flex items-center gap-1 text-xs text-gray-500 dark:text-gray-400"
+          class="mt-3 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-gray-100 dark:bg-gray-700/50 text-xs text-gray-600 dark:text-gray-400"
         >
           <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path
@@ -169,7 +169,7 @@ const daysText = computed(() => {
         <button
           v-if="canSetReminder"
           type="button"
-          class="mt-3 inline-flex items-center gap-1.5 text-sm text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300 font-medium"
+          class="mt-4 inline-flex items-center gap-1.5 text-sm text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300 font-medium"
           @click="handleSetReminder"
         >
           <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">

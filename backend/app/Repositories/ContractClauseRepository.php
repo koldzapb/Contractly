@@ -96,4 +96,14 @@ class ContractClauseRepository extends BaseRepository implements ContractClauseR
             ->pluck('count', 'risk_level')
             ->toArray();
     }
+
+    public function countHighRiskClausesForUser(\App\Models\User|int $user): int
+    {
+        return $this->query()
+            ->whereHas('analysis.contract', function ($query) use ($user) {
+                $query->where('user_id', $this->resolveUserId($user));
+            })
+            ->where('risk_level', RiskLevel::HIGH)
+            ->count();
+    }
 }
