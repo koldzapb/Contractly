@@ -165,6 +165,8 @@ async function handleCreateReminder(data: CreateReminderData): Promise<void> {
     await remindersStore.createReminder(data)
     showReminderModal.value = false
     selectedDeadline.value = null
+    // Refresh contract to update deadline reminder status
+    await fetchContract()
   } catch (e: unknown) {
     const err = e as { response?: { data?: { message?: string } } }
     reminderError.value = err.response?.data?.message ?? 'Failed to create reminder'

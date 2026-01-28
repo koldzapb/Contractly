@@ -98,6 +98,7 @@ export interface ContractDeadline {
   days_until: number | null
   urgency: DeadlineUrgency | null
   is_past: boolean
+  has_reminder: boolean
 }
 
 // Reminder types

@@ -31,6 +31,7 @@ class ContractDeadlineResource extends JsonResource
             'days_until' => $this->days_until,
             'urgency' => $this->urgency,
             'is_past' => $this->isPast(),
+            'has_reminder' => $this->reminders()->exists(),
         ];
     }
 }

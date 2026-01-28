@@ -13,10 +13,12 @@ const emit = defineEmits<{
 }>()
 
 const canSetReminder = computed(() => {
-  // Can set reminder for any deadline that's not past
+  // Can set reminder for any deadline that's not past and doesn't already have one
   // If no date, the form will ask user to provide one
-  return !props.deadline.is_past
+  return !props.deadline.is_past && !props.deadline.has_reminder
 })
+
+const hasReminder = computed(() => props.deadline.has_reminder)
 
 function handleSetReminder(): void {
   emit('set-reminder', props.deadline)
@@ -165,9 +167,22 @@ const daysText = computed(() => {
           <span>{{ deadline.recurrence_pattern || 'Recurring' }}</span>
         </div>
 
+        <!-- Reminder status -->
+        <div v-if="hasReminder" class="mt-4 inline-flex items-center gap-1.5 text-sm text-green-600 dark:text-green-400 font-medium">
+          <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M5 13l4 4L19 7"
+            />
+          </svg>
+          Reminder Set
+        </div>
+
         <!-- Set Reminder button -->
         <button
-          v-if="canSetReminder"
+          v-else-if="canSetReminder"
           type="button"
           class="mt-4 inline-flex items-center gap-1.5 text-sm text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300 font-medium"
           @click="handleSetReminder"
