@@ -193,7 +193,7 @@
 | ✅ | Create DeadlineList component |
 | ✅ | Implement status polling |
 | ✅ | Display analysis results |
-| ⬜ | Write analysis component tests |
+| ✅ | Write analysis component tests |
 
 ---
 
@@ -286,7 +286,7 @@
 | ✅ | Create Events | ContractAnalysisCompleted, ContractAnalysisFailed |
 | ✅ | Add retry endpoint | POST /api/contracts/{id}/retry |
 | ✅ | Write service tests | PDF, AI, Analysis service tests |
-| ⬜ | Write frontend analysis component tests | Remaining task |
+| ✅ | Write frontend analysis component tests | 7 test files, 97 tests |
 
 ### Completed Phases
 
@@ -312,11 +312,11 @@
 | Phase 0 | 32 | 32 | 0 | 0 | 0 | 0 |
 | Phase 1 | 23 | 23 | 0 | 0 | 0 | 0 |
 | Phase 2 | 37 | 37 | 0 | 0 | 0 | 0 |
-| Phase 3 | 30 | 29 | 0 | 0 | 1 | 0 |
+| Phase 3 | 30 | 30 | 0 | 0 | 0 | 0 |
 | Phase 4 | 19 | 0 | 0 | 0 | 0 | 19 |
 | Phase 5 | 14 | 0 | 0 | 0 | 0 | 14 |
 | Phase 6 | 9 | 0 | 0 | 0 | 0 | 9 |
-| **Total** | **164** | **121** | **0** | **0** | **1** | **42** |
+| **Total** | **164** | **122** | **0** | **0** | **0** | **42** |
 
 ---
 
