@@ -233,24 +233,30 @@
 ### Backend
 | Status | Task |
 |--------|------|
-| 📋 | Create DashboardController |
-| 📋 | Implement statistics endpoint |
-| 📋 | Implement upcoming deadlines endpoint |
-| 📋 | Optimize queries (eager loading) |
+| ✅ | Create DashboardController |
+| ✅ | Create DashboardService |
+| ✅ | Create DashboardResource |
+| ✅ | Implement statistics endpoint |
+| ✅ | Implement upcoming deadlines endpoint |
+| ✅ | Add repository methods for dashboard data |
+| ✅ | Write dashboard feature tests |
 | 📋 | Add API rate limiting |
 | 📋 | Security audit |
 
 ### Frontend
 | Status | Task |
 |--------|------|
-| 📋 | Create DashboardView |
-| 📋 | Create StatsOverview component |
-| 📋 | Create UpcomingDeadlines component |
-| 📋 | Create RecentContracts component |
+| ✅ | Create DashboardView with real data |
+| ✅ | Create StatsOverview component |
+| ✅ | Create UpcomingDeadlines component |
+| ✅ | Create RecentContracts component |
+| ✅ | Create dashboard store |
+| ✅ | Write dashboard store tests |
+| ✅ | Unify header styling across views |
 | 📋 | Responsive design review |
 | 📋 | Accessibility audit (WCAG 2.1 AA) |
 | 📋 | Performance optimization |
-| 📋 | Write E2E tests |
+| 📋 | Write E2E tests
 
 ---
 
@@ -406,31 +412,296 @@ analyzed_with_override BOOLEAN DEFAULT FALSE
 
 ---
 
+## Phase 8: AI Contract Chat
+
+> **Goal:** Enable users to have contextual conversations about their specific contracts. The AI assistant answers questions ONLY about the uploaded contract and related legal concepts—nothing else.
+
+### Phase 8A: Backend - Data Layer
+| Status | Task |
+|--------|------|
+| ⬜ | Create `chat_messages` migration |
+| ⬜ | Create `ChatMessage` model with contract relationship |
+| ⬜ | Create `ChatMessageRepositoryInterface` |
+| ⬜ | Create `ChatMessageRepository` implementation |
+| ⬜ | Register repository in `RepositoryServiceProvider` |
+
+### Phase 8B: Backend - Service Layer
+| Status | Task |
+|--------|------|
+| ⬜ | Create `ContractChatService` |
+| ⬜ | Build system prompt with contract context injection |
+| ⬜ | Implement conversation history management |
+| ⬜ | Add topic guardrails (contract-only + legal context) |
+| ⬜ | Handle off-topic question detection and rejection |
+| ⬜ | Implement token limit management for long contracts |
+| ⬜ | Add response streaming support (optional) |
+
+### Phase 8C: Backend - API Layer
+| Status | Task |
+|--------|------|
+| ⬜ | Create `ContractChatController` |
+| ⬜ | Create `POST /contracts/{id}/chat` endpoint |
+| ⬜ | Create `GET /contracts/{id}/chat` endpoint (history) |
+| ⬜ | Create `DELETE /contracts/{id}/chat` endpoint (clear) |
+| ⬜ | Create `SendMessageRequest` validator |
+| ⬜ | Create `ChatMessageResource` |
+| ⬜ | Add routes to `api.php` |
+
+### Phase 8D: Backend - Tests
+| Status | Task |
+|--------|------|
+| ⬜ | Write chat message repository tests |
+| ⬜ | Write contract chat service tests (mocked AI) |
+| ⬜ | Write guardrail tests (off-topic rejection) |
+| ⬜ | Write controller integration tests |
+| ⬜ | Write conversation context tests |
+
+### Phase 8E: Frontend - Types & Service
+| Status | Task |
+|--------|------|
+| ⬜ | Add `ChatMessage` TypeScript interface |
+| ⬜ | Add `SendMessageData` interface |
+| ⬜ | Create `chat.ts` API service |
+| ⬜ | Create `useContractChat` composable |
+
+### Phase 8F: Frontend - Components
+| Status | Task |
+|--------|------|
+| ⬜ | Create `ContractChat` container component |
+| ⬜ | Create `ChatMessage` component (user/assistant bubbles) |
+| ⬜ | Create `ChatInput` component with send button |
+| ⬜ | Create `ChatHistory` component (scrollable list) |
+| ⬜ | Create `ChatTypingIndicator` component |
+| ⬜ | Create `ChatEmptyState` component (suggested questions) |
+| ⬜ | Create `ChatErrorMessage` component |
+| ⬜ | Create `ChatDisclaimer` component (legal notice) |
+
+### Phase 8G: Frontend - Integration
+| Status | Task |
+|--------|------|
+| ⬜ | Add chat panel/drawer to `ContractDetailView` |
+| ⬜ | Implement chat toggle button |
+| ⬜ | Handle loading states |
+| ⬜ | Implement auto-scroll on new messages |
+| ⬜ | Add keyboard shortcuts (Enter to send) |
+| ⬜ | Persist chat open/closed state |
+
+### Phase 8H: Frontend - Tests
+| Status | Task |
+|--------|------|
+| ⬜ | Write chat composable tests |
+| ⬜ | Write ChatMessage component tests |
+| ⬜ | Write ChatInput component tests |
+| ⬜ | Write ContractChat integration tests |
+
+---
+
+### Phase 8 Design Decisions
+
+#### User Experience Flow
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│  Contract Detail View                                        │
+├─────────────────────────────────────────────────────────────┤
+│                                                              │
+│  ┌──────────────────────┐  ┌─────────────────────────────┐  │
+│  │  Analysis Summary    │  │  💬 Ask about this contract │  │
+│  │  Clauses List        │  ├─────────────────────────────┤  │
+│  │  Deadlines List      │  │  ┌─────────────────────────┐│  │
+│  │                      │  │  │ What are my termination ││  │
+│  │                      │  │  │ options?                ││  │
+│  │                      │  │  └─────────────────────────┘│  │
+│  │                      │  │  ┌─────────────────────────┐│  │
+│  │                      │  │  │ Based on Section 5.2... ││  │
+│  │                      │  │  └─────────────────────────┘│  │
+│  │                      │  │                             │  │
+│  │                      │  │  [Type your question...]    │  │
+│  └──────────────────────┘  └─────────────────────────────┘  │
+└─────────────────────────────────────────────────────────────┘
+```
+
+#### Allowed Topics (Guardrails)
+
+| Category | Examples | Allowed |
+|----------|----------|---------|
+| **Contract-Specific** | "What's the payment schedule?", "When can I terminate?" | ✅ Yes |
+| **Clause Explanation** | "Explain the indemnification clause", "What does section 3 mean?" | ✅ Yes |
+| **Legal Context** | "Is this liability cap standard?", "What's typical for NDAs?" | ✅ Yes |
+| **Risk Assessment** | "What are the biggest risks here?", "Should I be concerned about X?" | ✅ Yes |
+| **Comparison** | "How does this compare to standard contracts?" | ✅ Yes |
+| **Off-Topic** | "What's the weather?", "Write me a poem", "Help with my code" | ❌ Rejected |
+| **Other Contracts** | "What about my other contract?" | ❌ Rejected |
+| **Legal Advice** | "Should I sign this?" | ⚠️ Disclaimer + factual response |
+
+#### Off-Topic Response
+
+When user asks something unrelated:
+```
+"I can only help with questions about this specific contract or related
+legal concepts. Here are some things I can help with:
+
+• Explain specific clauses or terms
+• Identify potential risks or concerns
+• Clarify your rights and obligations
+• Compare terms to industry standards
+
+What would you like to know about your contract?"
+```
+
+#### System Prompt Structure
+
+```
+You are a contract analysis assistant for Contractly. Your role is to help
+users understand their specific contract.
+
+STRICT RULES:
+1. ONLY answer questions about the contract provided below
+2. ONLY answer questions about legal concepts relevant to this contract
+3. NEVER provide legal advice - you explain, you don't advise
+4. NEVER discuss topics unrelated to contracts or law
+5. If asked about anything else, politely redirect to contract topics
+6. Always cite specific sections when referencing the contract
+7. Include the disclaimer when discussing risk or recommendations
+
+DISCLAIMER (include when giving opinions):
+"This is informational only, not legal advice. Consult a lawyer for
+decisions about this contract."
+
+CONTRACT TITLE: {title}
+CONTRACT ANALYSIS:
+- Overall Risk: {risk_level}
+- Key Findings: {key_findings}
+
+EXTRACTED CLAUSES:
+{clauses_formatted}
+
+EXTRACTED DEADLINES:
+{deadlines_formatted}
+
+FULL CONTRACT TEXT:
+{contract_text}
+
+---
+Conversation History:
+{history}
+
+User: {question}
+```
+
+#### Database Schema
+
+```sql
+CREATE TABLE chat_messages (
+    id UUID PRIMARY KEY,
+    contract_id UUID NOT NULL REFERENCES contracts(id) ON DELETE CASCADE,
+    user_id BIGINT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    role VARCHAR(20) NOT NULL, -- 'user' or 'assistant'
+    content TEXT NOT NULL,
+    tokens_used INTEGER NULL, -- for assistant messages
+    is_off_topic BOOLEAN DEFAULT FALSE, -- track rejected questions
+    created_at TIMESTAMP,
+    updated_at TIMESTAMP,
+
+    INDEX idx_chat_contract_user (contract_id, user_id),
+    INDEX idx_chat_created (created_at)
+);
+```
+
+#### API Design
+
+**Send Message:**
+```
+POST /api/contracts/{id}/chat
+{
+    "message": "What are my termination options?"
+}
+
+Response 200:
+{
+    "data": {
+        "id": "uuid",
+        "role": "assistant",
+        "content": "Based on Section 5.2 of your contract...",
+        "created_at": "2024-01-28T12:00:00Z"
+    }
+}
+
+Response 422 (validation):
+{
+    "message": "Message is required",
+    "errors": { "message": ["The message field is required."] }
+}
+```
+
+**Get History:**
+```
+GET /api/contracts/{id}/chat
+
+Response 200:
+{
+    "data": [
+        {
+            "id": "uuid",
+            "role": "user",
+            "content": "What are my termination options?",
+            "created_at": "2024-01-28T12:00:00Z"
+        },
+        {
+            "id": "uuid",
+            "role": "assistant",
+            "content": "Based on Section 5.2...",
+            "created_at": "2024-01-28T12:00:05Z"
+        }
+    ]
+}
+```
+
+**Clear History:**
+```
+DELETE /api/contracts/{id}/chat
+
+Response 200:
+{
+    "message": "Chat history cleared."
+}
+```
+
+#### Suggested First Questions
+
+Display when chat is empty to guide users:
+- "What are the key obligations I need to fulfill?"
+- "What happens if I want to terminate early?"
+- "Are there any automatic renewal clauses?"
+- "What are the payment terms?"
+- "What are the highest risk clauses?"
+
+#### Token Management
+
+For long contracts that exceed context limits:
+1. Always include: analysis summary, clauses, deadlines
+2. Include relevant contract sections based on question
+3. Truncate full text if needed, prioritizing beginning/end
+4. Track token usage per message for monitoring
+
+---
+
 ## Current Sprint
 
-**Sprint:** Phase 4 - Reminders (COMPLETE)
-**Goal:** Implement email reminder system for contract deadlines
+**Sprint:** Phase 8 - AI Contract Chat
+**Goal:** Enable contextual AI conversations about specific contracts
 
 ### Active Tasks
 
 | Status | Task | Notes |
 |--------|------|-------|
-| ✅ | Create ReminderController | Full CRUD + cancel endpoint |
-| ✅ | Create ReminderService | Calculate remind_at, validate deadlines |
-| ✅ | Create Request Validators | StoreReminderRequest, UpdateReminderRequest |
-| ✅ | Create ReminderResource | JSON transformation with relationships |
-| ✅ | Create SendReminderJob | Queued job for email delivery |
-| ✅ | Create ReminderDueMail | Email mailable with blade template |
-| ✅ | Create ProcessDueRemindersCommand | Daily scheduler command |
-| ✅ | Write backend tests | 7 test files covering all functionality |
-| ✅ | Create reminders API service | Frontend API methods |
-| ✅ | Create reminders store | Pinia store with full state management |
-| ✅ | Create ReminderCard component | Display with cancel/delete actions |
-| ✅ | Create ReminderList component | Paginated list with empty state |
-| ✅ | Create ReminderForm component | Create/edit with day selection |
-| ✅ | Create RemindersView | Main page with filter tabs |
-| ✅ | Integrate with DeadlineCard | "Set Reminder" button on deadlines |
-| ✅ | Write frontend tests | Store tests + component tests |
+| ⬜ | Create chat_messages migration | UUID primary key, contract relationship |
+| ⬜ | Create ChatMessage model | With contract/user relationships |
+| ⬜ | Create ContractChatService | Core chat logic with guardrails |
+| ⬜ | Create ContractChatController | REST API endpoints |
+| ⬜ | Create frontend chat components | Message bubbles, input, history |
+| ⬜ | Integrate chat into ContractDetailView | Slide-out panel |
+| ⬜ | Write comprehensive tests | Backend + frontend |
 
 ### Completed Phases
 
@@ -441,14 +712,15 @@ analyzed_with_override BOOLEAN DEFAULT FALSE
 | Phase 2 | ✅ Complete | Contract upload, storage, CRUD, frontend UI with tests |
 | Phase 3 | ✅ Complete | AI Analysis backend complete, frontend UI complete |
 | Phase 4 | ✅ Complete | Reminders - email notifications for deadlines |
+| Phase 5 | ✅ Complete | Dashboard with real-time stats, UI polish |
 
 ### Upcoming Phases
 
 | Phase | Status | Notes |
 |-------|--------|-------|
-| Phase 5 | 📋 Backlog | Dashboard & Polish - stats, UX improvements |
-| Phase 6 | 📋 Backlog | Deployment Preparation - production setup |
+| Phase 8 | ⬜ TODO | AI Contract Chat - contextual Q&A (CURRENT) |
 | Phase 7 | 📋 Backlog | Document Intelligence - validation & PII redaction |
+| Phase 6 | 📋 Backlog | Deployment Preparation - production setup (lowest priority) |
 
 ### Blocked
 
@@ -467,10 +739,11 @@ analyzed_with_override BOOLEAN DEFAULT FALSE
 | Phase 2 | 37 | 37 | 0 | 0 | 0 | 0 |
 | Phase 3 | 30 | 30 | 0 | 0 | 0 | 0 |
 | Phase 4 | 19 | 19 | 0 | 0 | 0 | 0 |
-| Phase 5 | 14 | 0 | 0 | 0 | 0 | 14 |
+| Phase 5 | 18 | 13 | 0 | 0 | 0 | 5 |
 | Phase 6 | 9 | 0 | 0 | 0 | 0 | 9 |
 | Phase 7 | 40 | 0 | 0 | 0 | 0 | 40 |
-| **Total** | **204** | **141** | **0** | **0** | **0** | **63** |
+| Phase 8 | 37 | 0 | 0 | 0 | 37 | 0 |
+| **Total** | **245** | **154** | **0** | **0** | **37** | **54** |
 
 ---
 

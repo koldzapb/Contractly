@@ -7,6 +7,7 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\LogoutController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\ResetPasswordController;
+use App\Http\Controllers\ContractChatController;
 use App\Http\Controllers\ContractController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ReminderController;
@@ -63,6 +64,11 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::delete('/{id}', [ContractController::class, 'destroy']);
         Route::get('/{id}/status', [ContractController::class, 'status']);
         Route::post('/{id}/retry', [ContractController::class, 'retryAnalysis']);
+
+        // Contract Chat
+        Route::get('/{id}/chat', [ContractChatController::class, 'index']);
+        Route::post('/{id}/chat', [ContractChatController::class, 'store']);
+        Route::delete('/{id}/chat', [ContractChatController::class, 'destroy']);
     });
 
     // Reminders

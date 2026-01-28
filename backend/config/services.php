@@ -53,6 +53,7 @@ return [
         'base_url' => env('ANTHROPIC_BASE_URL', 'https://api.anthropic.com'),
         'api_version' => env('ANTHROPIC_API_VERSION', '2023-06-01'),
         'max_tokens' => env('ANTHROPIC_MAX_TOKENS', 4096),
+        'chat_max_tokens' => env('ANTHROPIC_CHAT_MAX_TOKENS', 2048),
         'timeout' => env('ANTHROPIC_TIMEOUT', 120),
     ],
 

@@ -12,6 +12,7 @@ import AnalysisSummary from '@/components/AnalysisSummary.vue'
 import ClauseList from '@/components/ClauseList.vue'
 import DeadlineList from '@/components/DeadlineList.vue'
 import ReminderForm from '@/components/ReminderForm.vue'
+import { ContractChat } from '@/components/chat'
 import type { ContractDeadline, CreateReminderData } from '@/types'
 
 const route = useRoute()
@@ -31,6 +32,13 @@ const showReminderModal = ref(false)
 const selectedDeadline = ref<ContractDeadline | null>(null)
 const creatingReminder = ref(false)
 const reminderError = ref<string | null>(null)
+
+// Chat panel state
+const showChatPanel = ref(false)
+
+function toggleChatPanel(): void {
+  showChatPanel.value = !showChatPanel.value
+}
 
 const isAnalyzing = computed(() => {
   return (
@@ -337,6 +345,23 @@ onUnmounted(() => {
             <!-- Actions -->
             <div class="flex items-center gap-2 flex-shrink-0 ml-4">
               <button
+                v-if="isCompleted"
+                type="button"
+                class="btn-secondary text-sm flex items-center gap-2"
+                :class="{ 'bg-indigo-100 dark:bg-indigo-900/30': showChatPanel }"
+                @click="toggleChatPanel"
+              >
+                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
+                  />
+                </svg>
+                {{ showChatPanel ? 'Hide Chat' : 'Ask AI' }}
+              </button>
+              <button
                 type="button"
                 class="btn-secondary text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20"
                 @click="handleDelete"
@@ -358,18 +383,44 @@ onUnmounted(() => {
 
         <!-- Analysis Results (for completed) -->
         <template v-if="isCompleted && currentContract.analysis">
-          <!-- Summary -->
-          <AnalysisSummary :analysis="currentContract.analysis" class="mb-6" />
+          <div class="flex gap-6">
+            <!-- Main content area -->
+            <div :class="[showChatPanel ? 'flex-1 min-w-0' : 'w-full']">
+              <!-- Summary -->
+              <AnalysisSummary :analysis="currentContract.analysis" class="mb-6" />
 
-          <!-- Two Column Layout for Clauses and Deadlines -->
-          <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <!-- Clauses -->
-            <ClauseList :clauses="currentContract.analysis.clauses || []" />
+              <!-- Two Column Layout for Clauses and Deadlines -->
+              <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <!-- Clauses -->
+                <ClauseList :clauses="currentContract.analysis.clauses || []" />
 
-            <!-- Deadlines -->
-            <DeadlineList
-              :deadlines="currentContract.analysis.deadlines || []"
-              @set-reminder="handleSetReminder"
+                <!-- Deadlines -->
+                <DeadlineList
+                  :deadlines="currentContract.analysis.deadlines || []"
+                  @set-reminder="handleSetReminder"
+                />
+              </div>
+            </div>
+
+            <!-- Chat Panel -->
+            <div
+              v-if="showChatPanel"
+              class="w-96 flex-shrink-0 hidden lg:block"
+            >
+              <div class="sticky top-4 h-[calc(100vh-8rem)]">
+                <ContractChat
+                  :contract-id="contractId"
+                  :contract-completed="isCompleted"
+                />
+              </div>
+            </div>
+          </div>
+
+          <!-- Mobile Chat Panel (full width below content) -->
+          <div v-if="showChatPanel" class="mt-6 lg:hidden h-[500px]">
+            <ContractChat
+              :contract-id="contractId"
+              :contract-completed="isCompleted"
             />
           </div>
         </template>

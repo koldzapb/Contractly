@@ -113,6 +113,14 @@ class Contract extends Model
     }
 
     /**
+     * Chat messages for this contract.
+     */
+    public function chatMessages(): HasMany
+    {
+        return $this->hasMany(ChatMessage::class);
+    }
+
+    /**
      * Check if the contract is still being processed.
      */
     public function isProcessing(): bool

@@ -211,3 +211,27 @@ export interface DashboardData {
   upcoming_deadlines: DashboardDeadline[]
   recent_contracts: DashboardContract[]
 }
+
+// Chat types
+export type ChatRole = 'user' | 'assistant'
+
+export interface ChatMessage {
+  id: string
+  role: ChatRole
+  role_label: string
+  content: string
+  tokens_used: number | null
+  is_off_topic: boolean
+  is_user_message: boolean
+  is_assistant_message: boolean
+  created_at: string
+}
+
+export interface SendMessageData {
+  message: string
+}
+
+export interface ClearChatResponse {
+  message: string
+  messages_deleted: number
+}

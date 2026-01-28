@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace App\Providers;
 
+use App\Repositories\ChatMessageRepository;
 use App\Repositories\ContractAnalysisRepository;
 use App\Repositories\ContractClauseRepository;
 use App\Repositories\ContractDeadlineRepository;
 use App\Repositories\ContractRepository;
+use App\Repositories\Contracts\ChatMessageRepositoryInterface;
 use App\Repositories\Contracts\ContractAnalysisRepositoryInterface;
 use App\Repositories\Contracts\ContractClauseRepositoryInterface;
 use App\Repositories\Contracts\ContractDeadlineRepositoryInterface;
@@ -24,6 +26,7 @@ class RepositoryServiceProvider extends ServiceProvider
      * @var array<class-string, class-string>
      */
     public array $bindings = [
+        ChatMessageRepositoryInterface::class => ChatMessageRepository::class,
         ContractRepositoryInterface::class => ContractRepository::class,
         ContractAnalysisRepositoryInterface::class => ContractAnalysisRepository::class,
         ContractClauseRepositoryInterface::class => ContractClauseRepository::class,
