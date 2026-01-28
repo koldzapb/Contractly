@@ -4,6 +4,7 @@ import { RouterLink, useRouter } from 'vue-router'
 import { storeToRefs } from 'pinia'
 import { ArrowRightOnRectangleIcon } from '@heroicons/vue/24/outline'
 import ThemeToggle from '@/components/ThemeToggle.vue'
+import MobileNav from '@/components/MobileNav.vue'
 import ContractUploader from '@/components/ContractUploader.vue'
 import ContractList from '@/components/ContractList.vue'
 import { useContractsStore } from '@/stores/contracts'
@@ -60,12 +61,23 @@ async function handleLogout(): Promise<void> {
 
 <template>
   <div class="min-h-screen bg-gray-50 dark:bg-gray-900">
+    <!-- Skip Link for Accessibility -->
+    <a
+      href="#main-content"
+      class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-indigo-600 focus:text-white focus:rounded-lg focus:outline-none"
+    >
+      Skip to main content
+    </a>
+
     <!-- Header -->
     <header class="bg-white dark:bg-gray-800 shadow-sm">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-        <div class="flex items-center gap-8">
+      <div
+        class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-14 sm:h-16 flex items-center justify-between"
+      >
+        <div class="flex items-center gap-4 md:gap-8">
+          <MobileNav />
           <span class="text-xl font-bold text-indigo-600 dark:text-indigo-400">Contractly</span>
-          <nav class="hidden md:flex items-center space-x-6">
+          <nav class="hidden md:flex items-center space-x-6" aria-label="Main navigation">
             <RouterLink
               to="/dashboard"
               class="text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white"
@@ -76,6 +88,7 @@ async function handleLogout(): Promise<void> {
               to="/contracts"
               class="text-gray-900 dark:text-white font-medium"
               active-class="text-indigo-600 dark:text-indigo-400"
+              aria-current="page"
             >
               Contracts
             </RouterLink>
@@ -87,15 +100,18 @@ async function handleLogout(): Promise<void> {
             </RouterLink>
           </nav>
         </div>
-        <div class="flex items-center gap-4">
+        <div class="flex items-center gap-2 sm:gap-4">
           <ThemeToggle />
-          <span class="text-sm text-gray-600 dark:text-gray-300">{{ authStore.user?.name }}</span>
+          <span class="hidden sm:inline text-sm text-gray-600 dark:text-gray-300">{{
+            authStore.user?.name
+          }}</span>
           <button
             type="button"
-            class="flex items-center gap-2 text-sm text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white"
+            class="flex items-center gap-2 text-sm text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            aria-label="Logout"
             @click="handleLogout"
           >
-            <ArrowRightOnRectangleIcon class="h-5 w-5" />
+            <ArrowRightOnRectangleIcon class="h-5 w-5" aria-hidden="true" />
             <span class="hidden sm:inline">Logout</span>
           </button>
         </div>
@@ -103,7 +119,7 @@ async function handleLogout(): Promise<void> {
     </header>
 
     <!-- Main Content -->
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <main id="main-content" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <div class="mb-8">
         <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Contracts</h1>
         <p class="text-gray-600 dark:text-gray-400">Upload and manage your contracts.</p>
@@ -112,6 +128,7 @@ async function handleLogout(): Promise<void> {
       <!-- Error Banner -->
       <div
         v-if="error"
+        role="alert"
         class="mb-6 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg"
       >
         <div class="flex items-center">
@@ -120,6 +137,7 @@ async function handleLogout(): Promise<void> {
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
+            aria-hidden="true"
           >
             <path
               stroke-linecap="round"
@@ -131,10 +149,17 @@ async function handleLogout(): Promise<void> {
           <p class="text-sm text-red-600 dark:text-red-400">{{ error }}</p>
           <button
             type="button"
-            class="ml-auto text-red-400 hover:text-red-500"
+            class="ml-auto text-red-400 hover:text-red-500 p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500"
+            aria-label="Dismiss error"
             @click="contractsStore.clearError"
           >
-            <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <svg
+              class="h-5 w-5"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              aria-hidden="true"
+            >
               <path
                 stroke-linecap="round"
                 stroke-linejoin="round"
@@ -196,6 +221,7 @@ async function handleLogout(): Promise<void> {
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
+                  aria-hidden="true"
                 >
                   <path
                     stroke-linecap="round"

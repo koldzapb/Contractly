@@ -53,9 +53,13 @@ function scrollToBottom(): void {
 }
 
 // Watch for new messages and scroll
-watch(messages, () => {
-  scrollToBottom()
-}, { deep: true })
+watch(
+  messages,
+  () => {
+    scrollToBottom()
+  },
+  { deep: true },
+)
 
 onMounted(async () => {
   if (props.contractCompleted) {
@@ -66,9 +70,13 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="flex flex-col h-full bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
+  <div
+    class="flex flex-col h-full bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden"
+  >
     <!-- Header -->
-    <div class="flex items-center justify-between px-4 py-3 border-b border-gray-200 dark:border-gray-700">
+    <div
+      class="flex items-center justify-between px-4 py-3 border-b border-gray-200 dark:border-gray-700"
+    >
       <div class="flex items-center gap-2">
         <svg
           class="h-5 w-5 text-indigo-600 dark:text-indigo-400"
@@ -83,9 +91,7 @@ onMounted(async () => {
             d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
           />
         </svg>
-        <h3 class="font-medium text-gray-900 dark:text-white">
-          Ask about this contract
-        </h3>
+        <h3 class="font-medium text-gray-900 dark:text-white">Ask about this contract</h3>
       </div>
       <button
         v-if="hasMessages"
@@ -98,12 +104,11 @@ onMounted(async () => {
     </div>
 
     <!-- Not completed notice -->
-    <div
-      v-if="!contractCompleted"
-      class="flex-1 flex items-center justify-center p-8"
-    >
+    <div v-if="!contractCompleted" class="flex-1 flex items-center justify-center p-8">
       <div class="text-center">
-        <div class="w-16 h-16 rounded-full bg-gray-100 dark:bg-gray-700 flex items-center justify-center mx-auto mb-4">
+        <div
+          class="w-16 h-16 rounded-full bg-gray-100 dark:bg-gray-700 flex items-center justify-center mx-auto mb-4"
+        >
           <svg
             class="h-8 w-8 text-gray-400 dark:text-gray-500"
             fill="none"
@@ -118,9 +123,7 @@ onMounted(async () => {
             />
           </svg>
         </div>
-        <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-2">
-          Analysis in progress
-        </h3>
+        <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-2">Analysis in progress</h3>
         <p class="text-sm text-gray-500 dark:text-gray-400">
           Chat will be available once the contract analysis is complete.
         </p>
@@ -130,10 +133,7 @@ onMounted(async () => {
     <!-- Chat content -->
     <template v-else>
       <!-- Messages area -->
-      <div
-        ref="messagesContainer"
-        class="flex-1 overflow-y-auto p-4 space-y-4"
-      >
+      <div ref="messagesContainer" class="flex-1 overflow-y-auto p-4 space-y-4">
         <!-- Loading state -->
         <div v-if="loading && !hasMessages" class="flex items-center justify-center py-8">
           <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600" />
@@ -147,11 +147,7 @@ onMounted(async () => {
 
         <!-- Messages -->
         <template v-else>
-          <ChatMessage
-            v-for="message in messages"
-            :key="message.id"
-            :message="message"
-          />
+          <ChatMessage v-for="message in messages" :key="message.id" :message="message" />
 
           <!-- Typing indicator -->
           <ChatTypingIndicator v-if="sending" />
@@ -173,7 +169,12 @@ onMounted(async () => {
             @click="clearError"
           >
             <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M6 18L18 6M6 6l12 12"
+              />
             </svg>
           </button>
         </div>

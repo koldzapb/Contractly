@@ -168,7 +168,10 @@ const daysText = computed(() => {
         </div>
 
         <!-- Reminder status -->
-        <div v-if="hasReminder" class="mt-4 inline-flex items-center gap-1.5 text-sm text-green-600 dark:text-green-400 font-medium">
+        <div
+          v-if="hasReminder"
+          class="mt-4 inline-flex items-center gap-1.5 text-sm text-green-600 dark:text-green-400 font-medium"
+        >
           <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path
               stroke-linecap="round"

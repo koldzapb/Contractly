@@ -240,8 +240,8 @@
 | ✅ | Implement upcoming deadlines endpoint |
 | ✅ | Add repository methods for dashboard data |
 | ✅ | Write dashboard feature tests |
-| 📋 | Add API rate limiting |
-| 📋 | Security audit |
+| ✅ | Add API rate limiting |
+| ✅ | Security audit |
 
 ### Frontend
 | Status | Task |
@@ -253,8 +253,8 @@
 | ✅ | Create dashboard store |
 | ✅ | Write dashboard store tests |
 | ✅ | Unify header styling across views |
-| 📋 | Responsive design review |
-| 📋 | Accessibility audit (WCAG 2.1 AA) |
+| ✅ | Responsive design review |
+| ✅ | Accessibility audit (WCAG 2.1 AA) |
 | 📋 | Performance optimization |
 | 📋 | Write E2E tests
 
@@ -419,80 +419,80 @@ analyzed_with_override BOOLEAN DEFAULT FALSE
 ### Phase 8A: Backend - Data Layer
 | Status | Task |
 |--------|------|
-| ⬜ | Create `chat_messages` migration |
-| ⬜ | Create `ChatMessage` model with contract relationship |
-| ⬜ | Create `ChatMessageRepositoryInterface` |
-| ⬜ | Create `ChatMessageRepository` implementation |
-| ⬜ | Register repository in `RepositoryServiceProvider` |
+| ✅ | Create `chat_messages` migration |
+| ✅ | Create `ChatMessage` model with contract relationship |
+| ✅ | Create `ChatMessageRepositoryInterface` |
+| ✅ | Create `ChatMessageRepository` implementation |
+| ✅ | Register repository in `RepositoryServiceProvider` |
 
 ### Phase 8B: Backend - Service Layer
 | Status | Task |
 |--------|------|
-| ⬜ | Create `ContractChatService` |
-| ⬜ | Build system prompt with contract context injection |
-| ⬜ | Implement conversation history management |
-| ⬜ | Add topic guardrails (contract-only + legal context) |
-| ⬜ | Handle off-topic question detection and rejection |
-| ⬜ | Implement token limit management for long contracts |
-| ⬜ | Add response streaming support (optional) |
+| ✅ | Create `ContractChatService` |
+| ✅ | Build system prompt with contract context injection |
+| ✅ | Implement conversation history management |
+| ✅ | Add topic guardrails (contract-only + legal context) |
+| ✅ | Handle off-topic question detection and rejection |
+| ✅ | Implement token limit management for long contracts |
+| 📋 | Add response streaming support (optional) |
 
 ### Phase 8C: Backend - API Layer
 | Status | Task |
 |--------|------|
-| ⬜ | Create `ContractChatController` |
-| ⬜ | Create `POST /contracts/{id}/chat` endpoint |
-| ⬜ | Create `GET /contracts/{id}/chat` endpoint (history) |
-| ⬜ | Create `DELETE /contracts/{id}/chat` endpoint (clear) |
-| ⬜ | Create `SendMessageRequest` validator |
-| ⬜ | Create `ChatMessageResource` |
-| ⬜ | Add routes to `api.php` |
+| ✅ | Create `ContractChatController` |
+| ✅ | Create `POST /contracts/{id}/chat` endpoint |
+| ✅ | Create `GET /contracts/{id}/chat` endpoint (history) |
+| ✅ | Create `DELETE /contracts/{id}/chat` endpoint (clear) |
+| ✅ | Create `SendMessageRequest` validator |
+| ✅ | Create `ChatMessageResource` |
+| ✅ | Add routes to `api.php` |
 
 ### Phase 8D: Backend - Tests
 | Status | Task |
 |--------|------|
-| ⬜ | Write chat message repository tests |
-| ⬜ | Write contract chat service tests (mocked AI) |
-| ⬜ | Write guardrail tests (off-topic rejection) |
-| ⬜ | Write controller integration tests |
-| ⬜ | Write conversation context tests |
+| ✅ | Write chat message repository tests |
+| ✅ | Write contract chat service tests (mocked AI) |
+| ✅ | Write guardrail tests (off-topic rejection) |
+| ✅ | Write controller integration tests |
+| ✅ | Write conversation context tests |
 
 ### Phase 8E: Frontend - Types & Service
 | Status | Task |
 |--------|------|
-| ⬜ | Add `ChatMessage` TypeScript interface |
-| ⬜ | Add `SendMessageData` interface |
-| ⬜ | Create `chat.ts` API service |
-| ⬜ | Create `useContractChat` composable |
+| ✅ | Add `ChatMessage` TypeScript interface |
+| ✅ | Add `SendMessageData` interface |
+| ✅ | Create `chat.ts` API service |
+| ✅ | Create `useContractChat` composable |
 
 ### Phase 8F: Frontend - Components
 | Status | Task |
 |--------|------|
-| ⬜ | Create `ContractChat` container component |
-| ⬜ | Create `ChatMessage` component (user/assistant bubbles) |
-| ⬜ | Create `ChatInput` component with send button |
-| ⬜ | Create `ChatHistory` component (scrollable list) |
-| ⬜ | Create `ChatTypingIndicator` component |
-| ⬜ | Create `ChatEmptyState` component (suggested questions) |
-| ⬜ | Create `ChatErrorMessage` component |
-| ⬜ | Create `ChatDisclaimer` component (legal notice) |
+| ✅ | Create `ContractChat` container component |
+| ✅ | Create `ChatMessage` component (user/assistant bubbles) |
+| ✅ | Create `ChatInput` component with send button |
+| ✅ | Create `ChatHistory` component (scrollable list) |
+| ✅ | Create `ChatTypingIndicator` component |
+| ✅ | Create `ChatEmptyState` component (suggested questions) |
+| ✅ | Create `ChatErrorMessage` component |
+| ✅ | Create `ChatDisclaimer` component (legal notice) |
 
 ### Phase 8G: Frontend - Integration
 | Status | Task |
 |--------|------|
-| ⬜ | Add chat panel/drawer to `ContractDetailView` |
-| ⬜ | Implement chat toggle button |
-| ⬜ | Handle loading states |
-| ⬜ | Implement auto-scroll on new messages |
-| ⬜ | Add keyboard shortcuts (Enter to send) |
-| ⬜ | Persist chat open/closed state |
+| ✅ | Add chat panel/drawer to `ContractDetailView` |
+| ✅ | Implement chat toggle button |
+| ✅ | Handle loading states |
+| ✅ | Implement auto-scroll on new messages |
+| ✅ | Add keyboard shortcuts (Enter to send) |
+| 📋 | Persist chat open/closed state |
 
 ### Phase 8H: Frontend - Tests
 | Status | Task |
 |--------|------|
-| ⬜ | Write chat composable tests |
-| ⬜ | Write ChatMessage component tests |
-| ⬜ | Write ChatInput component tests |
-| ⬜ | Write ContractChat integration tests |
+| ✅ | Write chat composable tests |
+| ✅ | Write ChatMessage component tests |
+| ✅ | Write ChatInput component tests |
+| 📋 | Write ContractChat integration tests |
 
 ---
 
@@ -688,20 +688,14 @@ For long contracts that exceed context limits:
 
 ## Current Sprint
 
-**Sprint:** Phase 8 - AI Contract Chat
-**Goal:** Enable contextual AI conversations about specific contracts
+**Sprint:** Planning Next Phase
+**Goal:** Decide next feature to implement
 
 ### Active Tasks
 
 | Status | Task | Notes |
 |--------|------|-------|
-| ⬜ | Create chat_messages migration | UUID primary key, contract relationship |
-| ⬜ | Create ChatMessage model | With contract/user relationships |
-| ⬜ | Create ContractChatService | Core chat logic with guardrails |
-| ⬜ | Create ContractChatController | REST API endpoints |
-| ⬜ | Create frontend chat components | Message bubbles, input, history |
-| ⬜ | Integrate chat into ContractDetailView | Slide-out panel |
-| ⬜ | Write comprehensive tests | Backend + frontend |
+| ⬜ | Choose next feature | Contract Comparison, Export/Reports, or Search/Filters |
 
 ### Completed Phases
 
@@ -713,12 +707,12 @@ For long contracts that exceed context limits:
 | Phase 3 | ✅ Complete | AI Analysis backend complete, frontend UI complete |
 | Phase 4 | ✅ Complete | Reminders - email notifications for deadlines |
 | Phase 5 | ✅ Complete | Dashboard with real-time stats, UI polish |
+| Phase 8 | ✅ Complete | AI Contract Chat - contextual Q&A about contracts |
 
 ### Upcoming Phases
 
 | Phase | Status | Notes |
 |-------|--------|-------|
-| Phase 8 | ⬜ TODO | AI Contract Chat - contextual Q&A (CURRENT) |
 | Phase 7 | 📋 Backlog | Document Intelligence - validation & PII redaction |
 | Phase 6 | 📋 Backlog | Deployment Preparation - production setup (lowest priority) |
 
@@ -739,11 +733,11 @@ For long contracts that exceed context limits:
 | Phase 2 | 37 | 37 | 0 | 0 | 0 | 0 |
 | Phase 3 | 30 | 30 | 0 | 0 | 0 | 0 |
 | Phase 4 | 19 | 19 | 0 | 0 | 0 | 0 |
-| Phase 5 | 18 | 13 | 0 | 0 | 0 | 5 |
+| Phase 5 | 18 | 17 | 0 | 0 | 0 | 1 |
 | Phase 6 | 9 | 0 | 0 | 0 | 0 | 9 |
 | Phase 7 | 40 | 0 | 0 | 0 | 0 | 40 |
-| Phase 8 | 37 | 0 | 0 | 0 | 37 | 0 |
-| **Total** | **245** | **154** | **0** | **0** | **37** | **54** |
+| Phase 8 | 37 | 34 | 0 | 0 | 0 | 3 |
+| **Total** | **245** | **192** | **0** | **0** | **0** | **53** |
 
 ---
 

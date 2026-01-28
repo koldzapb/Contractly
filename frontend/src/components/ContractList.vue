@@ -40,11 +40,12 @@ function handlePageChange(page: number): void {
     <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Your Contracts</h2>
 
     <!-- Loading State -->
-    <div v-if="loading" class="py-12 text-center">
+    <div v-if="loading" class="py-12 text-center" aria-live="polite" aria-busy="true">
       <svg
         class="animate-spin h-8 w-8 text-indigo-600 dark:text-indigo-400 mx-auto"
         fill="none"
         viewBox="0 0 24 24"
+        aria-hidden="true"
       >
         <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
         <path
@@ -63,6 +64,7 @@ function handlePageChange(page: number): void {
         fill="none"
         viewBox="0 0 24 24"
         stroke="currentColor"
+        aria-hidden="true"
       >
         <path
           stroke-linecap="round"
@@ -85,9 +87,10 @@ function handlePageChange(page: number): void {
       />
 
       <!-- Pagination -->
-      <div
+      <nav
         v-if="pagination && pagination.lastPage > 1"
-        class="flex items-center justify-between pt-4 border-t border-gray-200 dark:border-gray-700"
+        class="flex flex-col sm:flex-row items-center justify-between gap-4 pt-4 border-t border-gray-200 dark:border-gray-700"
+        aria-label="Pagination"
       >
         <div class="text-sm text-gray-500 dark:text-gray-400">
           Page {{ pagination.currentPage }} of {{ pagination.lastPage }}
@@ -98,6 +101,8 @@ function handlePageChange(page: number): void {
             type="button"
             class="btn-secondary text-sm"
             :disabled="pagination.currentPage <= 1"
+            :aria-disabled="pagination.currentPage <= 1"
+            aria-label="Go to previous page"
             @click="handlePageChange(pagination.currentPage - 1)"
           >
             Previous
@@ -106,12 +111,14 @@ function handlePageChange(page: number): void {
             type="button"
             class="btn-secondary text-sm"
             :disabled="pagination.currentPage >= pagination.lastPage"
+            :aria-disabled="pagination.currentPage >= pagination.lastPage"
+            aria-label="Go to next page"
             @click="handlePageChange(pagination.currentPage + 1)"
           >
             Next
           </button>
         </div>
-      </div>
+      </nav>
     </div>
   </div>
 </template>

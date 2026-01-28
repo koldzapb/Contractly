@@ -6,6 +6,7 @@ import { useContractsStore } from '@/stores/contracts'
 import { useAuthStore } from '@/stores/auth'
 import { useRemindersStore } from '@/stores/reminders'
 import ThemeToggle from '@/components/ThemeToggle.vue'
+import MobileNav from '@/components/MobileNav.vue'
 import RiskBadge from '@/components/RiskBadge.vue'
 import AnalysisProgress from '@/components/AnalysisProgress.vue'
 import AnalysisSummary from '@/components/AnalysisSummary.vue'
@@ -215,12 +216,23 @@ onUnmounted(() => {
 
 <template>
   <div class="min-h-screen bg-gray-50 dark:bg-gray-900">
+    <!-- Skip Link for Accessibility -->
+    <a
+      href="#main-content"
+      class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-indigo-600 focus:text-white focus:rounded-lg focus:outline-none"
+    >
+      Skip to main content
+    </a>
+
     <!-- Header -->
     <header class="bg-white dark:bg-gray-800 shadow-sm">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-        <div class="flex items-center gap-8">
+      <div
+        class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-14 sm:h-16 flex items-center justify-between"
+      >
+        <div class="flex items-center gap-4 md:gap-8">
+          <MobileNav />
           <span class="text-xl font-bold text-indigo-600 dark:text-indigo-400">Contractly</span>
-          <nav class="hidden md:flex items-center space-x-6">
+          <nav class="hidden md:flex items-center space-x-6" aria-label="Main navigation">
             <RouterLink
               to="/dashboard"
               class="text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white"
@@ -241,37 +253,52 @@ onUnmounted(() => {
             </RouterLink>
           </nav>
         </div>
-        <div class="flex items-center gap-4">
+        <div class="flex items-center gap-2 sm:gap-4">
           <ThemeToggle />
-          <span v-if="user" class="text-sm text-gray-600 dark:text-gray-300">
+          <span v-if="user" class="hidden sm:inline text-sm text-gray-600 dark:text-gray-300">
             {{ user.name }}
           </span>
-          <button type="button" class="btn-secondary text-sm" @click="handleLogout">Logout</button>
+          <button
+            type="button"
+            class="btn-secondary text-sm"
+            aria-label="Logout"
+            @click="handleLogout"
+          >
+            Logout
+          </button>
         </div>
       </div>
     </header>
 
     <!-- Main Content -->
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <main id="main-content" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <!-- Breadcrumb -->
-      <nav class="mb-6">
+      <nav class="mb-6" aria-label="Breadcrumb">
         <ol class="flex items-center space-x-2 text-sm text-gray-500 dark:text-gray-400">
           <li>
             <RouterLink to="/contracts" class="hover:text-gray-700 dark:hover:text-gray-300">
               Contracts
             </RouterLink>
           </li>
-          <li>/</li>
-          <li class="text-gray-900 dark:text-white truncate max-w-xs">
+          <li aria-hidden="true">/</li>
+          <li
+            class="text-gray-900 dark:text-white truncate max-w-[60vw] sm:max-w-xs"
+            aria-current="page"
+          >
             {{ currentContract?.title || 'Loading...' }}
           </li>
         </ol>
       </nav>
 
       <!-- Loading State -->
-      <div v-if="loading && !currentContract" class="text-center py-12">
+      <div
+        v-if="loading && !currentContract"
+        class="text-center py-12"
+        aria-live="polite"
+        aria-busy="true"
+      >
         <div class="inline-flex items-center gap-2 text-gray-500 dark:text-gray-400">
-          <svg class="animate-spin h-5 w-5" fill="none" viewBox="0 0 24 24">
+          <svg class="animate-spin h-5 w-5" fill="none" viewBox="0 0 24 24" aria-hidden="true">
             <circle
               class="opacity-25"
               cx="12"
@@ -403,25 +430,16 @@ onUnmounted(() => {
             </div>
 
             <!-- Chat Panel -->
-            <div
-              v-if="showChatPanel"
-              class="w-96 flex-shrink-0 hidden lg:block"
-            >
+            <div v-if="showChatPanel" class="w-96 flex-shrink-0 hidden lg:block">
               <div class="sticky top-4 h-[calc(100vh-8rem)]">
-                <ContractChat
-                  :contract-id="contractId"
-                  :contract-completed="isCompleted"
-                />
+                <ContractChat :contract-id="contractId" :contract-completed="isCompleted" />
               </div>
             </div>
           </div>
 
           <!-- Mobile Chat Panel (full width below content) -->
           <div v-if="showChatPanel" class="mt-6 lg:hidden h-[500px]">
-            <ContractChat
-              :contract-id="contractId"
-              :contract-completed="isCompleted"
-            />
+            <ContractChat :contract-id="contractId" :contract-completed="isCompleted" />
           </div>
         </template>
 

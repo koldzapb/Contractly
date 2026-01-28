@@ -20,7 +20,7 @@ use Illuminate\Support\Facades\Route;
 |--------------------------------------------------------------------------
 */
 
-// Health check endpoint
+// Health check endpoint (no rate limiting)
 Route::get('/health', function () {
     return response()->json([
         'status' => 'ok',
@@ -28,16 +28,16 @@ Route::get('/health', function () {
     ]);
 });
 
-// Guest routes (unauthenticated)
-Route::middleware('guest')->group(function () {
+// Guest routes (unauthenticated) - auth rate limit
+Route::middleware(['guest', 'throttle:auth'])->group(function () {
     Route::post('/register', RegisterController::class);
     Route::post('/login', LoginController::class);
     Route::post('/forgot-password', ForgotPasswordController::class);
     Route::post('/reset-password', ResetPasswordController::class);
 });
 
-// Authenticated routes
-Route::middleware('auth:sanctum')->group(function () {
+// Authenticated routes - general API rate limit
+Route::middleware(['auth:sanctum', 'throttle:api'])->group(function () {
     Route::post('/logout', LogoutController::class);
 
     // Dashboard
@@ -58,17 +58,25 @@ Route::middleware('auth:sanctum')->group(function () {
     // Contracts
     Route::prefix('contracts')->group(function () {
         Route::get('/', [ContractController::class, 'index']);
-        Route::post('/', [ContractController::class, 'store']);
         Route::get('/{id}', [ContractController::class, 'show']);
         Route::put('/{id}', [ContractController::class, 'update']);
         Route::delete('/{id}', [ContractController::class, 'destroy']);
-        Route::get('/{id}/status', [ContractController::class, 'status']);
         Route::post('/{id}/retry', [ContractController::class, 'retryAnalysis']);
 
-        // Contract Chat
+        // Upload endpoint - stricter rate limit
+        Route::post('/', [ContractController::class, 'store'])
+            ->middleware('throttle:uploads');
+
+        // Status polling - more lenient rate limit
+        Route::get('/{id}/status', [ContractController::class, 'status'])
+            ->withoutMiddleware('throttle:api')
+            ->middleware('throttle:polling');
+
+        // Contract Chat - AI rate limit
         Route::get('/{id}/chat', [ContractChatController::class, 'index']);
-        Route::post('/{id}/chat', [ContractChatController::class, 'store']);
         Route::delete('/{id}/chat', [ContractChatController::class, 'destroy']);
+        Route::post('/{id}/chat', [ContractChatController::class, 'store'])
+            ->middleware('throttle:chat');
     });
 
     // Reminders

@@ -19,8 +19,8 @@
         />
       </svg>
       <p class="text-xs text-amber-800 dark:text-amber-200">
-        <strong>Legal Disclaimer:</strong> This AI assistant provides informational summaries only, not legal advice.
-        Always consult a qualified attorney for decisions about contracts.
+        <strong>Legal Disclaimer:</strong> This AI assistant provides informational summaries only,
+        not legal advice. Always consult a qualified attorney for decisions about contracts.
       </p>
     </div>
   </div>

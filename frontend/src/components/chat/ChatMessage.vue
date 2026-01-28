@@ -32,10 +32,7 @@ const bubbleClasses = computed(() => {
 </script>
 
 <template>
-  <div
-    class="flex flex-col gap-1"
-    :class="[isUser ? 'items-end' : 'items-start']"
-  >
+  <div class="flex flex-col gap-1" :class="[isUser ? 'items-end' : 'items-start']">
     <!-- Role label -->
     <span class="text-xs text-gray-500 dark:text-gray-400 px-1">
       {{ message.role_label }}

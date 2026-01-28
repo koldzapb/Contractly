@@ -37,22 +37,27 @@ const sortedClauses = computed(() => {
 
 <template>
   <div class="card">
-    <div class="flex items-center justify-between mb-4">
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-4">
       <h2 class="text-lg font-semibold text-gray-900 dark:text-white">
         Identified Clauses
         <span class="text-gray-400 dark:text-gray-500 font-normal">({{ clauses.length }})</span>
       </h2>
 
       <!-- Filter Tabs -->
-      <div class="flex gap-1 bg-gray-100 dark:bg-gray-800 rounded-lg p-1">
+      <div
+        class="flex flex-wrap gap-1 bg-gray-100 dark:bg-gray-800 rounded-lg p-1"
+        role="group"
+        aria-label="Filter clauses by risk level"
+      >
         <button
           type="button"
-          class="px-3 py-1 text-sm font-medium rounded-md transition-colors"
+          class="px-3 py-2 text-sm font-medium rounded-md transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500"
           :class="
             filterRisk === 'all'
               ? 'bg-white dark:bg-gray-700 text-gray-900 dark:text-white shadow-sm'
               : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
           "
+          :aria-pressed="filterRisk === 'all'"
           @click="filterRisk = 'all'"
         >
           All ({{ riskCounts.all }})
@@ -60,12 +65,13 @@ const sortedClauses = computed(() => {
         <button
           v-if="riskCounts.high > 0"
           type="button"
-          class="px-3 py-1 text-sm font-medium rounded-md transition-colors"
+          class="px-3 py-2 text-sm font-medium rounded-md transition-colors focus:outline-none focus:ring-2 focus:ring-red-500"
           :class="
             filterRisk === 'high'
               ? 'bg-red-100 dark:bg-red-900/50 text-red-800 dark:text-red-400'
               : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
           "
+          :aria-pressed="filterRisk === 'high'"
           @click="filterRisk = 'high'"
         >
           High ({{ riskCounts.high }})
@@ -73,12 +79,13 @@ const sortedClauses = computed(() => {
         <button
           v-if="riskCounts.medium > 0"
           type="button"
-          class="px-3 py-1 text-sm font-medium rounded-md transition-colors"
+          class="px-3 py-2 text-sm font-medium rounded-md transition-colors focus:outline-none focus:ring-2 focus:ring-yellow-500"
           :class="
             filterRisk === 'medium'
               ? 'bg-yellow-100 dark:bg-yellow-900/50 text-yellow-800 dark:text-yellow-400'
               : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
           "
+          :aria-pressed="filterRisk === 'medium'"
           @click="filterRisk = 'medium'"
         >
           Medium ({{ riskCounts.medium }})
@@ -86,12 +93,13 @@ const sortedClauses = computed(() => {
         <button
           v-if="riskCounts.low > 0"
           type="button"
-          class="px-3 py-1 text-sm font-medium rounded-md transition-colors"
+          class="px-3 py-2 text-sm font-medium rounded-md transition-colors focus:outline-none focus:ring-2 focus:ring-green-500"
           :class="
             filterRisk === 'low'
               ? 'bg-green-100 dark:bg-green-900/50 text-green-800 dark:text-green-400'
               : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
           "
+          :aria-pressed="filterRisk === 'low'"
           @click="filterRisk = 'low'"
         >
           Low ({{ riskCounts.low }})

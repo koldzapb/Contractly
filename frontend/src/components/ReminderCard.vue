@@ -91,15 +91,22 @@ function handleDelete(): void {
       </div>
 
       <!-- Actions -->
-      <div class="flex items-center gap-1">
+      <div class="flex items-center gap-1 flex-shrink-0">
         <button
           v-if="reminder.status === 'pending'"
           type="button"
-          class="p-1.5 text-gray-400 hover:text-orange-500 dark:hover:text-orange-400 transition-colors"
+          class="p-2 text-gray-400 hover:text-orange-500 dark:hover:text-orange-400 transition-colors rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
           title="Cancel reminder"
+          aria-label="Cancel reminder"
           @click="handleCancel"
         >
-          <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <svg
+            class="h-5 w-5"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            aria-hidden="true"
+          >
             <path
               stroke-linecap="round"
               stroke-linejoin="round"
@@ -110,11 +117,18 @@ function handleDelete(): void {
         </button>
         <button
           type="button"
-          class="p-1.5 text-gray-400 hover:text-red-500 dark:hover:text-red-400 transition-colors"
+          class="p-2 text-gray-400 hover:text-red-500 dark:hover:text-red-400 transition-colors rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500"
           title="Delete reminder"
+          aria-label="Delete reminder"
           @click="handleDelete"
         >
-          <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <svg
+            class="h-5 w-5"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            aria-hidden="true"
+          >
             <path
               stroke-linecap="round"
               stroke-linejoin="round"
@@ -147,7 +161,13 @@ function handleDelete(): void {
     <!-- Reminder and deadline dates -->
     <div class="mt-3 space-y-1 text-sm text-gray-500 dark:text-gray-400">
       <div class="flex items-center gap-2">
-        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <svg
+          class="h-4 w-4"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          aria-hidden="true"
+        >
           <path
             stroke-linecap="round"
             stroke-linejoin="round"
@@ -158,7 +178,13 @@ function handleDelete(): void {
         <span>Remind: {{ formattedRemindAt }}</span>
       </div>
       <div v-if="reminder.deadline" class="flex items-center gap-2">
-        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <svg
+          class="h-4 w-4"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          aria-hidden="true"
+        >
           <path
             stroke-linecap="round"
             stroke-linejoin="round"

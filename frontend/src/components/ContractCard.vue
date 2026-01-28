@@ -96,11 +96,18 @@ function handleDelete(): void {
       <!-- Delete button -->
       <button
         type="button"
-        class="ml-4 p-1 text-gray-400 hover:text-red-500 dark:hover:text-red-400 transition-colors"
+        class="ml-4 p-2 text-gray-400 hover:text-red-500 dark:hover:text-red-400 transition-colors rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500"
         title="Delete contract"
+        aria-label="Delete contract"
         @click="handleDelete"
       >
-        <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <svg
+          class="h-5 w-5"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          aria-hidden="true"
+        >
           <path
             stroke-linecap="round"
             stroke-linejoin="round"
@@ -124,6 +131,7 @@ function handleDelete(): void {
             class="animate-spin -ml-0.5 mr-1.5 h-3 w-3"
             fill="none"
             viewBox="0 0 24 24"
+            aria-hidden="true"
           >
             <circle
               class="opacity-25"

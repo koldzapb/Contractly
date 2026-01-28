@@ -18,7 +18,9 @@ function handleSelectQuestion(question: string): void {
 
 <template>
   <div class="flex flex-col items-center justify-center py-8 text-center">
-    <div class="w-16 h-16 rounded-full bg-indigo-100 dark:bg-indigo-900/30 flex items-center justify-center mb-4">
+    <div
+      class="w-16 h-16 rounded-full bg-indigo-100 dark:bg-indigo-900/30 flex items-center justify-center mb-4"
+    >
       <svg
         class="h-8 w-8 text-indigo-600 dark:text-indigo-400"
         fill="none"
@@ -34,12 +36,11 @@ function handleSelectQuestion(question: string): void {
       </svg>
     </div>
 
-    <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-2">
-      Ask about your contract
-    </h3>
+    <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-2">Ask about your contract</h3>
 
     <p class="text-sm text-gray-500 dark:text-gray-400 mb-6 max-w-sm">
-      I can help you understand this contract. Ask me about clauses, deadlines, risks, or anything else.
+      I can help you understand this contract. Ask me about clauses, deadlines, risks, or anything
+      else.
     </p>
 
     <div class="space-y-2 w-full max-w-md">
