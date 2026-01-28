@@ -12,52 +12,62 @@ const props = defineProps<Props>()
 
 const hasContracts = computed(() => props.contracts.length > 0)
 
-function getStatusConfig(status: string) {
-  const configs: Record<string, { bgClass: string; textClass: string; label: string }> = {
-    pending: {
-      bgClass: 'bg-yellow-100 dark:bg-yellow-900/30',
-      textClass: 'text-yellow-800 dark:text-yellow-300',
-      label: 'Pending',
-    },
-    processing: {
-      bgClass: 'bg-blue-100 dark:bg-blue-900/30',
-      textClass: 'text-blue-800 dark:text-blue-300',
-      label: 'Processing',
-    },
-    completed: {
-      bgClass: 'bg-green-100 dark:bg-green-900/30',
-      textClass: 'text-green-800 dark:text-green-300',
-      label: 'Analyzed',
-    },
-    failed: {
-      bgClass: 'bg-red-100 dark:bg-red-900/30',
-      textClass: 'text-red-800 dark:text-red-300',
-      label: 'Failed',
-    },
-  }
-  return configs[status] || configs.pending
+interface BadgeConfig {
+  bgClass: string
+  textClass: string
+  label: string
 }
 
-function getRiskConfig(riskLevel: string | null) {
+const defaultStatusConfig: BadgeConfig = {
+  bgClass: 'bg-yellow-100 dark:bg-yellow-900/30',
+  textClass: 'text-yellow-800 dark:text-yellow-300',
+  label: 'Pending',
+}
+
+const statusConfigs: Record<string, BadgeConfig> = {
+  pending: defaultStatusConfig,
+  processing: {
+    bgClass: 'bg-blue-100 dark:bg-blue-900/30',
+    textClass: 'text-blue-800 dark:text-blue-300',
+    label: 'Processing',
+  },
+  completed: {
+    bgClass: 'bg-green-100 dark:bg-green-900/30',
+    textClass: 'text-green-800 dark:text-green-300',
+    label: 'Analyzed',
+  },
+  failed: {
+    bgClass: 'bg-red-100 dark:bg-red-900/30',
+    textClass: 'text-red-800 dark:text-red-300',
+    label: 'Failed',
+  },
+}
+
+const riskConfigs: Record<string, BadgeConfig> = {
+  low: {
+    bgClass: 'bg-green-100 dark:bg-green-900/30',
+    textClass: 'text-green-800 dark:text-green-300',
+    label: 'Low',
+  },
+  medium: {
+    bgClass: 'bg-yellow-100 dark:bg-yellow-900/30',
+    textClass: 'text-yellow-800 dark:text-yellow-300',
+    label: 'Medium',
+  },
+  high: {
+    bgClass: 'bg-red-100 dark:bg-red-900/30',
+    textClass: 'text-red-800 dark:text-red-300',
+    label: 'High',
+  },
+}
+
+function getStatusConfig(status: string): BadgeConfig {
+  return statusConfigs[status] ?? defaultStatusConfig
+}
+
+function getRiskConfig(riskLevel: string | null): BadgeConfig | null {
   if (!riskLevel) return null
-  const configs: Record<string, { bgClass: string; textClass: string; label: string }> = {
-    low: {
-      bgClass: 'bg-green-100 dark:bg-green-900/30',
-      textClass: 'text-green-800 dark:text-green-300',
-      label: 'Low',
-    },
-    medium: {
-      bgClass: 'bg-yellow-100 dark:bg-yellow-900/30',
-      textClass: 'text-yellow-800 dark:text-yellow-300',
-      label: 'Medium',
-    },
-    high: {
-      bgClass: 'bg-red-100 dark:bg-red-900/30',
-      textClass: 'text-red-800 dark:text-red-300',
-      label: 'High',
-    },
-  }
-  return configs[riskLevel]
+  return riskConfigs[riskLevel] ?? null
 }
 
 function formatDate(dateString: string): string {

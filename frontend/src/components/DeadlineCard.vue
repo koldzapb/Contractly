@@ -35,55 +35,58 @@ const formattedDate = computed(() => {
   })
 })
 
-const urgencyConfig = computed(() => {
-  const configs: Record<
-    string,
-    { bgClass: string; borderClass: string; iconClass: string; badgeClass: string; label: string }
-  > = {
-    overdue: {
-      bgClass: 'bg-red-50 dark:bg-red-900/20',
-      borderClass: 'border-red-200 dark:border-red-800',
-      iconClass: 'text-red-500',
-      badgeClass: 'bg-red-100 dark:bg-red-900/50 text-red-800 dark:text-red-400',
-      label: 'Overdue',
-    },
-    critical: {
-      bgClass: 'bg-orange-50 dark:bg-orange-900/20',
-      borderClass: 'border-orange-200 dark:border-orange-800',
-      iconClass: 'text-orange-500',
-      badgeClass: 'bg-orange-100 dark:bg-orange-900/50 text-orange-800 dark:text-orange-400',
-      label: 'Critical',
-    },
-    high: {
-      bgClass: 'bg-yellow-50 dark:bg-yellow-900/20',
-      borderClass: 'border-yellow-200 dark:border-yellow-800',
-      iconClass: 'text-yellow-500',
-      badgeClass: 'bg-yellow-100 dark:bg-yellow-900/50 text-yellow-800 dark:text-yellow-400',
-      label: 'Soon',
-    },
-    medium: {
-      bgClass: 'bg-blue-50 dark:bg-blue-900/20',
-      borderClass: 'border-blue-200 dark:border-blue-800',
-      iconClass: 'text-blue-500',
-      badgeClass: 'bg-blue-100 dark:bg-blue-900/50 text-blue-800 dark:text-blue-400',
-      label: '',
-    },
-    low: {
-      bgClass: 'bg-white dark:bg-gray-800',
-      borderClass: 'border-gray-200 dark:border-gray-700',
-      iconClass: 'text-gray-400',
-      badgeClass: 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400',
-      label: '',
-    },
-    unknown: {
-      bgClass: 'bg-white dark:bg-gray-800',
-      borderClass: 'border-gray-200 dark:border-gray-700',
-      iconClass: 'text-gray-400',
-      badgeClass: 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400',
-      label: '',
-    },
-  }
-  return configs[props.deadline.urgency || 'low'] || configs.low
+interface UrgencyConfig {
+  bgClass: string
+  borderClass: string
+  iconClass: string
+  badgeClass: string
+  label: string
+}
+
+const defaultConfig: UrgencyConfig = {
+  bgClass: 'bg-white dark:bg-gray-800',
+  borderClass: 'border-gray-200 dark:border-gray-700',
+  iconClass: 'text-gray-400',
+  badgeClass: 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400',
+  label: '',
+}
+
+const urgencyConfigs: Record<string, UrgencyConfig> = {
+  overdue: {
+    bgClass: 'bg-red-50 dark:bg-red-900/20',
+    borderClass: 'border-red-200 dark:border-red-800',
+    iconClass: 'text-red-500',
+    badgeClass: 'bg-red-100 dark:bg-red-900/50 text-red-800 dark:text-red-400',
+    label: 'Overdue',
+  },
+  critical: {
+    bgClass: 'bg-orange-50 dark:bg-orange-900/20',
+    borderClass: 'border-orange-200 dark:border-orange-800',
+    iconClass: 'text-orange-500',
+    badgeClass: 'bg-orange-100 dark:bg-orange-900/50 text-orange-800 dark:text-orange-400',
+    label: 'Critical',
+  },
+  high: {
+    bgClass: 'bg-yellow-50 dark:bg-yellow-900/20',
+    borderClass: 'border-yellow-200 dark:border-yellow-800',
+    iconClass: 'text-yellow-500',
+    badgeClass: 'bg-yellow-100 dark:bg-yellow-900/50 text-yellow-800 dark:text-yellow-400',
+    label: 'Soon',
+  },
+  medium: {
+    bgClass: 'bg-blue-50 dark:bg-blue-900/20',
+    borderClass: 'border-blue-200 dark:border-blue-800',
+    iconClass: 'text-blue-500',
+    badgeClass: 'bg-blue-100 dark:bg-blue-900/50 text-blue-800 dark:text-blue-400',
+    label: '',
+  },
+  low: defaultConfig,
+  unknown: defaultConfig,
+}
+
+const urgencyConfig = computed((): UrgencyConfig => {
+  const key = props.deadline.urgency ?? 'low'
+  return urgencyConfigs[key] ?? defaultConfig
 })
 
 const daysText = computed(() => {

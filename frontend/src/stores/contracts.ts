@@ -194,20 +194,30 @@ export const useContractsStore = defineStore('contracts', () => {
     // Update contract in list
     const index = contracts.value.findIndex((c) => c.id === id)
     if (index !== -1) {
-      contracts.value[index] = {
+      const updatedContract = {
         ...contracts.value[index],
         status: status.status as Contract['status'],
-        error_message: status.error_message,
       }
+      if (status.error_message) {
+        updatedContract.error_message = status.error_message
+      } else {
+        delete updatedContract.error_message
+      }
+      contracts.value[index] = updatedContract
     }
 
     // Update current if it matches
     if (currentContract.value?.id === id) {
-      currentContract.value = {
+      const updatedCurrent = {
         ...currentContract.value,
         status: status.status as Contract['status'],
-        error_message: status.error_message,
       }
+      if (status.error_message) {
+        updatedCurrent.error_message = status.error_message
+      } else {
+        delete updatedCurrent.error_message
+      }
+      currentContract.value = updatedCurrent
     }
 
     return contracts.value[index] ?? currentContract.value!
@@ -226,20 +236,22 @@ export const useContractsStore = defineStore('contracts', () => {
       // Update contract in list
       const index = contracts.value.findIndex((c) => c.id === id)
       if (index !== -1) {
-        contracts.value[index] = {
+        const updatedContract = {
           ...contracts.value[index],
           status: result.status as Contract['status'],
-          error_message: undefined,
         }
+        delete updatedContract.error_message
+        contracts.value[index] = updatedContract
       }
 
       // Update current if it matches
       if (currentContract.value?.id === id) {
-        currentContract.value = {
+        const updatedCurrent = {
           ...currentContract.value,
           status: result.status as Contract['status'],
-          error_message: undefined,
         }
+        delete updatedCurrent.error_message
+        currentContract.value = updatedCurrent
       }
     } catch (e: unknown) {
       const err = e as { response?: { data?: { message?: string } } }

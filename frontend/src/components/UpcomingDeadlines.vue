@@ -12,35 +12,44 @@ const props = defineProps<Props>()
 
 const hasDeadlines = computed(() => props.deadlines.length > 0)
 
-function getUrgencyConfig(urgency: string | null) {
-  const configs: Record<string, { bgClass: string; textClass: string; label: string }> = {
-    overdue: {
-      bgClass: 'bg-red-100 dark:bg-red-900/50',
-      textClass: 'text-red-800 dark:text-red-400',
-      label: 'Overdue',
-    },
-    critical: {
-      bgClass: 'bg-orange-100 dark:bg-orange-900/50',
-      textClass: 'text-orange-800 dark:text-orange-400',
-      label: 'Critical',
-    },
-    high: {
-      bgClass: 'bg-yellow-100 dark:bg-yellow-900/50',
-      textClass: 'text-yellow-800 dark:text-yellow-400',
-      label: 'Soon',
-    },
-    medium: {
-      bgClass: 'bg-blue-100 dark:bg-blue-900/50',
-      textClass: 'text-blue-800 dark:text-blue-400',
-      label: '',
-    },
-    low: {
-      bgClass: 'bg-gray-100 dark:bg-gray-700',
-      textClass: 'text-gray-600 dark:text-gray-400',
-      label: '',
-    },
-  }
-  return configs[urgency || 'low'] || configs.low
+interface UrgencyConfig {
+  bgClass: string
+  textClass: string
+  label: string
+}
+
+const defaultUrgencyConfig: UrgencyConfig = {
+  bgClass: 'bg-gray-100 dark:bg-gray-700',
+  textClass: 'text-gray-600 dark:text-gray-400',
+  label: '',
+}
+
+const urgencyConfigs: Record<string, UrgencyConfig> = {
+  overdue: {
+    bgClass: 'bg-red-100 dark:bg-red-900/50',
+    textClass: 'text-red-800 dark:text-red-400',
+    label: 'Overdue',
+  },
+  critical: {
+    bgClass: 'bg-orange-100 dark:bg-orange-900/50',
+    textClass: 'text-orange-800 dark:text-orange-400',
+    label: 'Critical',
+  },
+  high: {
+    bgClass: 'bg-yellow-100 dark:bg-yellow-900/50',
+    textClass: 'text-yellow-800 dark:text-yellow-400',
+    label: 'Soon',
+  },
+  medium: {
+    bgClass: 'bg-blue-100 dark:bg-blue-900/50',
+    textClass: 'text-blue-800 dark:text-blue-400',
+    label: '',
+  },
+  low: defaultUrgencyConfig,
+}
+
+function getUrgencyConfig(urgency: string | null): UrgencyConfig {
+  return urgencyConfigs[urgency ?? 'low'] ?? defaultUrgencyConfig
 }
 
 function formatDate(dateString: string | null): string {

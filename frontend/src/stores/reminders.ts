@@ -37,10 +37,11 @@ export const useRemindersStore = defineStore('reminders', () => {
     error.value = null
 
     try {
+      const finalStatus = params.status ?? statusFilter.value
       const response = await remindersService.getReminders({
         page: params.page || pagination.value.currentPage,
         per_page: params.per_page || pagination.value.perPage,
-        status: params.status ?? statusFilter.value,
+        ...(finalStatus ? { status: finalStatus } : {}),
       })
 
       reminders.value = response.data
