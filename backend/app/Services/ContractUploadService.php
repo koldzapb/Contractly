@@ -55,6 +55,9 @@ class ContractUploadService
         // Delete the file from storage
         Storage::disk('contracts')->delete($contract->file_path);
 
+        // Delete associated reminders (soft delete doesn't trigger DB cascade)
+        $contract->reminders()->delete();
+
         // Soft delete the contract record
         return $this->contracts->delete($contract);
     }

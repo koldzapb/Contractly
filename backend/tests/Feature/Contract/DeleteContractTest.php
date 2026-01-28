@@ -3,6 +3,9 @@
 declare(strict_types=1);
 
 use App\Models\Contract;
+use App\Models\ContractAnalysis;
+use App\Models\ContractDeadline;
+use App\Models\Reminder;
 use App\Models\User;
 use Illuminate\Support\Facades\Storage;
 
@@ -63,5 +66,41 @@ describe('delete contract', function () {
         $response = $this->deleteJson("/api/contracts/{$contract->id}");
 
         $response->assertStatus(401);
+    });
+
+    it('deletes associated reminders when contract is deleted', function () {
+        $contract = Contract::factory()->for($this->user)->create();
+        $analysis = ContractAnalysis::factory()->for($contract)->create();
+        $deadline = ContractDeadline::factory()->for($analysis, 'analysis')->create();
+
+        // Create reminders for this contract
+        $reminder1 = Reminder::factory()->for($this->user)->create([
+            'contract_id' => $contract->id,
+            'contract_deadline_id' => $deadline->id,
+        ]);
+        $reminder2 = Reminder::factory()->for($this->user)->create([
+            'contract_id' => $contract->id,
+            'contract_deadline_id' => $deadline->id,
+        ]);
+
+        // Create a reminder for another contract (should not be deleted)
+        $otherContract = Contract::factory()->for($this->user)->create();
+        $otherReminder = Reminder::factory()->for($this->user)->create([
+            'contract_id' => $otherContract->id,
+        ]);
+
+        Storage::disk('contracts')->put($contract->file_path, 'fake content');
+
+        $response = $this->actingAs($this->user)
+            ->deleteJson("/api/contracts/{$contract->id}");
+
+        $response->assertOk();
+
+        // Reminders for deleted contract should be gone
+        $this->assertDatabaseMissing('reminders', ['id' => $reminder1->id]);
+        $this->assertDatabaseMissing('reminders', ['id' => $reminder2->id]);
+
+        // Reminder for other contract should still exist
+        $this->assertDatabaseHas('reminders', ['id' => $otherReminder->id]);
     });
 });
