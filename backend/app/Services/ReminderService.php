@@ -74,7 +74,7 @@ class ReminderService
             $updateData['days_before'] = $data['days_before'];
 
             // Recalculate remind_at if days_before changed
-            /** @var \App\Models\ContractDeadline|null $deadline */
+            /** @var ContractDeadline|null $deadline */
             $deadline = $reminder->deadline;
             if ($deadline !== null) {
                 $updateData['remind_at'] = $this->calculateRemindAt(

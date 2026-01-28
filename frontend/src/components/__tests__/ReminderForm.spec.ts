@@ -35,11 +35,13 @@ const mockReminder: Reminder = {
 }
 
 describe('ReminderForm', () => {
-  const mountComponent = (props: {
-    deadline?: ContractDeadline
-    reminder?: Reminder
-    loading?: boolean
-  } = {}) => {
+  const mountComponent = (
+    props: {
+      deadline?: ContractDeadline
+      reminder?: Reminder
+      loading?: boolean
+    } = {},
+  ) => {
     return mount(ReminderForm, {
       props: {
         deadline: props.deadline,
@@ -67,9 +69,7 @@ describe('ReminderForm', () => {
     it('allows selecting different day options', async () => {
       const wrapper = mountComponent({ deadline: mockDeadline })
 
-      const dayButtons = wrapper
-        .findAll('button')
-        .filter((b) => b.text().includes('day'))
+      const dayButtons = wrapper.findAll('button').filter((b) => b.text().includes('day'))
       const day14Button = dayButtons.find((b) => b.text() === '14 days')
 
       await day14Button?.trigger('click')
@@ -149,9 +149,7 @@ describe('ReminderForm', () => {
       const wrapper = mountComponent({ reminder: mockReminder })
 
       // Change days to something different
-      const day30Button = wrapper
-        .findAll('button')
-        .find((b) => b.text() === '30 days')
+      const day30Button = wrapper.findAll('button').find((b) => b.text() === '30 days')
       await day30Button?.trigger('click')
 
       await wrapper.find('form').trigger('submit')

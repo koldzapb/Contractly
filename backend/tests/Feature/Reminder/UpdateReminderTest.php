@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-use App\Enums\ReminderStatus;
 use App\Models\Contract;
 use App\Models\ContractAnalysis;
 use App\Models\ContractDeadline;

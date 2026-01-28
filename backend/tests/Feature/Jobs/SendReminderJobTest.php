@@ -72,7 +72,7 @@ describe('SendReminderJob', function () {
         $job = new SendReminderJob($reminder);
 
         try {
-            $job->handle(app(\App\Repositories\Contracts\ReminderRepositoryInterface::class));
+            $job->handle(app(App\Repositories\Contracts\ReminderRepositoryInterface::class));
         } catch (Exception $e) {
             // Expected to throw
         }

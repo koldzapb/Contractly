@@ -114,7 +114,10 @@ function handleCancel(): void {
       <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">
         {{ deadline.deadline_type_label }}
       </p>
-      <p v-if="formattedDeadlineDate && !needsDate" class="text-sm text-gray-600 dark:text-gray-300 mt-2">
+      <p
+        v-if="formattedDeadlineDate && !needsDate"
+        class="text-sm text-gray-600 dark:text-gray-300 mt-2"
+      >
         Due: {{ formattedDeadlineDate }}
       </p>
       <p v-if="needsDate" class="text-sm text-amber-600 dark:text-amber-400 mt-2">
@@ -217,11 +220,7 @@ function handleCancel(): void {
       <button type="button" class="btn-secondary" :disabled="loading" @click="handleCancel">
         Cancel
       </button>
-      <button
-        type="submit"
-        class="btn-primary"
-        :disabled="loading || !isFormValid"
-      >
+      <button type="submit" class="btn-primary" :disabled="loading || !isFormValid">
         <svg v-if="loading" class="animate-spin -ml-1 mr-2 h-4 w-4" fill="none" viewBox="0 0 24 24">
           <circle
             class="opacity-25"

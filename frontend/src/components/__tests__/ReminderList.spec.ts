@@ -47,11 +47,13 @@ describe('ReminderList', () => {
     await router.isReady()
   })
 
-  const mountComponent = (props: {
-    reminders?: Reminder[]
-    loading?: boolean
-    pagination?: { currentPage: number; lastPage: number; total: number }
-  } = {}) => {
+  const mountComponent = (
+    props: {
+      reminders?: Reminder[]
+      loading?: boolean
+      pagination?: { currentPage: number; lastPage: number; total: number }
+    } = {},
+  ) => {
     return mount(ReminderList, {
       props: {
         reminders: props.reminders ?? [],
