@@ -268,14 +268,14 @@
 
 | Component | Service | Cost |
 |-----------|---------|------|
+S| Domain | mycontractly.app (Cloudflare/Porkbun) | ~$15/yr |
 | VPS | Hetzner CX22 (4GB RAM, 2 vCPU) | €4.50/mo |
 | AI | Google Gemini 1.5 Flash | Free (1M tokens/day) |
 | Storage | Cloudflare R2 | Free (10GB) |
 | Email | Resend | Free (100/day) |
 | Errors | Sentry | Free (5k events) |
-| Domain | None (use IP) or $3/yr .xyz | $0-3 |
 | SSL | Let's Encrypt | Free |
-| **Total** | | **~$6/mo** |
+| **Total** | | **~$7/mo** (~$6 + $1.25 domain) |
 
 ### Phase 6A: AI Provider Switch
 | Status | Task |
@@ -292,7 +292,9 @@
 ### Phase 6B: Infrastructure Setup
 | Status | Task |
 |--------|------|
+| 📋 | Register mycontractly.app domain (Cloudflare/Porkbun) |
 | 📋 | Create Hetzner account and VPS |
+| 📋 | Point domain DNS to VPS IP |
 | 📋 | Configure firewall (SSH, HTTP, HTTPS only) |
 | 📋 | Install Docker and Docker Compose |
 | 📋 | Set up Cloudflare R2 bucket |
@@ -305,7 +307,7 @@
 |--------|------|
 | 📋 | Create `docker-compose.prod.yml` (optimized) |
 | 📋 | Create Nginx production config (gzip, caching) |
-| 📋 | Configure SSL with Let's Encrypt (certbot) |
+| 📋 | Configure SSL with Let's Encrypt for mycontractly.app |
 | 📋 | Set up PostgreSQL backups (pg_dump cron) |
 | 📋 | Configure Laravel for production (caching, optimization) |
 | 📋 | Set up Supervisor for queue workers |
@@ -1523,7 +1525,7 @@ Getting Started ✓
 | Phase 3 | 30 | 30 | 0 | 0 | 0 | 0 |
 | Phase 4 | 19 | 19 | 0 | 0 | 0 | 0 |
 | Phase 5 | 20 | 19 | 0 | 0 | 0 | 1 |
-| Phase 6 | 34 | 0 | 0 | 0 | 0 | 34 |
+| Phase 6 | 36 | 0 | 0 | 0 | 0 | 36 |
 | Phase 7 | 40 | 40 | 0 | 0 | 0 | 0 |
 | Phase 8 | 37 | 36 | 0 | 0 | 0 | 1 |
 | Phase 9 | 18 | 18 | 0 | 0 | 0 | 0 |
