@@ -146,12 +146,12 @@ class ContractChatService
         $keyFindings = implode("\n- ", $analysis->key_findings);
 
         // Format clauses
-        /** @var \Illuminate\Database\Eloquent\Collection<int, \App\Models\ContractClause> $clauses */
+        /** @var Collection<int, \App\Models\ContractClause> $clauses */
         $clauses = $analysis->clauses;
         $clausesFormatted = $this->formatClauses($clauses);
 
         // Format deadlines
-        /** @var \Illuminate\Database\Eloquent\Collection<int, \App\Models\ContractDeadline> $deadlines */
+        /** @var Collection<int, \App\Models\ContractDeadline> $deadlines */
         $deadlines = $analysis->deadlines;
         $deadlinesFormatted = $this->formatDeadlines($deadlines);
 

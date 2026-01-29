@@ -33,6 +33,20 @@ class ContractResource extends JsonResource
             'created_at' => $this->created_at->toIso8601String(),
             'updated_at' => $this->updated_at->toIso8601String(),
 
+            // Document intelligence (when present)
+            'document_classification' => $this->when(
+                $this->hasDocumentClassification(),
+                $this->document_classification,
+            ),
+            'pii_detection' => $this->when(
+                $this->hasPiiDetected(),
+                $this->pii_detection,
+            ),
+            'has_redactions' => $this->when(
+                $this->has_redactions,
+                $this->has_redactions,
+            ),
+
             // Relationships (when loaded)
             'analysis' => ContractAnalysisResource::make($this->whenLoaded('analysis')),
         ];

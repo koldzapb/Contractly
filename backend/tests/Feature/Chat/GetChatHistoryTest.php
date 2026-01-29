@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-use App\Enums\ChatRole;
 use App\Enums\ContractStatus;
 use App\Models\ChatMessage;
 use App\Models\Contract;

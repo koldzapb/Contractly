@@ -6,7 +6,6 @@ use App\Enums\ContractStatus;
 use App\Models\Contract;
 use App\Models\ContractAnalysis;
 use App\Models\User;
-use App\Services\ChatResponse;
 use App\Services\ContractChatService;
 
 uses(Illuminate\Foundation\Testing\RefreshDatabase::class);
@@ -28,14 +27,14 @@ describe('send message', function () {
         $mockService->shouldReceive('sendMessage')
             ->once()
             ->andReturn(
-                \App\Models\ChatMessage::factory()
+                App\Models\ChatMessage::factory()
                     ->for($this->contract)
                     ->for($this->user)
                     ->assistant()
                     ->create([
                         'content' => 'The payment terms specify monthly payments.',
                         'tokens_used' => 150,
-                    ])
+                    ]),
             );
 
         $this->app->instance(ContractChatService::class, $mockService);

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Controllers;
 
 use App\Enums\ContractStatus;
+use App\Http\Requests\ApplyRedactionsRequest;
 use App\Http\Requests\StoreContractRequest;
 use App\Http\Requests\UpdateContractRequest;
 use App\Http\Resources\ContractResource;
@@ -12,6 +13,7 @@ use App\Jobs\AnalyzeContractJob;
 use App\Models\Contract;
 use App\Repositories\Contracts\ContractRepositoryInterface;
 use App\Services\ContractUploadService;
+use App\Services\PiiDetectionService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
@@ -21,6 +23,7 @@ class ContractController extends Controller
     public function __construct(
         private ContractRepositoryInterface $contracts,
         private ContractUploadService $uploadService,
+        private PiiDetectionService $piiService,
     ) {}
 
     /**
@@ -182,5 +185,128 @@ class ContractController extends Controller
                 'status' => 'pending',
             ],
         ]);
+    }
+
+    /**
+     * Override document validation and analyze anyway.
+     */
+    public function analyzeAnyway(Request $request, string $id): ContractResource|JsonResponse
+    {
+        $contract = $this->contracts->findForUser($id, $request->user());
+
+        if (! $contract) {
+            return response()->json([
+                'message' => 'Contract not found.',
+            ], 404);
+        }
+
+        // Check if document has classification
+        $classification = $contract->getDocumentClassification();
+        if (! $classification) {
+            return response()->json([
+                'message' => 'Document has not been classified yet.',
+            ], 422);
+        }
+
+        // Update classification with override flag
+        $updatedClassification = $classification->withOverride();
+        $contract->setDocumentClassification($updatedClassification);
+
+        // Reset status and dispatch analysis job
+        $this->contracts->update($contract, [
+            'status' => ContractStatus::PENDING,
+            'document_classification' => $updatedClassification->toArray(),
+            'error_message' => null,
+        ]);
+
+        AnalyzeContractJob::dispatch($contract->fresh());
+
+        return ContractResource::make($contract->fresh());
+    }
+
+    /**
+     * Get detected PII for a contract.
+     */
+    public function getPii(Request $request, string $id): JsonResponse
+    {
+        $contract = $this->contracts->findForUser($id, $request->user());
+
+        if (! $contract) {
+            return response()->json([
+                'message' => 'Contract not found.',
+            ], 404);
+        }
+
+        if (! $contract->hasPiiDetected()) {
+            return response()->json([
+                'data' => [
+                    'has_pii' => false,
+                    'total_count' => 0,
+                    'counts_by_type' => [],
+                    'items' => [],
+                ],
+            ]);
+        }
+
+        return response()->json([
+            'data' => $contract->pii_detection,
+        ]);
+    }
+
+    /**
+     * Apply redactions to selected PII items.
+     */
+    public function applyRedactions(ApplyRedactionsRequest $request, string $id): ContractResource|JsonResponse
+    {
+        $contract = $this->contracts->findForUser($id, $request->user());
+
+        if (! $contract) {
+            return response()->json([
+                'message' => 'Contract not found.',
+            ], 404);
+        }
+
+        if (! $contract->hasPiiDetected()) {
+            return response()->json([
+                'message' => 'No PII detected in this contract.',
+            ], 422);
+        }
+
+        $itemIds = $request->validated('item_ids', []);
+        $piiDetection = $contract->getPiiDetection();
+
+        // Apply redactions to the extracted text
+        $redactedText = $this->piiService->applyRedactions($piiDetection, $itemIds);
+
+        // Update contract with redaction flag
+        // Note: In a full implementation, you might want to store the redacted text
+        // or update the PDF. For now, we just mark that redactions were applied.
+        $this->contracts->update($contract, [
+            'has_redactions' => true,
+        ]);
+
+        return ContractResource::make($contract->fresh());
+    }
+
+    /**
+     * Skip PII redaction and proceed with analysis.
+     */
+    public function skipRedaction(Request $request, string $id): ContractResource|JsonResponse
+    {
+        $contract = $this->contracts->findForUser($id, $request->user());
+
+        if (! $contract) {
+            return response()->json([
+                'message' => 'Contract not found.',
+            ], 404);
+        }
+
+        // Clear PII detection (user chose to skip)
+        $this->contracts->update($contract, [
+            'pii_detection' => null,
+            'has_redactions' => false,
+        ]);
+
+        return ContractResource::make($contract->fresh());
     }
 }

@@ -6,6 +6,8 @@ namespace App\Models;
 
 use App\Enums\ContractStatus;
 use App\Enums\RiskLevel;
+use App\Services\DocumentClassificationResult;
+use App\Services\PiiDetectionResult;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -27,6 +29,9 @@ use Illuminate\Support\Carbon;
  * @property ContractStatus $status
  * @property RiskLevel|null $overall_risk_level
  * @property string|null    $language_detected
+ * @property array|null     $document_classification
+ * @property array|null     $pii_detection
+ * @property bool           $has_redactions
  * @property string|null    $error_message
  * @property Carbon|null    $analyzed_at
  * @property Carbon         $created_at
@@ -47,6 +52,9 @@ class Contract extends Model
         'status',
         'overall_risk_level',
         'language_detected',
+        'document_classification',
+        'pii_detection',
+        'has_redactions',
         'error_message',
         'analyzed_at',
     ];
@@ -58,6 +66,9 @@ class Contract extends Model
             'overall_risk_level' => RiskLevel::class,
             'file_size' => 'integer',
             'page_count' => 'integer',
+            'document_classification' => 'array',
+            'pii_detection' => 'array',
+            'has_redactions' => 'boolean',
             'analyzed_at' => 'datetime',
         ];
     }
@@ -167,5 +178,89 @@ class Contract extends Model
         }
 
         return round($bytes, 2).' '.$units[$index];
+    }
+
+    /**
+     * Get the document classification result as a DTO.
+     */
+    public function getDocumentClassification(): ?DocumentClassificationResult
+    {
+        if (empty($this->document_classification)) {
+            return null;
+        }
+
+        return DocumentClassificationResult::fromArray($this->document_classification);
+    }
+
+    /**
+     * Set the document classification from a DTO.
+     */
+    public function setDocumentClassification(DocumentClassificationResult $result): void
+    {
+        $this->document_classification = $result->toArray();
+    }
+
+    /**
+     * Get the PII detection result as a DTO.
+     */
+    public function getPiiDetection(): ?PiiDetectionResult
+    {
+        if (empty($this->pii_detection)) {
+            return null;
+        }
+
+        return PiiDetectionResult::fromArray($this->pii_detection);
+    }
+
+    /**
+     * Set the PII detection from a DTO.
+     */
+    public function setPiiDetection(PiiDetectionResult $result): void
+    {
+        $this->pii_detection = $result->toArray();
+    }
+
+    /**
+     * Check if the document has been classified.
+     */
+    public function hasDocumentClassification(): bool
+    {
+        return ! empty($this->document_classification);
+    }
+
+    /**
+     * Check if the document is a legal document.
+     */
+    public function isLegalDocument(): bool
+    {
+        $classification = $this->getDocumentClassification();
+
+        if ($classification === null) {
+            return true;
+        }
+
+        return $classification->isLegalDocument;
+    }
+
+    /**
+     * Check if the document can be analyzed (either legal or overridden).
+     */
+    public function canBeAnalyzed(): bool
+    {
+        $classification = $this->getDocumentClassification();
+
+        if ($classification === null) {
+            return true;
+        }
+
+        return $classification->canAnalyze();
+    }
+
+    /**
+     * Check if PII was detected in this contract.
+     */
+    public function hasPiiDetected(): bool
+    {
+        return ! empty($this->pii_detection) && ($this->pii_detection['has_pii'] ?? false);
     }
 }

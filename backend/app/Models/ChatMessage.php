@@ -12,15 +12,15 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Carbon;
 
 /**
- * @property string    $id
- * @property string    $contract_id
- * @property int       $user_id
- * @property ChatRole  $role
- * @property string    $content
- * @property int|null  $tokens_used
- * @property bool      $is_off_topic
- * @property Carbon    $created_at
- * @property Carbon    $updated_at
+ * @property string   $id
+ * @property string   $contract_id
+ * @property int      $user_id
+ * @property ChatRole $role
+ * @property string   $content
+ * @property int|null $tokens_used
+ * @property bool     $is_off_topic
+ * @property Carbon   $created_at
+ * @property Carbon   $updated_at
  */
 class ChatMessage extends Model
 {

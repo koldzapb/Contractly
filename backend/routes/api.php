@@ -63,6 +63,12 @@ Route::middleware(['auth:sanctum', 'throttle:api'])->group(function () {
         Route::delete('/{id}', [ContractController::class, 'destroy']);
         Route::post('/{id}/retry', [ContractController::class, 'retryAnalysis']);
 
+        // Document intelligence endpoints
+        Route::post('/{id}/analyze-anyway', [ContractController::class, 'analyzeAnyway']);
+        Route::get('/{id}/pii', [ContractController::class, 'getPii']);
+        Route::post('/{id}/redact', [ContractController::class, 'applyRedactions']);
+        Route::post('/{id}/skip-redaction', [ContractController::class, 'skipRedaction']);
+
         // Upload endpoint - stricter rate limit
         Route::post('/', [ContractController::class, 'store'])
             ->middleware('throttle:uploads');
