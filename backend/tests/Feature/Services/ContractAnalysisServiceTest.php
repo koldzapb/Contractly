@@ -7,15 +7,15 @@ use App\Enums\ContractStatus;
 use App\Enums\DeadlineType;
 use App\Enums\RiskLevel;
 use App\Exceptions\AiAnalysisException;
-use App\Exceptions\PdfParsingException;
+use App\Exceptions\TextExtractionException;
 use App\Models\Contract;
 use App\Models\ContractAnalysis;
 use App\Models\User;
 use App\Services\AiAnalysisResult;
 use App\Services\ClaudeAiService;
 use App\Services\ContractAnalysisService;
-use App\Services\PdfContent;
-use App\Services\PdfParserService;
+use App\Services\TextExtraction\TextExtractionResult;
+use App\Services\TextExtraction\TextExtractorFactory;
 use Illuminate\Support\Facades\Storage;
 
 uses(Illuminate\Foundation\Testing\RefreshDatabase::class);
@@ -37,10 +37,10 @@ describe('analyze', function () {
         Storage::disk('contracts')->put('test/contract.pdf', 'fake pdf content');
 
         // Mock the services
-        $pdfParser = Mockery::mock(PdfParserService::class);
-        $pdfParser->shouldReceive('extractText')
+        $textExtractor = Mockery::mock(TextExtractorFactory::class);
+        $textExtractor->shouldReceive('extract')
             ->once()
-            ->andReturn(new PdfContent(
+            ->andReturn(new TextExtractionResult(
                 fullText: 'This is the contract text',
                 textByPage: [1 => 'This is the contract text'],
                 pageCount: 1,
@@ -79,10 +79,8 @@ describe('analyze', function () {
                 processingTimeMs: 2000,
             ));
 
-        $service = app(ContractAnalysisService::class);
-
         // Bind mocks
-        app()->instance(PdfParserService::class, $pdfParser);
+        app()->instance(TextExtractorFactory::class, $textExtractor);
         app()->instance(ClaudeAiService::class, $aiService);
         $service = app(ContractAnalysisService::class);
 
@@ -103,7 +101,7 @@ describe('analyze', function () {
         expect($contract->analyzed_at)->not->toBeNull();
     });
 
-    it('marks contract as failed on PDF parsing error', function () {
+    it('marks contract as failed on text extraction error', function () {
         $contract = Contract::factory()->create([
             'user_id' => $this->user->id,
             'status' => ContractStatus::PENDING,
@@ -112,20 +110,20 @@ describe('analyze', function () {
 
         Storage::disk('contracts')->put('test/contract.pdf', 'fake pdf content');
 
-        $pdfParser = Mockery::mock(PdfParserService::class);
-        $pdfParser->shouldReceive('extractText')
+        $textExtractor = Mockery::mock(TextExtractorFactory::class);
+        $textExtractor->shouldReceive('extract')
             ->once()
-            ->andThrow(new PdfParsingException('Failed to parse PDF'));
+            ->andThrow(new TextExtractionException('Failed to extract text'));
 
-        app()->instance(PdfParserService::class, $pdfParser);
+        app()->instance(TextExtractorFactory::class, $textExtractor);
         $service = app(ContractAnalysisService::class);
 
         expect(fn () => $service->analyze($contract))
-            ->toThrow(PdfParsingException::class);
+            ->toThrow(TextExtractionException::class);
 
         $contract->refresh();
         expect($contract->status)->toBe(ContractStatus::FAILED);
-        expect($contract->error_message)->toBe('Failed to parse PDF');
+        expect($contract->error_message)->toBe('Failed to extract text');
     });
 
     it('marks contract as failed on AI analysis error', function () {
@@ -137,10 +135,10 @@ describe('analyze', function () {
 
         Storage::disk('contracts')->put('test/contract.pdf', 'fake pdf content');
 
-        $pdfParser = Mockery::mock(PdfParserService::class);
-        $pdfParser->shouldReceive('extractText')
+        $textExtractor = Mockery::mock(TextExtractorFactory::class);
+        $textExtractor->shouldReceive('extract')
             ->once()
-            ->andReturn(new PdfContent(
+            ->andReturn(new TextExtractionResult(
                 fullText: 'Contract text',
                 textByPage: [1 => 'Contract text'],
                 pageCount: 1,
@@ -151,7 +149,7 @@ describe('analyze', function () {
             ->once()
             ->andThrow(new AiAnalysisException('API rate limit exceeded'));
 
-        app()->instance(PdfParserService::class, $pdfParser);
+        app()->instance(TextExtractorFactory::class, $textExtractor);
         app()->instance(ClaudeAiService::class, $aiService);
         $service = app(ContractAnalysisService::class);
 
@@ -163,7 +161,7 @@ describe('analyze', function () {
         expect($contract->error_message)->toBe('API rate limit exceeded');
     });
 
-    it('marks contract as failed when PDF has no extractable text', function () {
+    it('marks contract as failed when extraction returns empty text', function () {
         $contract = Contract::factory()->create([
             'user_id' => $this->user->id,
             'status' => ContractStatus::PENDING,
@@ -172,20 +170,20 @@ describe('analyze', function () {
 
         Storage::disk('contracts')->put('test/contract.pdf', 'fake pdf content');
 
-        $pdfParser = Mockery::mock(PdfParserService::class);
-        $pdfParser->shouldReceive('extractText')
+        $textExtractor = Mockery::mock(TextExtractorFactory::class);
+        $textExtractor->shouldReceive('extract')
             ->once()
-            ->andReturn(new PdfContent(
+            ->andReturn(new TextExtractionResult(
                 fullText: '',
                 textByPage: [],
                 pageCount: 1,
             ));
 
-        app()->instance(PdfParserService::class, $pdfParser);
+        app()->instance(TextExtractorFactory::class, $textExtractor);
         $service = app(ContractAnalysisService::class);
 
         expect(fn () => $service->analyze($contract))
-            ->toThrow(PdfParsingException::class, 'PDF does not contain extractable text');
+            ->toThrow(TextExtractionException::class);
 
         $contract->refresh();
         expect($contract->status)->toBe(ContractStatus::FAILED);
@@ -200,10 +198,10 @@ describe('analyze', function () {
 
         Storage::disk('contracts')->put('test/contract.pdf', 'fake pdf content');
 
-        $pdfParser = Mockery::mock(PdfParserService::class);
-        $pdfParser->shouldReceive('extractText')
+        $textExtractor = Mockery::mock(TextExtractorFactory::class);
+        $textExtractor->shouldReceive('extract')
             ->once()
-            ->andReturn(new PdfContent(
+            ->andReturn(new TextExtractionResult(
                 fullText: 'Contract text',
                 textByPage: [1 => 'Contract text'],
                 pageCount: 1,
@@ -223,7 +221,7 @@ describe('analyze', function () {
                 processingTimeMs: 1500,
             ));
 
-        app()->instance(PdfParserService::class, $pdfParser);
+        app()->instance(TextExtractorFactory::class, $textExtractor);
         app()->instance(ClaudeAiService::class, $aiService);
         $service = app(ContractAnalysisService::class);
 
@@ -243,10 +241,10 @@ describe('analyze', function () {
 
         Storage::disk('contracts')->put('test/contract.pdf', 'fake pdf content');
 
-        $pdfParser = Mockery::mock(PdfParserService::class);
-        $pdfParser->shouldReceive('extractText')
+        $textExtractor = Mockery::mock(TextExtractorFactory::class);
+        $textExtractor->shouldReceive('extract')
             ->once()
-            ->andReturn(new PdfContent(
+            ->andReturn(new TextExtractionResult(
                 fullText: 'Contract text',
                 textByPage: [1 => 'Contract text'],
                 pageCount: 1,
@@ -270,7 +268,7 @@ describe('analyze', function () {
                 processingTimeMs: 1500,
             ));
 
-        app()->instance(PdfParserService::class, $pdfParser);
+        app()->instance(TextExtractorFactory::class, $textExtractor);
         app()->instance(ClaudeAiService::class, $aiService);
         $service = app(ContractAnalysisService::class);
 
@@ -291,10 +289,10 @@ describe('analyze', function () {
 
         Storage::disk('contracts')->put('test/contract.pdf', 'fake pdf content');
 
-        $pdfParser = Mockery::mock(PdfParserService::class);
-        $pdfParser->shouldReceive('extractText')
+        $textExtractor = Mockery::mock(TextExtractorFactory::class);
+        $textExtractor->shouldReceive('extract')
             ->once()
-            ->andReturn(new PdfContent(
+            ->andReturn(new TextExtractionResult(
                 fullText: 'Contract text',
                 textByPage: [1 => 'Contract text'],
                 pageCount: 1,
@@ -318,7 +316,7 @@ describe('analyze', function () {
                 processingTimeMs: 1500,
             ));
 
-        app()->instance(PdfParserService::class, $pdfParser);
+        app()->instance(TextExtractorFactory::class, $textExtractor);
         app()->instance(ClaudeAiService::class, $aiService);
         $service = app(ContractAnalysisService::class);
 

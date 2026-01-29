@@ -61,12 +61,18 @@ export interface PiiDetectionResult {
 // Contract types
 export type ContractStatus = 'pending' | 'processing' | 'completed' | 'failed'
 
+// File type for uploaded contracts
+export type FileType = 'pdf' | 'image' | 'text'
+
 export interface Contract {
   id: string
   title: string
   original_filename: string
   file_size: number
   file_size_human: string
+  file_type: FileType
+  file_type_label: string
+  mime_type: string | null
   page_count: number | null
   status: ContractStatus
   overall_risk_level: RiskLevel | null

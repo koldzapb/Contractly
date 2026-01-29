@@ -283,58 +283,58 @@
 ### Phase 7A: Document Validation - Backend
 | Status | Task |
 |--------|------|
-| 📋 | Create `DocumentType` enum with legal/non-legal classification |
-| 📋 | Create migration to add validation fields to `contract_analyses` |
-| 📋 | Update `AiAnalysisResult` DTO with classification fields |
-| 📋 | Update `ClaudeAiService` prompt for document classification |
-| 📋 | Handle classification-first response parsing |
-| 📋 | Update `ContractAnalysisService` for validation flow |
-| 📋 | Add "Analyze Anyway" override endpoint |
-| 📋 | Update `ContractAnalysisResource` with new fields |
-| 📋 | Write document classification tests (various doc types) |
-| 📋 | Write integration tests for rejection flow |
+| ✅ | Create `DocumentType` enum with legal/non-legal classification |
+| ✅ | Create migration to add validation fields to `contracts` |
+| ✅ | Create `DocumentClassificationResult` DTO with classification fields |
+| ✅ | Create `DocumentValidationService` for document classification |
+| ✅ | Handle classification-first response parsing |
+| ✅ | Update `ContractAnalysisService` for validation flow |
+| ✅ | Add "Analyze Anyway" override endpoint |
+| ✅ | Update `ContractResource` with new fields |
+| ✅ | Write document classification tests (various doc types) |
+| ✅ | Write integration tests for rejection flow |
 
 ### Phase 7B: Document Validation - Frontend
 | Status | Task |
 |--------|------|
-| 📋 | Add TypeScript types for document classification |
-| 📋 | Create `InvalidDocumentNotice` component |
-| 📋 | Create `DocumentTypeBadge` component |
-| 📋 | Create `DocumentWarningBanner` component |
-| 📋 | Update `ContractDetailView` for rejection state |
-| 📋 | Implement "Analyze Anyway" button flow |
-| 📋 | Update contracts store for new response fields |
-| 📋 | Write validation component tests |
-| 📋 | Write integration tests for full flow |
+| ✅ | Add TypeScript types for document classification |
+| ✅ | Create `InvalidDocumentNotice` component |
+| ✅ | Create `DocumentTypeBadge` component |
+| ✅ | Create `DocumentWarningBanner` component |
+| ✅ | Update `ContractDetailView` for rejection state |
+| ✅ | Implement "Analyze Anyway" button flow |
+| ✅ | Update contracts store for new response fields |
+| ✅ | Write validation component tests |
+| ✅ | Write integration tests for full flow |
 
 ### Phase 7C: PII Redaction - Backend
 | Status | Task |
 |--------|------|
-| 📋 | Create `PiiType` enum (ssn, email, phone, credit_card, etc.) |
-| 📋 | Create `PiiDetectorService` with regex patterns |
-| 📋 | Create migration for redaction fields on `contracts` |
-| 📋 | Create `DetectedPii` DTO for API response |
-| 📋 | Create endpoint: `POST /contracts/{id}/detect-pii` |
-| 📋 | Create endpoint: `POST /contracts/{id}/apply-redactions` |
-| 📋 | Store extracted text separately from redacted text |
-| 📋 | Update `ContractAnalysisService` to use redacted text |
-| 📋 | Update `ContractResource` with redaction metadata |
-| 📋 | Write PII detection tests (all pattern types) |
-| 📋 | Write redaction application tests |
+| ✅ | Create `PiiType` enum (ssn, email, phone, credit_card, etc.) |
+| ✅ | Create `PiiDetectionService` with regex patterns |
+| ✅ | Create migration for redaction fields on `contracts` |
+| ✅ | Create `DetectedPii` DTO for API response |
+| ✅ | Create endpoint: `GET /contracts/{id}/pii` |
+| ✅ | Create endpoint: `POST /contracts/{id}/redact` |
+| ✅ | Create `PiiDetectionResult` DTO with extraction support |
+| ✅ | Update `ContractAnalysisService` to use redacted text |
+| ✅ | Update `ContractResource` with redaction metadata |
+| ✅ | Write PII detection tests (all pattern types) |
+| ✅ | Write redaction application tests |
 
 ### Phase 7D: PII Redaction - Frontend
 | Status | Task |
 |--------|------|
-| 📋 | Add TypeScript types for PII detection/redaction |
-| 📋 | Create `RedactionEditor` component (main interface) |
-| 📋 | Create `PiiHighlight` component (highlighted text spans) |
-| 📋 | Create `RedactionControls` component (toggle/bulk actions) |
-| 📋 | Create `RedactionPreview` component (before/after view) |
-| 📋 | Create `RedactionReviewView` page (upload → review flow) |
-| 📋 | Update upload flow to include optional redaction step |
-| 📋 | Handle "Skip Redaction" vs "Review & Redact" paths |
-| 📋 | Write redaction editor component tests |
-| 📋 | Write E2E tests for redaction flow |
+| ✅ | Add TypeScript types for PII detection/redaction |
+| ✅ | Create `RedactionEditor` component (main interface) |
+| ✅ | Create `PiiHighlight` component (highlighted text spans) |
+| ✅ | Create `RedactionControls` component (toggle/bulk actions) |
+| ✅ | Create `RedactionPreview` component (before/after view) |
+| ✅ | Create `PiiTypeBadge` component |
+| ✅ | Update `ContractDetailView` to include redaction step |
+| ✅ | Handle "Skip Redaction" vs "Review & Redact" paths |
+| ✅ | Write redaction editor component tests |
+| ✅ | Write E2E tests for redaction flow |
 
 ---
 
@@ -686,6 +686,103 @@ For long contracts that exceed context limits:
 
 ---
 
+## Phase 9: Multi-Format File Support
+
+> **Goal:** Enable users to upload contracts in additional formats beyond PDF - specifically images (JPG, PNG, WEBP) and plain text (TXT) files.
+
+### Phase 9A: Backend - Foundation
+| Status | Task |
+|--------|------|
+| ✅ | Create `FileType` enum (`pdf`, `image`, `text` values with labels) |
+| ✅ | Create migration to add `file_type`, `mime_type` to contracts |
+| ✅ | Update Contract model with new fields and casts |
+| ✅ | Create `TextExtractionResult` DTO (unified result object) |
+| ✅ | Create `TextExtractionInterface` (common interface for extractors) |
+| ✅ | Create `UnsupportedFileTypeException` |
+| ✅ | Create `TextExtractionException` |
+
+### Phase 9B: Backend - Text Extractors
+| Status | Task |
+|--------|------|
+| ✅ | Create `PdfTextExtractor` (wraps existing PdfParserService) |
+| ✅ | Create `PlainTextExtractor` (direct file read with encoding detection) |
+| ✅ | Create `ClaudeVisionService` (Vision API integration for images) |
+| ✅ | Create `ImageTextExtractor` (uses ClaudeVisionService) |
+| ✅ | Create `TextExtractorFactory` (selects extractor by extension) |
+
+### Phase 9C: Backend - Integration
+| Status | Task |
+|--------|------|
+| ✅ | Update `StoreContractRequest` to accept new file types with size limits |
+| ✅ | Update `ContractUploadService` to detect and store file_type/mime_type |
+| ✅ | Update `ContractAnalysisService` to use TextExtractorFactory |
+| ✅ | Update `ContractResource` with file_type fields |
+| ✅ | Update `ContractFactory` with file_type states |
+| ✅ | Add `vision_max_tokens` config option |
+
+### Phase 9D: Backend - Tests
+| Status | Task |
+|--------|------|
+| ✅ | Write `PlainTextExtractor` unit tests |
+| ✅ | Write `TextExtractorFactory` unit tests |
+| ✅ | Write `FileType` enum tests |
+| ✅ | Update `UploadContractTest` for new file types |
+| ✅ | Update `ContractAnalysisServiceTest` for TextExtractorFactory |
+
+### Phase 9E: Frontend - Updates
+| Status | Task |
+|--------|------|
+| ✅ | Add `FileType` TypeScript type |
+| ✅ | Update `Contract` interface with file_type fields |
+| ✅ | Update `ContractUploader.vue` accept attribute and messaging |
+| ✅ | Add file type icons to `ContractCard.vue` |
+| ✅ | Update `ContractUploader.spec.ts` tests |
+| ✅ | Update `contracts.spec.ts` mock objects |
+
+---
+
+### Phase 9 Design Decisions
+
+#### Supported File Formats
+
+| Format | Extension | Max Size | Extraction Method |
+|--------|-----------|----------|-------------------|
+| PDF | `.pdf` | 10MB | PdfParserService (existing) |
+| JPEG | `.jpg`, `.jpeg` | 20MB | Claude Vision API |
+| PNG | `.png` | 20MB | Claude Vision API |
+| WebP | `.webp` | 20MB | Claude Vision API |
+| GIF | `.gif` | 20MB | Claude Vision API |
+| Plain Text | `.txt` | 5MB | Direct file read |
+
+#### Why Claude Vision over OCR (Tesseract)
+- Higher accuracy for complex contract layouts
+- Same AI model for extraction + analysis = coherent understanding
+- No additional server dependencies
+- Incremental API cost (already using Claude)
+
+#### Architecture
+
+```
+backend/app/Services/
+├── TextExtraction/
+│   ├── TextExtractionInterface.php    # Common interface
+│   ├── TextExtractionResult.php       # Unified DTO
+│   ├── PdfTextExtractor.php           # Wraps existing PdfParserService
+│   ├── ImageTextExtractor.php         # Uses ClaudeVisionService
+│   ├── PlainTextExtractor.php         # file_get_contents()
+│   └── TextExtractorFactory.php       # Selects extractor by extension
+└── ClaudeVisionService.php            # Claude Vision API integration
+```
+
+#### Database Schema Addition
+
+```sql
+ALTER TABLE contracts ADD COLUMN file_type VARCHAR(20) DEFAULT 'pdf';
+ALTER TABLE contracts ADD COLUMN mime_type VARCHAR(100) NULL;
+```
+
+---
+
 ## Current Sprint
 
 **Sprint:** Planning Next Phase
@@ -707,13 +804,14 @@ For long contracts that exceed context limits:
 | Phase 3 | ✅ Complete | AI Analysis backend complete, frontend UI complete |
 | Phase 4 | ✅ Complete | Reminders - email notifications for deadlines |
 | Phase 5 | ✅ Complete | Dashboard with real-time stats, UI polish |
+| Phase 7 | ✅ Complete | Document Intelligence - validation & PII redaction |
 | Phase 8 | ✅ Complete | AI Contract Chat - contextual Q&A about contracts |
+| Phase 9 | ✅ Complete | Multi-Format File Support - images and text files |
 
 ### Upcoming Phases
 
 | Phase | Status | Notes |
 |-------|--------|-------|
-| Phase 7 | 📋 Backlog | Document Intelligence - validation & PII redaction |
 | Phase 6 | 📋 Backlog | Deployment Preparation - production setup (lowest priority) |
 
 ### Blocked
@@ -735,9 +833,10 @@ For long contracts that exceed context limits:
 | Phase 4 | 19 | 19 | 0 | 0 | 0 | 0 |
 | Phase 5 | 20 | 19 | 0 | 0 | 0 | 1 |
 | Phase 6 | 9 | 0 | 0 | 0 | 0 | 9 |
-| Phase 7 | 40 | 0 | 0 | 0 | 0 | 40 |
+| Phase 7 | 40 | 40 | 0 | 0 | 0 | 0 |
 | Phase 8 | 37 | 36 | 0 | 0 | 0 | 1 |
-| **Total** | **247** | **196** | **0** | **0** | **0** | **51** |
+| Phase 9 | 18 | 18 | 0 | 0 | 0 | 0 |
+| **Total** | **265** | **254** | **0** | **0** | **0** | **11** |
 
 ---
 

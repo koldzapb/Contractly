@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Models;
 
 use App\Enums\ContractStatus;
+use App\Enums\FileType;
 use App\Enums\RiskLevel;
 use App\Services\DocumentClassificationResult;
 use App\Services\PiiDetectionResult;
@@ -25,6 +26,8 @@ use Illuminate\Support\Carbon;
  * @property string         $original_filename
  * @property string         $file_path
  * @property int            $file_size
+ * @property FileType       $file_type
+ * @property string|null    $mime_type
  * @property int|null       $page_count
  * @property ContractStatus $status
  * @property RiskLevel|null $overall_risk_level
@@ -48,6 +51,8 @@ class Contract extends Model
         'original_filename',
         'file_path',
         'file_size',
+        'file_type',
+        'mime_type',
         'page_count',
         'status',
         'overall_risk_level',
@@ -63,6 +68,7 @@ class Contract extends Model
     {
         return [
             'status' => ContractStatus::class,
+            'file_type' => FileType::class,
             'overall_risk_level' => RiskLevel::class,
             'file_size' => 'integer',
             'page_count' => 'integer',

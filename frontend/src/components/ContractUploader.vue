@@ -119,13 +119,15 @@ function handleRetry(): void {
           ref="fileInput"
           name="file-upload"
           type="file"
-          accept=".pdf,application/pdf"
+          accept=".pdf,.jpg,.jpeg,.png,.webp,.gif,.txt,application/pdf,image/jpeg,image/png,image/webp,image/gif,text/plain"
           class="sr-only"
           @change="handleFileSelect"
         />
         <span class="text-gray-500 dark:text-gray-400"> or drag and drop</span>
       </div>
-      <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">PDF files up to 10MB</p>
+      <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+        PDF (up to 10MB), images (up to 20MB), or text files (up to 5MB)
+      </p>
     </div>
   </div>
 </template>

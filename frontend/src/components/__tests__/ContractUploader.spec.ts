@@ -30,15 +30,20 @@ describe('ContractUploader', () => {
 
       expect(wrapper.text()).toContain('Upload a file')
       expect(wrapper.text()).toContain('or drag and drop')
-      expect(wrapper.text()).toContain('PDF files up to 10MB')
+      expect(wrapper.text()).toContain('PDF (up to 10MB)')
+      expect(wrapper.text()).toContain('images (up to 20MB)')
+      expect(wrapper.text()).toContain('text files (up to 5MB)')
     })
 
-    it('has file input accepting PDF files', () => {
+    it('has file input accepting multiple file formats', () => {
       const wrapper = mountComponent()
 
       const input = wrapper.find('input[type="file"]')
       expect(input.exists()).toBe(true)
-      expect(input.attributes('accept')).toContain('pdf')
+      expect(input.attributes('accept')).toContain('.pdf')
+      expect(input.attributes('accept')).toContain('.jpg')
+      expect(input.attributes('accept')).toContain('.png')
+      expect(input.attributes('accept')).toContain('.txt')
     })
 
     it('does not show upload progress initially', () => {
@@ -74,6 +79,9 @@ describe('ContractUploader', () => {
         original_filename: 'test.pdf',
         file_size: 1024,
         file_size_human: '1 KB',
+        file_type: 'pdf',
+        file_type_label: 'PDF Document',
+        mime_type: 'application/pdf',
         page_count: null,
         status: 'pending',
         overall_risk_level: null,
@@ -112,6 +120,9 @@ describe('ContractUploader', () => {
         original_filename: 'test.pdf',
         file_size: 1024,
         file_size_human: '1 KB',
+        file_type: 'pdf',
+        file_type_label: 'PDF Document',
+        mime_type: 'application/pdf',
         page_count: null,
         status: 'pending',
         overall_risk_level: null,

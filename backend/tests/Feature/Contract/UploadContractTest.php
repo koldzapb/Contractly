@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use App\Enums\ContractStatus;
+use App\Enums\FileType;
 use App\Jobs\AnalyzeContractJob;
 use App\Models\Contract;
 use App\Models\User;
@@ -86,7 +87,75 @@ describe('upload contract', function () {
             ->assertJsonPath('data.title', 'My Custom Title');
     });
 
-    it('rejects non-pdf files', function () {
+    it('uploads an image file successfully', function () {
+        $file = UploadedFile::fake()->create('contract.jpg', 1000, 'image/jpeg');
+
+        $response = $this->actingAs($this->user)
+            ->postJson('/api/contracts', [
+                'file' => $file,
+            ]);
+
+        $response->assertStatus(201)
+            ->assertJson([
+                'data' => [
+                    'original_filename' => 'contract.jpg',
+                    'status' => ContractStatus::PENDING->value,
+                    'file_type' => FileType::IMAGE->value,
+                ],
+            ]);
+
+        $this->assertDatabaseHas('contracts', [
+            'user_id' => $this->user->id,
+            'original_filename' => 'contract.jpg',
+            'file_type' => FileType::IMAGE->value,
+        ]);
+
+        Queue::assertPushed(AnalyzeContractJob::class);
+    });
+
+    it('uploads a png image successfully', function () {
+        $file = UploadedFile::fake()->create('contract.png', 1000, 'image/png');
+
+        $response = $this->actingAs($this->user)
+            ->postJson('/api/contracts', [
+                'file' => $file,
+            ]);
+
+        $response->assertStatus(201)
+            ->assertJson([
+                'data' => [
+                    'file_type' => FileType::IMAGE->value,
+                ],
+            ]);
+    });
+
+    it('uploads a text file successfully', function () {
+        $file = UploadedFile::fake()->create('contract.txt', 500, 'text/plain');
+
+        $response = $this->actingAs($this->user)
+            ->postJson('/api/contracts', [
+                'file' => $file,
+            ]);
+
+        $response->assertStatus(201)
+            ->assertJson([
+                'data' => [
+                    'original_filename' => 'contract.txt',
+                    'status' => ContractStatus::PENDING->value,
+                    'file_type' => FileType::TEXT->value,
+                ],
+            ]);
+
+        $this->assertDatabaseHas('contracts', [
+            'user_id' => $this->user->id,
+            'original_filename' => 'contract.txt',
+            'file_type' => FileType::TEXT->value,
+        ]);
+
+        Queue::assertPushed(AnalyzeContractJob::class);
+    });
+
+    it('rejects unsupported file types', function () {
         $file = UploadedFile::fake()->create('document.docx', 500, 'application/vnd.openxmlformats-officedocument.wordprocessingml.document');
 
         $response = $this->actingAs($this->user)
@@ -98,8 +167,32 @@ describe('upload contract', function () {
             ->assertJsonValidationErrors(['file']);
     });
 
-    it('rejects files larger than 10MB', function () {
+    it('rejects pdf files larger than 10MB', function () {
         $file = UploadedFile::fake()->create('large.pdf', 11000, 'application/pdf');
+
+        $response = $this->actingAs($this->user)
+            ->postJson('/api/contracts', [
+                'file' => $file,
+            ]);
+
+        $response->assertStatus(422)
+            ->assertJsonValidationErrors(['file']);
+    });
+
+    it('rejects image files larger than 20MB', function () {
+        $file = UploadedFile::fake()->create('large.jpg', 21000, 'image/jpeg');
+
+        $response = $this->actingAs($this->user)
+            ->postJson('/api/contracts', [
+                'file' => $file,
+            ]);
+
+        $response->assertStatus(422)
+            ->assertJsonValidationErrors(['file']);
+    });
+
+    it('rejects text files larger than 5MB', function () {
+        $file = UploadedFile::fake()->create('large.txt', 6000, 'text/plain');
 
         $response = $this->actingAs($this->user)
             ->postJson('/api/contracts', [

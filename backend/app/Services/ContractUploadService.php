@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Services;
 
 use App\Enums\ContractStatus;
+use App\Enums\FileType;
 use App\Models\Contract;
 use App\Models\User;
 use App\Repositories\Contracts\ContractRepositoryInterface;
@@ -19,12 +20,17 @@ class ContractUploadService
     ) {}
 
     /**
-     * Upload and store a contract PDF.
+     * Upload and store a contract file (PDF, image, or text).
      */
     public function upload(UploadedFile $file, User $user, ?string $title = null): Contract
     {
         $originalFilename = $file->getClientOriginalName();
         $title = $title ?: $this->generateTitleFromFilename($originalFilename);
+
+        // Determine file type
+        $extension = strtolower($file->getClientOriginalExtension());
+        $fileType = FileType::fromExtension($extension) ?? FileType::PDF;
+        $mimeType = $file->getMimeType();
 
         // Generate unique storage path
         $storagePath = $this->generateStoragePath($file, $user);
@@ -43,6 +49,8 @@ class ContractUploadService
             'original_filename' => $originalFilename,
             'file_path' => $storagePath,
             'file_size' => $file->getSize(),
+            'file_type' => $fileType,
+            'mime_type' => $mimeType,
             'status' => ContractStatus::PENDING,
         ]);
     }

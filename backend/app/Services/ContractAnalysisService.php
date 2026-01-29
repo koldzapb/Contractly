@@ -7,9 +7,10 @@ namespace App\Services;
 use App\Enums\ClauseType;
 use App\Enums\ContractStatus;
 use App\Enums\DeadlineType;
+use App\Enums\FileType;
 use App\Enums\RiskLevel;
 use App\Exceptions\AiAnalysisException;
-use App\Exceptions\PdfParsingException;
+use App\Exceptions\TextExtractionException;
 use App\Models\Contract;
 use App\Models\ContractAnalysis;
 use App\Repositories\Contracts\ContractAnalysisRepositoryInterface;
@@ -17,6 +18,7 @@ use App\Repositories\Contracts\ContractClauseRepositoryInterface;
 use App\Repositories\Contracts\ContractDeadlineRepositoryInterface;
 use App\Repositories\Contracts\ContractRepositoryInterface;
 use App\Services\PiiDetectionService;
+use App\Services\TextExtraction\TextExtractorFactory;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -29,7 +31,7 @@ class ContractAnalysisService
         private ContractAnalysisRepositoryInterface $analyses,
         private ContractClauseRepositoryInterface $clauses,
         private ContractDeadlineRepositoryInterface $deadlines,
-        private PdfParserService $pdfParser,
+        private TextExtractorFactory $textExtractorFactory,
         private ClaudeAiService $aiService,
         private PiiDetectionService $piiDetection,
     ) {}
@@ -37,12 +39,15 @@ class ContractAnalysisService
     /**
      * Analyze a contract.
      *
-     * @throws PdfParsingException
+     * @throws TextExtractionException
      * @throws AiAnalysisException
      */
     public function analyze(Contract $contract): ContractAnalysis
     {
-        Log::info('Starting contract analysis', ['contract_id' => $contract->id]);
+        Log::info('Starting contract analysis', [
+            'contract_id' => $contract->id,
+            'file_type' => $contract->file_type->value,
+        ]);
 
         // Mark as processing
         $this->contracts->update($contract, [
@@ -51,28 +56,35 @@ class ContractAnalysisService
         ]);
 
         try {
-            // Step 1: Extract text from PDF
+            // Step 1: Extract text using appropriate extractor
             $filePath = Storage::disk('contracts')->path($contract->file_path);
-            $pdfContent = $this->pdfParser->extractText($filePath);
+            $extractedContent = $this->textExtractorFactory->extract($filePath);
 
             // Update page count
             $this->contracts->update($contract, [
-                'page_count' => $pdfContent->pageCount,
+                'page_count' => $extractedContent->pageCount,
             ]);
 
-            // Check if PDF has extractable text
-            if (! $pdfContent->hasText()) {
-                throw new PdfParsingException('PDF does not contain extractable text. It may be scanned or image-based.');
+            // Check if extraction produced any text
+            if (! $extractedContent->hasText()) {
+                $errorMessage = match ($contract->file_type) {
+                    FileType::PDF => 'PDF does not contain extractable text. It may be scanned or image-based.',
+                    FileType::IMAGE => 'Could not extract text from the image. The image may be unclear or contain no readable text.',
+                    FileType::TEXT => 'The text file appears to be empty.',
+                };
+
+                throw new TextExtractionException($errorMessage);
             }
 
-            Log::info('PDF text extracted', [
+            Log::info('Text extracted', [
                 'contract_id' => $contract->id,
-                'pages' => $pdfContent->pageCount,
-                'words' => $pdfContent->getWordCount(),
+                'file_type' => $contract->file_type->value,
+                'pages' => $extractedContent->pageCount,
+                'words' => $extractedContent->getWordCount(),
             ]);
 
             // Step 2: Detect PII in extracted text
-            $piiResult = $this->piiDetection->detectPii($pdfContent->fullText);
+            $piiResult = $this->piiDetection->detectPii($extractedContent->fullText);
             $this->contracts->update($contract, [
                 'pii_detection' => $piiResult->toArray(),
             ]);
@@ -84,7 +96,7 @@ class ContractAnalysisService
             ]);
 
             // Step 3: Analyze with Claude AI
-            $aiResult = $this->aiService->analyzeContract($pdfContent->fullText);
+            $aiResult = $this->aiService->analyzeContract($extractedContent->fullText);
 
             Log::info('AI analysis complete', [
                 'contract_id' => $contract->id,
@@ -93,7 +105,7 @@ class ContractAnalysisService
                 'tokens' => $aiResult->tokensUsed,
             ]);
 
-            // Step 3: Save results in a transaction
+            // Step 4: Save results in a transaction
             return DB::transaction(function () use ($contract, $aiResult) {
                 // Create the analysis record
                 $analysis = $this->saveAnalysis($contract, $aiResult);
@@ -119,7 +131,7 @@ class ContractAnalysisService
 
                 return $analysis;
             });
-        } catch (PdfParsingException|AiAnalysisException $e) {
+        } catch (TextExtractionException|AiAnalysisException $e) {
             $this->markAsFailed($contract, $e->getMessage());
 
             throw $e;
