@@ -115,18 +115,33 @@ export async function retryAnalysis(id: string): Promise<{ id: string; status: s
 }
 
 /**
+ * Supported file types with their MIME types and max sizes
+ */
+const FILE_TYPE_CONFIG: Record<string, { maxSize: number; label: string }> = {
+  'application/pdf': { maxSize: 10 * 1024 * 1024, label: 'PDF' }, // 10MB
+  'image/jpeg': { maxSize: 20 * 1024 * 1024, label: 'image' }, // 20MB
+  'image/png': { maxSize: 20 * 1024 * 1024, label: 'image' }, // 20MB
+  'image/webp': { maxSize: 20 * 1024 * 1024, label: 'image' }, // 20MB
+  'image/gif': { maxSize: 20 * 1024 * 1024, label: 'image' }, // 20MB
+  'text/plain': { maxSize: 5 * 1024 * 1024, label: 'text' }, // 5MB
+}
+
+/**
  * Validate file before upload
  */
 export function validateFile(file: File): { valid: boolean; error?: string } {
-  const maxSize = 10 * 1024 * 1024 // 10MB
-  const allowedTypes = ['application/pdf']
+  const config = FILE_TYPE_CONFIG[file.type]
 
-  if (!allowedTypes.includes(file.type)) {
-    return { valid: false, error: 'Only PDF files are allowed' }
+  if (!config) {
+    return {
+      valid: false,
+      error: 'Unsupported file type. Allowed: PDF, images (JPG, PNG, WebP, GIF), or text files (TXT)',
+    }
   }
 
-  if (file.size > maxSize) {
-    return { valid: false, error: 'File size must be less than 10MB' }
+  if (file.size > config.maxSize) {
+    const maxMb = config.maxSize / (1024 * 1024)
+    return { valid: false, error: `File size must be less than ${maxMb}MB for ${config.label} files` }
   }
 
   return { valid: true }
