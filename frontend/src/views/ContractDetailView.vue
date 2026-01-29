@@ -8,13 +8,17 @@ import { useRemindersStore } from '@/stores/reminders'
 import ThemeToggle from '@/components/ThemeToggle.vue'
 import MobileNav from '@/components/MobileNav.vue'
 import RiskBadge from '@/components/RiskBadge.vue'
+import DocumentTypeBadge from '@/components/DocumentTypeBadge.vue'
+import DocumentWarningBanner from '@/components/DocumentWarningBanner.vue'
+import InvalidDocumentNotice from '@/components/InvalidDocumentNotice.vue'
 import AnalysisProgress from '@/components/AnalysisProgress.vue'
 import AnalysisSummary from '@/components/AnalysisSummary.vue'
 import ClauseList from '@/components/ClauseList.vue'
 import DeadlineList from '@/components/DeadlineList.vue'
 import ReminderForm from '@/components/ReminderForm.vue'
 import { ContractChat } from '@/components/chat'
-import type { ContractDeadline, CreateReminderData } from '@/types'
+import { RedactionEditor } from '@/components/pii'
+import type { ContractDeadline, CreateReminderData, PiiDetectionResult } from '@/types'
 
 const route = useRoute()
 const router = useRouter()
@@ -33,6 +37,15 @@ const showReminderModal = ref(false)
 const selectedDeadline = ref<ContractDeadline | null>(null)
 const creatingReminder = ref(false)
 const reminderError = ref<string | null>(null)
+
+// Document validation state
+const analyzeAnywayLoading = ref(false)
+const warningDismissed = ref(false)
+
+// PII redaction state
+const piiDetection = ref<PiiDetectionResult | null>(null)
+const piiLoading = ref(false)
+const showPiiEditor = ref(false)
 
 // Chat panel state - persisted in localStorage
 const CHAT_PANEL_STORAGE_KEY = 'contractly-chat-panel-visible'
@@ -57,6 +70,19 @@ const isAnalyzing = computed(() => {
 
 const isCompleted = computed(() => currentContract.value?.status === 'completed')
 const isFailed = computed(() => currentContract.value?.status === 'failed')
+
+// Document validation computed
+const documentClassification = computed(() => currentContract.value?.document_classification)
+const isNonLegalDocument = computed(() => documentClassification.value?.is_legal_document === false)
+const isPreContractualDocument = computed(
+  () => documentClassification.value?.category === 'pre_contractual',
+)
+const showWarningBanner = computed(
+  () => isPreContractualDocument.value && !warningDismissed.value && isCompleted.value,
+)
+const analyzedWithOverride = computed(
+  () => documentClassification.value?.analyzed_with_override === true,
+)
 
 const statusConfig = computed(() => {
   if (!currentContract.value) return null
@@ -196,6 +222,61 @@ function closeReminderModal(): void {
   showReminderModal.value = false
   selectedDeadline.value = null
   reminderError.value = null
+}
+
+// Document validation handlers
+async function handleAnalyzeAnyway(): Promise<void> {
+  if (!currentContract.value) return
+
+  analyzeAnywayLoading.value = true
+  try {
+    await contractsStore.analyzeAnyway(currentContract.value.id)
+    // Start polling after override
+    startPolling()
+  } catch {
+    // Error is handled by the store
+  } finally {
+    analyzeAnywayLoading.value = false
+  }
+}
+
+function handleDismissWarning(): void {
+  warningDismissed.value = true
+}
+
+function handleGoBack(): void {
+  router.push('/contracts')
+}
+
+// PII handlers
+async function handleApplyRedactions(itemIds: string[]): Promise<void> {
+  if (!currentContract.value) return
+
+  piiLoading.value = true
+  try {
+    await contractsStore.applyRedactions(currentContract.value.id, itemIds)
+    showPiiEditor.value = false
+    piiDetection.value = null
+  } catch {
+    // Error is handled by the store
+  } finally {
+    piiLoading.value = false
+  }
+}
+
+async function handleSkipRedaction(): Promise<void> {
+  if (!currentContract.value) return
+
+  piiLoading.value = true
+  try {
+    await contractsStore.skipRedaction(currentContract.value.id)
+    showPiiEditor.value = false
+    piiDetection.value = null
+  } catch {
+    // Error is handled by the store
+  } finally {
+    piiLoading.value = false
+  }
 }
 
 // Watch for status changes to start/stop polling
@@ -362,6 +443,12 @@ onUnmounted(() => {
                   v-if="currentContract.overall_risk_level"
                   :level="currentContract.overall_risk_level"
                 />
+                <DocumentTypeBadge
+                  v-if="documentClassification"
+                  :type="documentClassification.document_type"
+                  :category="documentClassification.category"
+                  size="sm"
+                />
               </div>
               <p class="text-gray-500 dark:text-gray-400 text-sm mt-2">
                 {{ currentContract.original_filename }}
@@ -406,6 +493,34 @@ onUnmounted(() => {
             </div>
           </div>
         </div>
+
+        <!-- Invalid Document Notice (for non-legal documents that haven't been overridden) -->
+        <InvalidDocumentNotice
+          v-if="isNonLegalDocument && !analyzedWithOverride && !isAnalyzing"
+          :classification="documentClassification!"
+          :loading="analyzeAnywayLoading"
+          class="mb-6"
+          @analyze-anyway="handleAnalyzeAnyway"
+          @cancel="handleGoBack"
+        />
+
+        <!-- Pre-Contractual Warning Banner -->
+        <DocumentWarningBanner
+          v-if="showWarningBanner"
+          :classification="documentClassification!"
+          class="mb-6"
+          @dismiss="handleDismissWarning"
+        />
+
+        <!-- PII Redaction Editor -->
+        <RedactionEditor
+          v-if="currentContract.pii_detection?.has_pii && showPiiEditor"
+          :pii-detection="currentContract.pii_detection"
+          :loading="piiLoading"
+          class="mb-6"
+          @apply-redactions="handleApplyRedactions"
+          @skip="handleSkipRedaction"
+        />
 
         <!-- Analysis Progress (for pending/processing/failed) -->
         <AnalysisProgress

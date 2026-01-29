@@ -7,6 +7,57 @@ export interface User {
   updated_at: string
 }
 
+// Document Validation types
+export type DocumentType =
+  | 'contract'
+  | 'amendment'
+  | 'nda'
+  | 'mou'
+  | 'loi'
+  | 'term_sheet'
+  | 'invoice'
+  | 'receipt'
+  | 'letter'
+  | 'report'
+  | 'other'
+  | 'unknown'
+
+export type DocumentCategory = 'legal' | 'pre_contractual' | 'non_legal'
+
+export interface DocumentClassification {
+  is_legal_document: boolean
+  document_type: DocumentType
+  document_type_label: string
+  category: DocumentCategory
+  confidence: number
+  rejection_reason: string | null
+  warnings: string[]
+  analyzed_with_override: boolean
+}
+
+// PII Redaction types
+export type PiiType = 'ssn' | 'email' | 'phone' | 'credit_card' | 'bank_routing' | 'bank_account'
+
+export interface DetectedPii {
+  id: string
+  type: PiiType
+  type_label: string
+  value: string
+  redacted_value: string
+  start_position: number
+  end_position: number
+  context: string
+  selected: boolean
+}
+
+export interface PiiDetectionResult {
+  has_pii: boolean
+  total_count: number
+  counts_by_type: Record<PiiType, number>
+  items: DetectedPii[]
+  extracted_text: string
+}
+
 // Contract types
 export type ContractStatus = 'pending' | 'processing' | 'completed' | 'failed'
 
@@ -25,6 +76,9 @@ export interface Contract {
   created_at: string
   updated_at: string
   analysis?: ContractAnalysis
+  document_classification?: DocumentClassification
+  pii_detection?: PiiDetectionResult
+  has_redactions?: boolean
 }
 
 // Analysis types

@@ -1,6 +1,6 @@
 import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
-import type { Contract, PaginatedResponse } from '@/types'
+import type { Contract, PaginatedResponse, PiiDetectionResult } from '@/types'
 import * as contractsService from '@/services/contracts'
 import type { UploadContractData, ContractListParams } from '@/services/contracts'
 
@@ -263,6 +263,117 @@ export const useContractsStore = defineStore('contracts', () => {
   }
 
   /**
+   * Analyze a document even if classified as non-legal
+   */
+  async function analyzeAnyway(id: string): Promise<Contract> {
+    loading.value = true
+    error.value = null
+
+    try {
+      const updated = await contractsService.analyzeAnyway(id)
+
+      // Update contract in list
+      const index = contracts.value.findIndex((c) => c.id === id)
+      if (index !== -1) {
+        contracts.value[index] = updated
+      }
+
+      // Update current if it matches
+      if (currentContract.value?.id === id) {
+        currentContract.value = updated
+      }
+
+      return updated
+    } catch (e: unknown) {
+      const err = e as { response?: { data?: { message?: string } } }
+      error.value = err.response?.data?.message ?? 'Failed to analyze document'
+      throw e
+    } finally {
+      loading.value = false
+    }
+  }
+
+  /**
+   * Detect PII in a contract
+   */
+  async function detectPii(id: string): Promise<PiiDetectionResult> {
+    loading.value = true
+    error.value = null
+
+    try {
+      return await contractsService.detectPii(id)
+    } catch (e: unknown) {
+      const err = e as { response?: { data?: { message?: string } } }
+      error.value = err.response?.data?.message ?? 'Failed to detect PII'
+      throw e
+    } finally {
+      loading.value = false
+    }
+  }
+
+  /**
+   * Apply redactions to selected PII items
+   */
+  async function applyRedactions(id: string, itemIds: string[]): Promise<Contract> {
+    loading.value = true
+    error.value = null
+
+    try {
+      const updated = await contractsService.applyRedactions(id, itemIds)
+
+      // Update contract in list
+      const index = contracts.value.findIndex((c) => c.id === id)
+      if (index !== -1) {
+        contracts.value[index] = updated
+      }
+
+      // Update current if it matches
+      if (currentContract.value?.id === id) {
+        currentContract.value = updated
+      }
+
+      return updated
+    } catch (e: unknown) {
+      const err = e as { response?: { data?: { message?: string } } }
+      error.value = err.response?.data?.message ?? 'Failed to apply redactions'
+      throw e
+    } finally {
+      loading.value = false
+    }
+  }
+
+  /**
+   * Skip redaction and proceed with analysis
+   */
+  async function skipRedaction(id: string): Promise<Contract> {
+    loading.value = true
+    error.value = null
+
+    try {
+      const updated = await contractsService.skipRedaction(id)
+
+      // Update contract in list
+      const index = contracts.value.findIndex((c) => c.id === id)
+      if (index !== -1) {
+        contracts.value[index] = updated
+      }
+
+      // Update current if it matches
+      if (currentContract.value?.id === id) {
+        currentContract.value = updated
+      }
+
+      return updated
+    } catch (e: unknown) {
+      const err = e as { response?: { data?: { message?: string } } }
+      error.value = err.response?.data?.message ?? 'Failed to skip redaction'
+      throw e
+    } finally {
+      loading.value = false
+    }
+  }
+
+  /**
    * Reset upload state
    */
   function resetUpload(): void {
@@ -310,6 +421,10 @@ export const useContractsStore = defineStore('contracts', () => {
     deleteContract,
     pollContractStatus,
     retryAnalysis,
+    analyzeAnyway,
+    detectPii,
+    applyRedactions,
+    skipRedaction,
     resetUpload,
     clearError,
     goToPage,

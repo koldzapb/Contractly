@@ -1,5 +1,5 @@
 import api from './api'
-import type { Contract, ApiResponse, PaginatedResponse } from '@/types'
+import type { Contract, ApiResponse, PaginatedResponse, PiiDetectionResult } from '@/types'
 
 export interface UploadContractData {
   file: File
@@ -130,4 +130,42 @@ export function validateFile(file: File): { valid: boolean; error?: string } {
   }
 
   return { valid: true }
+}
+
+/**
+ * Analyze a document even if it was classified as non-legal
+ */
+export async function analyzeAnyway(id: string): Promise<Contract> {
+  const response = await api.post<ApiResponse<Contract>>(`/contracts/${id}/analyze-anyway`)
+
+  return response.data.data
+}
+
+/**
+ * Detect PII in a contract
+ */
+export async function detectPii(id: string): Promise<PiiDetectionResult> {
+  const response = await api.get<ApiResponse<PiiDetectionResult>>(`/contracts/${id}/pii`)
+
+  return response.data.data
+}
+
+/**
+ * Apply redactions to selected PII items
+ */
+export async function applyRedactions(id: string, itemIds: string[]): Promise<Contract> {
+  const response = await api.post<ApiResponse<Contract>>(`/contracts/${id}/redact`, {
+    item_ids: itemIds,
+  })
+
+  return response.data.data
+}
+
+/**
+ * Skip redaction and proceed with analysis
+ */
+export async function skipRedaction(id: string): Promise<Contract> {
+  const response = await api.post<ApiResponse<Contract>>(`/contracts/${id}/skip-redaction`)
+
+  return response.data.data
 }

@@ -1,0 +1,5 @@
+export { default as PiiTypeBadge } from './PiiTypeBadge.vue'
+export { default as PiiHighlight } from './PiiHighlight.vue'
+export { default as RedactionControls } from './RedactionControls.vue'
+export { default as RedactionPreview } from './RedactionPreview.vue'
+export { default as RedactionEditor } from './RedactionEditor.vue'
