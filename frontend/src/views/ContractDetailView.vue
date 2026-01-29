@@ -34,11 +34,19 @@ const selectedDeadline = ref<ContractDeadline | null>(null)
 const creatingReminder = ref(false)
 const reminderError = ref<string | null>(null)
 
-// Chat panel state
-const showChatPanel = ref(false)
+// Chat panel state - persisted in localStorage
+const CHAT_PANEL_STORAGE_KEY = 'contractly-chat-panel-visible'
+
+function getStoredChatPanelState(): boolean {
+  const stored = localStorage.getItem(CHAT_PANEL_STORAGE_KEY)
+  return stored === 'true'
+}
+
+const showChatPanel = ref(getStoredChatPanelState())
 
 function toggleChatPanel(): void {
   showChatPanel.value = !showChatPanel.value
+  localStorage.setItem(CHAT_PANEL_STORAGE_KEY, String(showChatPanel.value))
 }
 
 const isAnalyzing = computed(() => {

@@ -484,7 +484,7 @@ analyzed_with_override BOOLEAN DEFAULT FALSE
 | ✅ | Handle loading states |
 | ✅ | Implement auto-scroll on new messages |
 | ✅ | Add keyboard shortcuts (Enter to send) |
-| 📋 | Persist chat open/closed state |
+| ✅ | Persist chat open/closed state |
 
 ### Phase 8H: Frontend - Tests
 | Status | Task |
@@ -492,7 +492,7 @@ analyzed_with_override BOOLEAN DEFAULT FALSE
 | ✅ | Write chat composable tests |
 | ✅ | Write ChatMessage component tests |
 | ✅ | Write ChatInput component tests |
-| 📋 | Write ContractChat integration tests |
+| ✅ | Write ContractChat integration tests |
 
 ---
 
@@ -736,8 +736,8 @@ For long contracts that exceed context limits:
 | Phase 5 | 18 | 17 | 0 | 0 | 0 | 1 |
 | Phase 6 | 9 | 0 | 0 | 0 | 0 | 9 |
 | Phase 7 | 40 | 0 | 0 | 0 | 0 | 40 |
-| Phase 8 | 37 | 34 | 0 | 0 | 0 | 3 |
-| **Total** | **245** | **192** | **0** | **0** | **0** | **53** |
+| Phase 8 | 37 | 36 | 0 | 0 | 0 | 1 |
+| **Total** | **245** | **194** | **0** | **0** | **0** | **51** |
 
 ---
 
