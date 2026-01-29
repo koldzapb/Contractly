@@ -16,6 +16,7 @@ use App\Repositories\Contracts\ContractAnalysisRepositoryInterface;
 use App\Repositories\Contracts\ContractClauseRepositoryInterface;
 use App\Repositories\Contracts\ContractDeadlineRepositoryInterface;
 use App\Repositories\Contracts\ContractRepositoryInterface;
+use App\Services\PiiDetectionService;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -30,6 +31,7 @@ class ContractAnalysisService
         private ContractDeadlineRepositoryInterface $deadlines,
         private PdfParserService $pdfParser,
         private ClaudeAiService $aiService,
+        private PiiDetectionService $piiDetection,
     ) {}
 
     /**
@@ -69,7 +71,19 @@ class ContractAnalysisService
                 'words' => $pdfContent->getWordCount(),
             ]);
 
-            // Step 2: Analyze with Claude AI
+            // Step 2: Detect PII in extracted text
+            $piiResult = $this->piiDetection->detectPii($pdfContent->fullText);
+            $this->contracts->update($contract, [
+                'pii_detection' => $piiResult->toArray(),
+            ]);
+
+            Log::info('PII detection complete', [
+                'contract_id' => $contract->id,
+                'has_pii' => $piiResult->hasPii,
+                'total_count' => $piiResult->totalCount,
+            ]);
+
+            // Step 3: Analyze with Claude AI
             $aiResult = $this->aiService->analyzeContract($pdfContent->fullText);
 
             Log::info('AI analysis complete', [

@@ -18,7 +18,7 @@ import DeadlineList from '@/components/DeadlineList.vue'
 import ReminderForm from '@/components/ReminderForm.vue'
 import { ContractChat } from '@/components/chat'
 import { RedactionEditor } from '@/components/pii'
-import type { ContractDeadline, CreateReminderData, PiiDetectionResult } from '@/types'
+import type { ContractDeadline, CreateReminderData } from '@/types'
 
 const route = useRoute()
 const router = useRouter()
@@ -43,9 +43,15 @@ const analyzeAnywayLoading = ref(false)
 const warningDismissed = ref(false)
 
 // PII redaction state
-const piiDetection = ref<PiiDetectionResult | null>(null)
 const piiLoading = ref(false)
-const showPiiEditor = ref(false)
+
+// Show PII editor when contract has unprocessed PII
+const hasPendingPii = computed(() => {
+  return (
+    currentContract.value?.pii_detection?.has_pii === true &&
+    currentContract.value?.has_redactions !== true
+  )
+})
 
 // Chat panel state - persisted in localStorage
 const CHAT_PANEL_STORAGE_KEY = 'contractly-chat-panel-visible'
@@ -255,8 +261,8 @@ async function handleApplyRedactions(itemIds: string[]): Promise<void> {
   piiLoading.value = true
   try {
     await contractsStore.applyRedactions(currentContract.value.id, itemIds)
-    showPiiEditor.value = false
-    piiDetection.value = null
+    // Refresh contract to get updated has_redactions status
+    await fetchContract()
   } catch {
     // Error is handled by the store
   } finally {
@@ -270,8 +276,8 @@ async function handleSkipRedaction(): Promise<void> {
   piiLoading.value = true
   try {
     await contractsStore.skipRedaction(currentContract.value.id)
-    showPiiEditor.value = false
-    piiDetection.value = null
+    // Refresh contract to get updated pii_detection status
+    await fetchContract()
   } catch {
     // Error is handled by the store
   } finally {
@@ -514,8 +520,8 @@ onUnmounted(() => {
 
         <!-- PII Redaction Editor -->
         <RedactionEditor
-          v-if="currentContract.pii_detection?.has_pii && showPiiEditor"
-          :pii-detection="currentContract.pii_detection"
+          v-if="hasPendingPii && isCompleted"
+          :pii-detection="currentContract.pii_detection!"
           :loading="piiLoading"
           class="mb-6"
           @apply-redactions="handleApplyRedactions"
