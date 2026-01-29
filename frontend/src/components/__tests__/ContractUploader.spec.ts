@@ -187,9 +187,11 @@ describe('ContractUploader', () => {
       store.upload.error = 'Upload failed'
       await wrapper.vm.$nextTick()
 
-      const retryButton = wrapper.find('button')
-      expect(retryButton.exists()).toBe(true)
-      expect(retryButton.text()).toContain('Try Again')
+      // Find the retry button (which contains "Try Again" text)
+      const buttons = wrapper.findAll('button')
+      const retryButton = buttons.find((btn) => btn.text().includes('Try Again'))
+      expect(retryButton).toBeDefined()
+      expect(retryButton?.text()).toContain('Try Again')
     })
 
     it('resets upload state on retry click', async () => {
@@ -199,7 +201,10 @@ describe('ContractUploader', () => {
       store.upload.error = 'Upload failed'
       await wrapper.vm.$nextTick()
 
-      await wrapper.find('button').trigger('click')
+      // Find and click the retry button (which contains "Try Again" text)
+      const buttons = wrapper.findAll('button')
+      const retryButton = buttons.find((btn) => btn.text().includes('Try Again'))
+      await retryButton?.trigger('click')
 
       expect(store.upload.error).toBeNull()
     })

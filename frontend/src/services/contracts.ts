@@ -135,13 +135,17 @@ export function validateFile(file: File): { valid: boolean; error?: string } {
   if (!config) {
     return {
       valid: false,
-      error: 'Unsupported file type. Allowed: PDF, images (JPG, PNG, WebP, GIF), or text files (TXT)',
+      error:
+        'Unsupported file type. Allowed: PDF, images (JPG, PNG, WebP, GIF), or text files (TXT)',
     }
   }
 
   if (file.size > config.maxSize) {
     const maxMb = config.maxSize / (1024 * 1024)
-    return { valid: false, error: `File size must be less than ${maxMb}MB for ${config.label} files` }
+    return {
+      valid: false,
+      error: `File size must be less than ${maxMb}MB for ${config.label} files`,
+    }
   }
 
   return { valid: true }

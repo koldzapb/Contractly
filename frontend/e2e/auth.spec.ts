@@ -69,9 +69,7 @@ test.describe('Authentication Flow', () => {
       await expect(page.locator('text=credentials')).toBeVisible({ timeout: 5000 })
     })
 
-    test('redirects to login when accessing protected route unauthenticated', async ({
-      page,
-    }) => {
+    test('redirects to login when accessing protected route unauthenticated', async ({ page }) => {
       // Clear any existing auth state
       await page.context().clearCookies()
 

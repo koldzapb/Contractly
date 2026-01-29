@@ -10,6 +10,7 @@ use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\ContractChatController;
 use App\Http\Controllers\ContractController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\QuickAnalysisController;
 use App\Http\Controllers\ReminderController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -42,6 +43,10 @@ Route::middleware(['auth:sanctum', 'throttle:api'])->group(function () {
 
     // Dashboard
     Route::get('/dashboard', DashboardController::class);
+
+    // Quick Text Analysis (ephemeral, no storage)
+    Route::post('/analyze-text', [QuickAnalysisController::class, 'analyze'])
+        ->middleware('throttle:chat'); // Same rate limit as AI chat
 
     Route::get('/user', function (Request $request) {
         $user = $request->user();

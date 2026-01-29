@@ -129,7 +129,9 @@ describe('ContractChat', () => {
       await flushPromises()
 
       expect(wrapper.text()).toContain('Analysis in progress')
-      expect(wrapper.text()).toContain('Chat will be available once the contract analysis is complete')
+      expect(wrapper.text()).toContain(
+        'Chat will be available once the contract analysis is complete',
+      )
       expect(wrapper.findComponent(ChatInput).exists()).toBe(false)
     })
 
@@ -432,9 +434,7 @@ describe('ContractChat', () => {
       expect(wrapper.text()).toContain('Error occurred')
 
       // Find and click the dismiss button (X icon in error banner)
-      const errorDismissButton = wrapper.find(
-        '.bg-red-50 button, .dark\\:bg-red-900\\/20 button',
-      )
+      const errorDismissButton = wrapper.find('.bg-red-50 button, .dark\\:bg-red-900\\/20 button')
       if (errorDismissButton.exists()) {
         await errorDismissButton.trigger('click')
         await flushPromises()

@@ -105,7 +105,11 @@ function handleDelete(): void {
     <div class="flex items-start justify-between">
       <div class="flex items-start gap-3">
         <!-- File type icon -->
-        <div :class="fileTypeConfig.colorClass" class="flex-shrink-0 mt-0.5" :title="fileTypeConfig.label">
+        <div
+          :class="fileTypeConfig.colorClass"
+          class="flex-shrink-0 mt-0.5"
+          :title="fileTypeConfig.label"
+        >
           <!-- PDF icon -->
           <svg
             v-if="fileTypeConfig.icon === 'document'"
@@ -137,13 +141,7 @@ function handleDelete(): void {
             />
           </svg>
           <!-- Text icon -->
-          <svg
-            v-else
-            class="h-5 w-5"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
+          <svg v-else class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path
               stroke-linecap="round"
               stroke-linejoin="round"

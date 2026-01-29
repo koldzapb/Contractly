@@ -70,7 +70,10 @@ test.describe('Contracts', () => {
 
     // Wait for upload to finish (either success or processing)
     await expect(
-      page.locator('text=Pending').or(page.locator('text=Processing')).or(page.locator('text=Analyzed')),
+      page
+        .locator('text=Pending')
+        .or(page.locator('text=Processing'))
+        .or(page.locator('text=Analyzed')),
     ).toBeVisible({ timeout: 30000 })
   })
 
