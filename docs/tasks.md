@@ -260,19 +260,134 @@
 
 ---
 
-## Phase 6: Deployment Preparation
+## Phase 6: Deployment (Budget Setup)
 
+> **Goal:** Deploy to production with minimal cost (~$6/month infrastructure + AI usage). Single VPS setup with free-tier services.
+
+### Target Stack
+
+| Component | Service | Cost |
+|-----------|---------|------|
+| VPS | Hetzner CX22 (4GB RAM, 2 vCPU) | €4.50/mo |
+| AI | Google Gemini 1.5 Flash | Free (1M tokens/day) |
+| Storage | Cloudflare R2 | Free (10GB) |
+| Email | Resend | Free (100/day) |
+| Errors | Sentry | Free (5k events) |
+| Domain | None (use IP) or $3/yr .xyz | $0-3 |
+| SSL | Let's Encrypt | Free |
+| **Total** | | **~$6/mo** |
+
+### Phase 6A: AI Provider Switch
 | Status | Task |
 |--------|------|
-| 📋 | Create production Docker configuration |
-| 📋 | Document environment variables |
-| 📋 | Set up S3 storage |
-| 📋 | Set up production email (Resend) |
-| 📋 | Configure error tracking (Sentry) |
-| 📋 | Create deployment scripts |
+| 📋 | Create `AiServiceInterface` to abstract AI providers |
+| 📋 | Create `GeminiAiService` implementing the interface |
+| 📋 | Configure Gemini API client and credentials |
+| 📋 | Update analysis prompt for Gemini format |
+| 📋 | Update `ContractChatService` to use interface |
+| 📋 | Add `AI_PROVIDER` env variable (claude/gemini) |
+| 📋 | Write Gemini service tests (mocked) |
+| 📋 | Test analysis quality with Gemini |
+
+### Phase 6B: Infrastructure Setup
+| Status | Task |
+|--------|------|
+| 📋 | Create Hetzner account and VPS |
+| 📋 | Configure firewall (SSH, HTTP, HTTPS only) |
+| 📋 | Install Docker and Docker Compose |
+| 📋 | Set up Cloudflare R2 bucket |
+| 📋 | Configure R2 credentials in Laravel |
+| 📋 | Set up Resend account and API key |
+| 📋 | Set up Sentry project and DSN |
+
+### Phase 6C: Production Configuration
+| Status | Task |
+|--------|------|
+| 📋 | Create `docker-compose.prod.yml` (optimized) |
+| 📋 | Create Nginx production config (gzip, caching) |
+| 📋 | Configure SSL with Let's Encrypt (certbot) |
+| 📋 | Set up PostgreSQL backups (pg_dump cron) |
+| 📋 | Configure Laravel for production (caching, optimization) |
+| 📋 | Set up Supervisor for queue workers |
+| 📋 | Create `.env.production` template |
+| 📋 | Document all environment variables |
+
+### Phase 6D: Deployment Pipeline
+| Status | Task |
+|--------|------|
+| 📋 | Create deployment script (`deploy.sh`) |
+| 📋 | Set up Git on VPS (pull-based deployment) |
+| 📋 | Create rollback script |
+| 📋 | Set up basic monitoring (health endpoint) |
 | 📋 | Write deployment documentation |
-| 📋 | Security checklist review |
-| 📋 | Performance testing |
+
+### Phase 6E: Security & Testing
+| Status | Task |
+|--------|------|
+| 📋 | Security headers (CSP, HSTS, X-Frame) |
+| 📋 | Rate limiting configuration |
+| 📋 | CORS configuration for production |
+| 📋 | Remove debug/dev routes |
+| 📋 | Basic load testing |
+| 📋 | Smoke test checklist |
+
+---
+
+### Phase 6 Design Decisions
+
+#### Why Gemini over Claude
+
+| Factor | Claude | Gemini |
+|--------|--------|--------|
+| Cost | $3-15/M tokens | Free (1M/day) |
+| Quality | Excellent | Good (80-90%) |
+| Speed | Fast | Very fast |
+| Contract analysis | Best | Adequate |
+
+For budget launch, Gemini's free tier handles ~50-100 contract analyses/day. Can switch to Claude later if needed (interface abstraction allows easy swap).
+
+#### AI Service Interface
+
+```php
+interface AiServiceInterface
+{
+    public function analyzeContract(string $text): AnalysisResult;
+    public function chat(string $context, array $history, string $message): string;
+}
+
+// Implementations:
+// - ClaudeAiService (existing, premium)
+// - GeminiAiService (new, free tier)
+```
+
+#### Deployment Flow
+
+```
+Local → Git push → SSH to VPS → git pull → docker compose up -d
+```
+
+No CI/CD complexity. Simple and cheap.
+
+#### VPS Architecture
+
+```
+Hetzner CX22 (4GB RAM)
+├── nginx:alpine (reverse proxy, SSL)
+├── php:8.3-fpm (Laravel app)
+├── postgres:16-alpine (database)
+├── redis:7-alpine (cache, sessions, queue)
+├── node:20-alpine (build only, not runtime)
+└── supervisor (queue worker)
+```
+
+#### Cost Control Measures
+
+| Measure | Implementation |
+|---------|----------------|
+| AI rate limiting | 10 contracts/user/day free |
+| Chat limits | 30 messages/contract/day |
+| Storage limits | 50MB/user |
+| Caching | Cache all AI responses |
 
 ---
 
@@ -1408,7 +1523,7 @@ Getting Started ✓
 | Phase 3 | 30 | 30 | 0 | 0 | 0 | 0 |
 | Phase 4 | 19 | 19 | 0 | 0 | 0 | 0 |
 | Phase 5 | 20 | 19 | 0 | 0 | 0 | 1 |
-| Phase 6 | 9 | 0 | 0 | 0 | 0 | 9 |
+| Phase 6 | 34 | 0 | 0 | 0 | 0 | 34 |
 | Phase 7 | 40 | 40 | 0 | 0 | 0 | 0 |
 | Phase 8 | 37 | 36 | 0 | 0 | 0 | 1 |
 | Phase 9 | 18 | 18 | 0 | 0 | 0 | 0 |
@@ -1418,7 +1533,7 @@ Getting Started ✓
 | Phase 13 | 18 | 0 | 0 | 0 | 0 | 18 |
 | Phase 14 | 24 | 0 | 0 | 0 | 0 | 24 |
 | Phase 15 | 18 | 0 | 0 | 0 | 0 | 18 |
-| **Total** | **378** | **263** | **0** | **0** | **0** | **115** |
+| **Total** | **403** | **263** | **0** | **0** | **0** | **140** |
 
 ---
 
