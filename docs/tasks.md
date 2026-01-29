@@ -268,14 +268,13 @@
 
 | Component | Service | Cost |
 |-----------|---------|------|
-S| Domain | mycontractly.app (Cloudflare/Porkbun) | ~$15/yr |
+| Domain | mycontractly.app (Cloudflare/Porkbun) | ~$15/yr |
 | VPS | Hetzner CX22 (4GB RAM, 2 vCPU) | €4.50/mo |
 | AI | Google Gemini 1.5 Flash | Free (1M tokens/day) |
 | Storage | Cloudflare R2 | Free (10GB) |
 | Email | Resend | Free (100/day) |
-| Errors | Sentry | Free (5k events) |
 | SSL | Let's Encrypt | Free |
-| **Total** | | **~$7/mo** (~$6 + $1.25 domain) |
+| **Total** | | **~$6/mo** |
 
 ### Phase 6A: AI Provider Switch
 | Status | Task |
@@ -300,7 +299,6 @@ S| Domain | mycontractly.app (Cloudflare/Porkbun) | ~$15/yr |
 | 📋 | Set up Cloudflare R2 bucket |
 | 📋 | Configure R2 credentials in Laravel |
 | 📋 | Set up Resend account and API key |
-| 📋 | Set up Sentry project and DSN |
 
 ### Phase 6C: Production Configuration
 | Status | Task |
@@ -1525,7 +1523,7 @@ Getting Started ✓
 | Phase 3 | 30 | 30 | 0 | 0 | 0 | 0 |
 | Phase 4 | 19 | 19 | 0 | 0 | 0 | 0 |
 | Phase 5 | 20 | 19 | 0 | 0 | 0 | 1 |
-| Phase 6 | 36 | 0 | 0 | 0 | 0 | 36 |
+| Phase 6 | 35 | 0 | 0 | 0 | 0 | 35 |
 | Phase 7 | 40 | 40 | 0 | 0 | 0 | 0 |
 | Phase 8 | 37 | 36 | 0 | 0 | 0 | 1 |
 | Phase 9 | 18 | 18 | 0 | 0 | 0 | 0 |
@@ -1535,7 +1533,7 @@ Getting Started ✓
 | Phase 13 | 18 | 0 | 0 | 0 | 0 | 18 |
 | Phase 14 | 24 | 0 | 0 | 0 | 0 | 24 |
 | Phase 15 | 18 | 0 | 0 | 0 | 0 | 18 |
-| **Total** | **403** | **263** | **0** | **0** | **0** | **140** |
+| **Total** | **404** | **263** | **0** | **0** | **0** | **141** |
 
 ---
 
