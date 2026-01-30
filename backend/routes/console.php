@@ -18,3 +18,6 @@ Artisan::command('inspire', function () {
 
 // Process due reminders daily at 8:00 AM
 Schedule::command('reminders:process')->dailyAt('08:00');
+
+// Send weekly digest emails every Monday at 9:00 AM
+Schedule::job(new \App\Jobs\SendWeeklyDigestJob())->weeklyOn(1, '09:00');

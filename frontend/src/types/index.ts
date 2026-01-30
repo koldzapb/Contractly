@@ -441,3 +441,21 @@ export interface ClearChatResponse {
   message: string
   messages_deleted: number
 }
+
+// Notification Preference types
+export interface NotificationPreferences {
+  analysis_complete: boolean
+  deadline_reminder: boolean
+  deadline_days_before: number
+  weekly_digest: boolean
+  contract_expiring: boolean
+  updated_at: string
+}
+
+export interface UpdateNotificationPreferencesData {
+  analysis_complete?: boolean
+  deadline_reminder?: boolean
+  deadline_days_before?: number
+  weekly_digest?: boolean
+  contract_expiring?: boolean
+}

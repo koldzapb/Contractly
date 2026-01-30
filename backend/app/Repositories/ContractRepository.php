@@ -12,6 +12,7 @@ use App\Repositories\Contracts\ContractRepositoryInterface;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 
 /**
@@ -212,6 +213,17 @@ class ContractRepository extends BaseRepository implements ContractRepositoryInt
         }
 
         return $query->paginate($filters->perPage, ['*'], 'page', $filters->page);
+    }
+
+    public function getRecentlyCompletedForUser(User|int $user, Carbon $since): Collection
+    {
+        return $this->query()
+            ->with('analysis')
+            ->where('user_id', $this->resolveUserId($user))
+            ->where('status', ContractStatus::COMPLETED)
+            ->where('updated_at', '>=', $since)
+            ->orderByDesc('updated_at')
+            ->get();
     }
 
     /**

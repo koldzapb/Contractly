@@ -1146,41 +1146,41 @@ GET /contracts/{id}/export/all
 ### Phase 13A: Backend - Notification System
 | Status | Task |
 |--------|------|
-| 📋 | Create `notification_preferences` migration |
-| 📋 | Create `NotificationPreference` model |
-| 📋 | Create `NotificationPreferenceRepository` |
-| 📋 | Create `NotificationService` |
-| 📋 | Create notification preference types enum |
+| ✅ | Create `notification_preferences` migration |
+| ✅ | Create `NotificationPreference` model |
+| ✅ | Create `NotificationPreferenceRepository` |
+| ✅ | Create `NotificationService` |
+| ✅ | Create notification preference types enum |
 
 ### Phase 13B: Backend - Email Templates
 | Status | Task |
 |--------|------|
-| 📋 | Create `AnalysisCompleteNotification` mailable |
-| 📋 | Create `DeadlineReminderNotification` mailable |
-| 📋 | Create `WeeklyDigestNotification` mailable |
-| 📋 | Design email templates (Blade) with branding |
-| 📋 | Include unsubscribe links in all emails |
-| 📋 | Write notification tests |
+| ✅ | Create `AnalysisCompleteMail` mailable |
+| ✅ | Create `ContractExpiringMail` mailable |
+| ✅ | Create `WeeklyDigestMail` mailable |
+| ✅ | Design email templates (Blade) with branding |
+| ✅ | Include unsubscribe links in all emails |
+| ✅ | Write notification tests |
 
 ### Phase 13C: Backend - Triggers & Scheduling
 | Status | Task |
 |--------|------|
-| 📋 | Dispatch notification when analysis completes |
-| 📋 | Update `SendReminderJob` to send emails |
-| 📋 | Create `SendWeeklyDigestJob` |
-| 📋 | Schedule weekly digest (Monday 9 AM) |
-| 📋 | Create `NotificationController` for preferences |
-| 📋 | Create `GET /notifications/preferences` endpoint |
-| 📋 | Create `PUT /notifications/preferences` endpoint |
+| ✅ | Dispatch notification when analysis completes |
+| ✅ | SendReminderJob already sends emails (existing) |
+| ✅ | Create `SendWeeklyDigestJob` |
+| ✅ | Schedule weekly digest (Monday 9 AM) |
+| ✅ | Create `NotificationController` for preferences |
+| ✅ | Create `GET /notifications/preferences` endpoint |
+| ✅ | Create `PUT /notifications/preferences` endpoint |
 
 ### Phase 13D: Frontend - Notification Preferences
 | Status | Task |
 |--------|------|
-| 📋 | Add TypeScript types for notification preferences |
-| 📋 | Create `NotificationSettings` component |
-| 📋 | Create notifications settings page/section |
-| 📋 | Add toggle switches for each notification type |
-| 📋 | Integrate with user settings |
+| ✅ | Add TypeScript types for notification preferences |
+| ✅ | Create `NotificationSettings` component |
+| ✅ | Create notifications settings page/section |
+| ✅ | Add toggle switches for each notification type |
+| ✅ | Integrate with user settings |
 | 📋 | Write preference component tests |
 
 ---
@@ -1266,45 +1266,46 @@ CREATE TABLE notification_preferences (
 ### Phase 14A: Backend - Comparison Engine
 | Status | Task |
 |--------|------|
-| 📋 | Create `ContractComparisonService` |
-| 📋 | Create `ComparisonResult` DTO |
-| 📋 | Implement clause-by-clause comparison algorithm |
-| 📋 | Identify: added, removed, modified clauses |
-| 📋 | Compare risk levels between contracts |
-| 📋 | Compare deadline differences |
-| 📋 | Calculate similarity score |
+| ✅ | Create `ContractComparisonService` |
+| ✅ | Create `ComparisonResult` DTOs (Clause, Deadline, Contract) |
+| ✅ | Implement clause-by-clause comparison algorithm |
+| ✅ | Identify: matched, only_in_a, only_in_b clauses |
+| ✅ | Compare risk levels between contracts |
+| ✅ | Compare deadline differences |
+| ✅ | Calculate similarity score (Levenshtein + Jaccard) |
 
 ### Phase 14B: Backend - API
 | Status | Task |
 |--------|------|
-| 📋 | Create `ComparisonController` |
-| 📋 | Create `POST /contracts/compare` endpoint |
-| 📋 | Accept `contract_id_a` and `contract_id_b` parameters |
-| 📋 | Validate both contracts belong to user |
-| 📋 | Validate both contracts are analyzed |
-| 📋 | Create `ComparisonResource` |
-| 📋 | Write comparison endpoint tests |
+| ✅ | Create `ContractComparisonController` |
+| ✅ | Create `POST /contracts/compare` endpoint |
+| ✅ | Create `CompareContractsRequest` validator |
+| ✅ | Validate both contracts belong to user |
+| ✅ | Validate both contracts are analyzed |
+| ✅ | Create `ContractComparisonResource` (+ Clause/Deadline resources) |
+| ✅ | Write comparison endpoint tests (feature + unit) |
 
 ### Phase 14C: Frontend - Comparison UI
 | Status | Task |
 |--------|------|
-| 📋 | Create `CompareContractsView` |
-| 📋 | Create `ContractSelector` component (dropdown) |
-| 📋 | Create `ComparisonResult` container component |
-| 📋 | Create `SideBySideView` component |
-| 📋 | Create `ClauseDiff` component (highlight differences) |
-| 📋 | Create `RiskComparison` component |
-| 📋 | Add comparison link to contract list/detail |
+| ✅ | Create `ContractComparisonView` |
+| ✅ | Create `ContractSelector` component (dropdown) |
+| ✅ | Create `ComparisonSummary` component |
+| ✅ | Create `ClauseComparisonTable` component |
+| ✅ | Create `ClauseComparisonCard` component |
+| ✅ | Create `RiskLevelComparison` component |
+| ✅ | Add comparison route `/contracts/compare` |
 
 ### Phase 14D: Frontend - Diff Visualization
 | Status | Task |
 |--------|------|
-| 📋 | Implement text diff highlighting (added=green, removed=red) |
-| 📋 | Create `DeadlineComparison` component |
-| 📋 | Create `SummaryComparison` component |
-| 📋 | Add "swap contracts" button |
-| 📋 | Create comparison empty state |
-| 📋 | Write comparison component tests |
+| ✅ | Create `DiffHighlight` component (side-by-side text) |
+| ✅ | Create `DeadlineComparisonTable` component |
+| ✅ | Create `DeadlineComparisonCard` component |
+| ✅ | Add "swap contracts" button |
+| ✅ | Create comparison empty state |
+| ✅ | Create `SimilarityScore` component (circular progress) |
+| ✅ | Create Pinia store and API service |
 
 ---
 
@@ -1474,16 +1475,15 @@ Getting Started ✓
 
 ## Current Sprint
 
-**Sprint:** Phase 12 - Search & Filtering
-**Goal:** Enable users to search and filter contracts efficiently
+**Sprint:** Phase 15 - Onboarding Experience
+**Goal:** Guide new users through the product with a welcome flow, sample contract, and helpful tooltips
 
 ### Active Tasks
 
 | Status | Task | Notes |
 |--------|------|-------|
-| ✅ | Backend search infrastructure | Full-text search, filters, pagination |
-| ✅ | Frontend search UI | SearchBar, FilterPanel, URL persistence |
-| 📋 | Frontend component tests | SearchBar.spec.ts, FilterPanel.spec.ts |
+| ⬜ | Sample contract service | Pre-analyzed demo contract |
+| ⬜ | Welcome modal | First-login guidance flow |
 
 ### Completed Phases
 
@@ -1500,14 +1500,14 @@ Getting Started ✓
 | Phase 9 | ✅ Complete | Multi-Format File Support - images and text files |
 | Phase 10 | ✅ Complete | Quick Text Analysis - paste & analyze text directly |
 | Phase 11 | ✅ Complete | Export & Reports - PDF reports, CSV exports, ZIP bundles |
-| Phase 12 | 🔄 In Progress | Search & Filtering - full-text search, filters |
+| Phase 12 | ✅ Complete | Search & Filtering - full-text search, filters |
+| Phase 13 | ✅ Complete | Email Notifications - analysis complete, weekly digests, settings |
+| Phase 14 | ✅ Complete | Contract Comparison - side-by-side diff, similarity score |
 
 ### Upcoming Phases
 
 | Phase | Status | Priority | Notes |
 |-------|--------|----------|-------|
-| Phase 13 | 📋 Backlog | Medium | Email Notifications - analysis complete, digests |
-| Phase 14 | 📋 Backlog | High | Contract Comparison - side-by-side diff |
 | Phase 15 | 📋 Backlog | Medium | Onboarding Experience - welcome flow, sample contract |
 | Phase 6 | 📋 Backlog | Low | Deployment Preparation - production setup |
 
@@ -1536,10 +1536,10 @@ Getting Started ✓
 | Phase 10 | 9 | 9 | 0 | 0 | 0 | 0 |
 | Phase 11 | 22 | 22 | 0 | 0 | 0 | 0 |
 | Phase 12 | 27 | 24 | 0 | 0 | 0 | 3 |
-| Phase 13 | 18 | 0 | 0 | 0 | 0 | 18 |
-| Phase 14 | 24 | 0 | 0 | 0 | 0 | 24 |
+| Phase 13 | 18 | 17 | 0 | 0 | 0 | 1 |
+| Phase 14 | 28 | 28 | 0 | 0 | 0 | 0 |
 | Phase 15 | 18 | 0 | 0 | 0 | 0 | 18 |
-| **Total** | **409** | **309** | **0** | **0** | **0** | **100** |
+| **Total** | **413** | **354** | **0** | **0** | **0** | **59** |
 
 ---
 

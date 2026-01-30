@@ -17,6 +17,7 @@ use App\Repositories\Contracts\ContractAnalysisRepositoryInterface;
 use App\Repositories\Contracts\ContractClauseRepositoryInterface;
 use App\Repositories\Contracts\ContractDeadlineRepositoryInterface;
 use App\Repositories\Contracts\ContractRepositoryInterface;
+use App\Services\NotificationService;
 use App\Services\PiiDetectionService;
 use App\Services\TextExtraction\TextExtractorFactory;
 use Illuminate\Support\Carbon;
@@ -34,6 +35,7 @@ class ContractAnalysisService
         private TextExtractorFactory $textExtractorFactory,
         private ClaudeAiService $aiService,
         private PiiDetectionService $piiDetection,
+        private NotificationService $notificationService,
     ) {}
 
     /**
@@ -128,6 +130,10 @@ class ContractAnalysisService
                     'contract_id' => $contract->id,
                     'analysis_id' => $analysis->id,
                 ]);
+
+                // Send analysis complete notification
+                $contract->refresh();
+                $this->notificationService->sendAnalysisComplete($contract);
 
                 return $analysis;
             });

@@ -14,7 +14,9 @@ use App\Repositories\Contracts\ContractAnalysisRepositoryInterface;
 use App\Repositories\Contracts\ContractClauseRepositoryInterface;
 use App\Repositories\Contracts\ContractDeadlineRepositoryInterface;
 use App\Repositories\Contracts\ContractRepositoryInterface;
+use App\Repositories\Contracts\NotificationPreferenceRepositoryInterface;
 use App\Repositories\Contracts\ReminderRepositoryInterface;
+use App\Repositories\NotificationPreferenceRepository;
 use App\Repositories\ReminderRepository;
 use Illuminate\Support\ServiceProvider;
 
@@ -31,6 +33,7 @@ class RepositoryServiceProvider extends ServiceProvider
         ContractAnalysisRepositoryInterface::class => ContractAnalysisRepository::class,
         ContractClauseRepositoryInterface::class => ContractClauseRepository::class,
         ContractDeadlineRepositoryInterface::class => ContractDeadlineRepository::class,
+        NotificationPreferenceRepositoryInterface::class => NotificationPreferenceRepository::class,
         ReminderRepositoryInterface::class => ReminderRepository::class,
     ];
 

@@ -63,6 +63,18 @@ const router = createRouter({
       component: () => import('@/views/RemindersView.vue'),
       meta: { requiresAuth: true },
     },
+    {
+      path: '/settings',
+      name: 'settings',
+      component: () => import('@/views/SettingsView.vue'),
+      meta: { requiresAuth: true },
+    },
+    {
+      path: '/settings/notifications',
+      name: 'settings-notifications',
+      component: () => import('@/views/SettingsView.vue'),
+      meta: { requiresAuth: true },
+    },
   ],
 })
 

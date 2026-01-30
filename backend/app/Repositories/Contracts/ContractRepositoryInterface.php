@@ -10,6 +10,7 @@ use App\Models\Contract;
 use App\Models\User;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Carbon;
 
 interface ContractRepositoryInterface
 {
@@ -109,4 +110,9 @@ interface ContractRepositoryInterface
         User|int $user,
         ContractSearchFilters $filters,
     ): LengthAwarePaginator;
+
+    /**
+     * Get contracts completed after a specific date for a user.
+     */
+    public function getRecentlyCompletedForUser(User|int $user, Carbon $since): Collection;
 }

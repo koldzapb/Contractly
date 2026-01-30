@@ -12,6 +12,7 @@ use App\Http\Controllers\ContractComparisonController;
 use App\Http\Controllers\ContractController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ExportController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\QuickAnalysisController;
 use App\Http\Controllers\ReminderController;
 use Illuminate\Http\Request;
@@ -109,5 +110,12 @@ Route::middleware(['auth:sanctum', 'throttle:api'])->group(function () {
         Route::put('/{id}', [ReminderController::class, 'update']);
         Route::delete('/{id}', [ReminderController::class, 'destroy']);
         Route::post('/{id}/cancel', [ReminderController::class, 'cancel']);
+    });
+
+    // Notification Preferences
+    Route::prefix('notifications')->group(function () {
+        Route::get('/preferences', [NotificationController::class, 'show']);
+        Route::put('/preferences', [NotificationController::class, 'update']);
+        Route::post('/preferences/reset', [NotificationController::class, 'reset']);
     });
 });
