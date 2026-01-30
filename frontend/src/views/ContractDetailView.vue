@@ -652,13 +652,7 @@ onUnmounted(() => {
             d="M5 13l4 4L19 7"
           />
         </svg>
-        <svg
-          v-else
-          class="h-5 w-5"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-        >
+        <svg v-else class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path
             stroke-linecap="round"
             stroke-linejoin="round"

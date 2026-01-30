@@ -59,10 +59,7 @@ export async function exportClausesCsv(contractId: string, contractTitle: string
 /**
  * Export deadlines as CSV
  */
-export async function exportDeadlinesCsv(
-  contractId: string,
-  contractTitle: string,
-): Promise<void> {
+export async function exportDeadlinesCsv(contractId: string, contractTitle: string): Promise<void> {
   const response = await api.get(`/contracts/${contractId}/export/deadlines`, {
     responseType: 'blob',
   })

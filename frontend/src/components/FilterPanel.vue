@@ -328,7 +328,9 @@ function getSelectedColorClass(color: string): string {
             "
             @click="toggleHasDeadlines"
           >
-            {{ hasDeadlines === undefined ? 'Any' : hasDeadlines ? 'Has Deadlines' : 'No Deadlines' }}
+            {{
+              hasDeadlines === undefined ? 'Any' : hasDeadlines ? 'Has Deadlines' : 'No Deadlines'
+            }}
           </button>
         </div>
 

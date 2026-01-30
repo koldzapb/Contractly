@@ -46,6 +46,12 @@ const router = createRouter({
       meta: { requiresAuth: true },
     },
     {
+      path: '/contracts/compare',
+      name: 'contract-compare',
+      component: () => import('@/views/ContractComparisonView.vue'),
+      meta: { requiresAuth: true },
+    },
+    {
       path: '/contracts/:id',
       name: 'contract-detail',
       component: () => import('@/views/ContractDetailView.vue'),

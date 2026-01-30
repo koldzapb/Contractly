@@ -292,6 +292,95 @@ export interface ApiError {
   errors?: Record<string, string[]>
 }
 
+// Contract Comparison types
+export type ComparisonMatchType = 'matched' | 'only_in_a' | 'only_in_b'
+
+export interface ComparisonClauseData {
+  id: string
+  clause_type: ClauseType
+  clause_type_label: string
+  original_text: string
+  plain_explanation: string
+  risk_level: RiskLevel
+  risk_reason: string | null
+  page_number: number | null
+}
+
+export interface ClauseComparison {
+  match_type: ComparisonMatchType
+  similarity: number | null
+  has_risk_difference: boolean
+  clause_a: ComparisonClauseData | null
+  clause_b: ComparisonClauseData | null
+}
+
+export interface ComparisonDeadlineData {
+  id: string
+  deadline_type: DeadlineType
+  deadline_type_label: string
+  title: string
+  description: string | null
+  deadline_date: string | null
+  is_recurring: boolean
+  recurrence_pattern: string | null
+}
+
+export interface DeadlineComparison {
+  match_type: ComparisonMatchType
+  days_difference: number | null
+  has_date_difference: boolean
+  deadline_a: ComparisonDeadlineData | null
+  deadline_b: ComparisonDeadlineData | null
+}
+
+export interface ComparisonContractSummary {
+  id: string
+  title: string
+  overall_risk_level: RiskLevel | null
+}
+
+export interface RiskComparison {
+  contract_a: RiskLevel | null
+  contract_b: RiskLevel | null
+  changed: boolean
+}
+
+export interface ComparisonStats {
+  total_clauses_a: number
+  total_clauses_b: number
+  matched_clauses: number
+  clauses_only_in_a: number
+  clauses_only_in_b: number
+  total_deadlines_a: number
+  total_deadlines_b: number
+  matched_deadlines: number
+  deadlines_only_in_a: number
+  deadlines_only_in_b: number
+}
+
+export interface ContractComparisonResult {
+  contract_a: ComparisonContractSummary
+  contract_b: ComparisonContractSummary
+  similarity_score: number
+  risk_comparison: RiskComparison
+  clauses: {
+    matched: ClauseComparison[]
+    only_in_a: ClauseComparison[]
+    only_in_b: ClauseComparison[]
+  }
+  deadlines: {
+    matched: DeadlineComparison[]
+    only_in_a: DeadlineComparison[]
+    only_in_b: DeadlineComparison[]
+  }
+  stats: ComparisonStats
+}
+
+export interface CompareContractsRequest {
+  contract_id_a: string
+  contract_id_b: string
+}
+
 // Dashboard types
 export interface DashboardStats {
   total_contracts: number

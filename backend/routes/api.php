@@ -8,6 +8,7 @@ use App\Http\Controllers\Auth\LogoutController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\ContractChatController;
+use App\Http\Controllers\ContractComparisonController;
 use App\Http\Controllers\ContractController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ExportController;
@@ -60,6 +61,9 @@ Route::middleware(['auth:sanctum', 'throttle:api'])->group(function () {
             ],
         ]);
     });
+
+    // Contract Comparison
+    Route::post('/contracts/compare', [ContractComparisonController::class, 'compare']);
 
     // Contracts
     Route::prefix('contracts')->group(function () {
