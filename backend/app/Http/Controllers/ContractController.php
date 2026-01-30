@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
+use App\DataTransferObjects\ContractSearchFilters;
 use App\Enums\ContractStatus;
 use App\Http\Requests\ApplyRedactionsRequest;
+use App\Http\Requests\FilterContractsRequest;
 use App\Http\Requests\StoreContractRequest;
 use App\Http\Requests\UpdateContractRequest;
 use App\Http\Resources\ContractResource;
@@ -28,15 +30,46 @@ class ContractController extends Controller
 
     /**
      * List all contracts for the authenticated user.
+     *
+     * Supports search and filtering via query parameters:
+     * - q: Search query (title, filename, summary)
+     * - status: Comma-separated statuses (pending, processing, completed, failed)
+     * - risk_level: Comma-separated risk levels (none, low, medium, high)
+     * - file_type: Comma-separated file types (pdf, image, text)
+     * - date_from: Filter by created_at >= date
+     * - date_to: Filter by created_at <= date
+     * - has_deadlines: Filter contracts with/without deadlines (true/false)
+     * - sort_by: Sort field (created_at, title, overall_risk_level, status, analyzed_at, file_size)
+     * - sort_order: Sort direction (asc, desc)
+     * - per_page: Items per page (1-100, default 15)
+     * - page: Page number
      */
-    public function index(Request $request): AnonymousResourceCollection
+    public function index(FilterContractsRequest $request): AnonymousResourceCollection
     {
-        $contracts = $this->contracts->paginateForUser(
+        $filters = ContractSearchFilters::fromArray($request->validated());
+
+        $contracts = $this->contracts->searchAndFilterForUser(
             $request->user(),
-            $request->integer('per_page', 15),
+            $filters,
         );
 
-        return ContractResource::collection($contracts);
+        // Add filter metadata to response
+        $response = ContractResource::collection($contracts);
+
+        return $response->additional([
+            'filters' => [
+                'query' => $filters->query,
+                'statuses' => $filters->statuses ? array_map(fn ($s) => $s->value, $filters->statuses) : null,
+                'risk_levels' => $filters->riskLevels ? array_map(fn ($r) => $r->value, $filters->riskLevels) : null,
+                'file_types' => $filters->fileTypes ? array_map(fn ($f) => $f->value, $filters->fileTypes) : null,
+                'date_from' => $filters->dateFrom?->toDateString(),
+                'date_to' => $filters->dateTo?->toDateString(),
+                'has_deadlines' => $filters->hasDeadlines,
+                'sort_by' => $filters->sortBy,
+                'sort_order' => $filters->sortOrder,
+                'has_filters' => $filters->hasFilters(),
+            ],
+        ]);
     }
 
     /**

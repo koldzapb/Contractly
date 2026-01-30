@@ -1,8 +1,18 @@
 import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
-import type { Contract, PaginatedResponse, PiiDetectionResult } from '@/types'
+import type {
+  Contract,
+  PiiDetectionResult,
+  ContractSearchFilters,
+  ContractSearchMeta,
+  ContractStatus,
+  RiskLevel,
+  FileType,
+  SortField,
+  SortOrder,
+} from '@/types'
 import * as contractsService from '@/services/contracts'
-import type { UploadContractData, ContractListParams } from '@/services/contracts'
+import type { UploadContractData } from '@/services/contracts'
 
 export interface UploadState {
   file: File | null
@@ -11,12 +21,30 @@ export interface UploadState {
   error: string | null
 }
 
+const DEFAULT_FILTERS: ContractSearchFilters = {
+  q: undefined,
+  status: undefined,
+  risk_level: undefined,
+  file_type: undefined,
+  date_from: undefined,
+  date_to: undefined,
+  has_deadlines: undefined,
+  sort_by: 'created_at',
+  sort_order: 'desc',
+  per_page: 15,
+  page: 1,
+}
+
 export const useContractsStore = defineStore('contracts', () => {
   // State
   const contracts = ref<Contract[]>([])
   const currentContract = ref<Contract | null>(null)
   const loading = ref(false)
   const error = ref<string | null>(null)
+
+  // Search and filter state
+  const filters = ref<ContractSearchFilters>({ ...DEFAULT_FILTERS })
+  const filterMeta = ref<ContractSearchMeta | null>(null)
 
   // Pagination state
   const pagination = ref({
@@ -38,21 +66,35 @@ export const useContractsStore = defineStore('contracts', () => {
   const hasContracts = computed(() => contracts.value.length > 0)
   const hasMorePages = computed(() => pagination.value.currentPage < pagination.value.lastPage)
   const isUploading = computed(() => upload.value.uploading)
+  const hasActiveFilters = computed(() => filterMeta.value?.has_filters ?? false)
+  const activeFilterCount = computed(() => {
+    let count = 0
+    if (filters.value.q) count++
+    if (filters.value.status?.length) count++
+    if (filters.value.risk_level?.length) count++
+    if (filters.value.file_type?.length) count++
+    if (filters.value.date_from || filters.value.date_to) count++
+    if (filters.value.has_deadlines !== undefined) count++
+    return count
+  })
 
   /**
-   * Fetch paginated contracts
+   * Fetch paginated contracts with search and filters
    */
-  async function fetchContracts(params: ContractListParams = {}): Promise<void> {
+  async function fetchContracts(searchFilters?: Partial<ContractSearchFilters>): Promise<void> {
     loading.value = true
     error.value = null
 
+    // Merge provided filters with current state
+    if (searchFilters) {
+      filters.value = { ...filters.value, ...searchFilters }
+    }
+
     try {
-      const response: PaginatedResponse<Contract> = await contractsService.getContracts({
-        page: params.page || pagination.value.currentPage,
-        per_page: params.per_page || pagination.value.perPage,
-      })
+      const response = await contractsService.getContracts(filters.value)
 
       contracts.value = response.data
+      filterMeta.value = response.filters
       pagination.value = {
         currentPage: response.meta.current_page,
         lastPage: response.meta.last_page,
@@ -66,6 +108,85 @@ export const useContractsStore = defineStore('contracts', () => {
     } finally {
       loading.value = false
     }
+  }
+
+  /**
+   * Set search query and fetch
+   */
+  async function search(query: string): Promise<void> {
+    filters.value.q = query || undefined
+    filters.value.page = 1
+    await fetchContracts()
+  }
+
+  /**
+   * Set filter values and fetch
+   */
+  async function setFilters(newFilters: Partial<ContractSearchFilters>): Promise<void> {
+    filters.value = { ...filters.value, ...newFilters, page: 1 }
+    await fetchContracts()
+  }
+
+  /**
+   * Clear all filters and fetch
+   */
+  async function clearFilters(): Promise<void> {
+    filters.value = { ...DEFAULT_FILTERS }
+    await fetchContracts()
+  }
+
+  /**
+   * Set sort and fetch
+   */
+  async function setSort(sortBy: SortField, sortOrder: SortOrder = 'desc'): Promise<void> {
+    filters.value.sort_by = sortBy
+    filters.value.sort_order = sortOrder
+    filters.value.page = 1
+    await fetchContracts()
+  }
+
+  /**
+   * Initialize filters from URL query params
+   */
+  function initFiltersFromQuery(query: Record<string, string>): void {
+    const newFilters: ContractSearchFilters = { ...DEFAULT_FILTERS }
+
+    if (query.q) newFilters.q = query.q
+    if (query.status) newFilters.status = query.status.split(',') as ContractStatus[]
+    if (query.risk_level) newFilters.risk_level = query.risk_level.split(',') as RiskLevel[]
+    if (query.file_type) newFilters.file_type = query.file_type.split(',') as FileType[]
+    if (query.date_from) newFilters.date_from = query.date_from
+    if (query.date_to) newFilters.date_to = query.date_to
+    if (query.has_deadlines) newFilters.has_deadlines = query.has_deadlines === 'true'
+    if (query.sort_by) newFilters.sort_by = query.sort_by as SortField
+    if (query.sort_order) newFilters.sort_order = query.sort_order as SortOrder
+    if (query.page) newFilters.page = parseInt(query.page, 10)
+    if (query.per_page) newFilters.per_page = parseInt(query.per_page, 10)
+
+    filters.value = newFilters
+  }
+
+  /**
+   * Get current filters as URL query params
+   */
+  function getFiltersAsQuery(): Record<string, string> {
+    const query: Record<string, string> = {}
+
+    if (filters.value.q) query.q = filters.value.q
+    if (filters.value.status?.length) query.status = filters.value.status.join(',')
+    if (filters.value.risk_level?.length) query.risk_level = filters.value.risk_level.join(',')
+    if (filters.value.file_type?.length) query.file_type = filters.value.file_type.join(',')
+    if (filters.value.date_from) query.date_from = filters.value.date_from
+    if (filters.value.date_to) query.date_to = filters.value.date_to
+    if (filters.value.has_deadlines !== undefined)
+      query.has_deadlines = String(filters.value.has_deadlines)
+    if (filters.value.sort_by && filters.value.sort_by !== 'created_at')
+      query.sort_by = filters.value.sort_by
+    if (filters.value.sort_order && filters.value.sort_order !== 'desc')
+      query.sort_order = filters.value.sort_order
+    if (filters.value.page && filters.value.page > 1) query.page = String(filters.value.page)
+
+    return query
   }
 
   /**
@@ -396,7 +517,8 @@ export const useContractsStore = defineStore('contracts', () => {
    * Go to specific page
    */
   async function goToPage(page: number): Promise<void> {
-    await fetchContracts({ page })
+    filters.value.page = page
+    await fetchContracts()
   }
 
   return {
@@ -407,11 +529,15 @@ export const useContractsStore = defineStore('contracts', () => {
     error,
     pagination,
     upload,
+    filters,
+    filterMeta,
 
     // Computed
     hasContracts,
     hasMorePages,
     isUploading,
+    hasActiveFilters,
+    activeFilterCount,
 
     // Actions
     fetchContracts,
@@ -428,5 +554,11 @@ export const useContractsStore = defineStore('contracts', () => {
     resetUpload,
     clearError,
     goToPage,
+    search,
+    setFilters,
+    clearFilters,
+    setSort,
+    initFiltersFromQuery,
+    getFiltersAsQuery,
   }
 })

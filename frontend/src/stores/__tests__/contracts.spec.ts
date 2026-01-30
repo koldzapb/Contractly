@@ -2,7 +2,7 @@ import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { setActivePinia, createPinia } from 'pinia'
 import { useContractsStore } from '../contracts'
 import * as contractsService from '@/services/contracts'
-import type { Contract, PaginatedResponse } from '@/types'
+import type { Contract, ContractSearchResponse } from '@/types'
 
 vi.mock('@/services/contracts')
 
@@ -24,7 +24,7 @@ const mockContract: Contract = {
   updated_at: '2024-01-01T00:00:00Z',
 }
 
-const mockPaginatedResponse: PaginatedResponse<Contract> = {
+const mockPaginatedResponse: ContractSearchResponse = {
   data: [mockContract],
   meta: {
     current_page: 1,
@@ -39,6 +39,18 @@ const mockPaginatedResponse: PaginatedResponse<Contract> = {
     last: '/api/contracts?page=1',
     prev: null,
     next: null,
+  },
+  filters: {
+    query: null,
+    statuses: null,
+    risk_levels: null,
+    file_types: null,
+    date_from: null,
+    date_to: null,
+    has_deadlines: null,
+    sort_by: 'created_at',
+    sort_order: 'desc',
+    has_filters: false,
   },
 }
 
@@ -334,10 +346,12 @@ describe('contracts store', () => {
       const store = useContractsStore()
       await store.goToPage(2)
 
-      expect(contractsService.getContracts).toHaveBeenCalledWith({
-        page: 2,
-        per_page: 15,
-      })
+      expect(contractsService.getContracts).toHaveBeenCalledWith(
+        expect.objectContaining({
+          page: 2,
+          per_page: 15,
+        }),
+      )
     })
   })
 })

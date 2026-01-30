@@ -230,6 +230,63 @@ export interface PaginatedResponse<T> {
   }
 }
 
+// Search & Filter types
+export type SortField =
+  | 'created_at'
+  | 'title'
+  | 'overall_risk_level'
+  | 'status'
+  | 'analyzed_at'
+  | 'file_size'
+
+export type SortOrder = 'asc' | 'desc'
+
+export interface ContractSearchFilters {
+  q?: string
+  status?: ContractStatus[]
+  risk_level?: RiskLevel[]
+  file_type?: FileType[]
+  date_from?: string
+  date_to?: string
+  has_deadlines?: boolean
+  sort_by?: SortField
+  sort_order?: SortOrder
+  per_page?: number
+  page?: number
+}
+
+export interface ContractSearchMeta {
+  query: string | null
+  statuses: ContractStatus[] | null
+  risk_levels: RiskLevel[] | null
+  file_types: FileType[] | null
+  date_from: string | null
+  date_to: string | null
+  has_deadlines: boolean | null
+  sort_by: SortField
+  sort_order: SortOrder
+  has_filters: boolean
+}
+
+export interface ContractSearchResponse {
+  data: Contract[]
+  meta: {
+    current_page: number
+    from: number
+    last_page: number
+    per_page: number
+    to: number
+    total: number
+  }
+  links: {
+    first: string
+    last: string
+    prev: string | null
+    next: string | null
+  }
+  filters: ContractSearchMeta
+}
+
 export interface ApiError {
   message: string
   errors?: Record<string, string[]>

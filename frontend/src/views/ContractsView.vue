@@ -1,27 +1,48 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
-import { RouterLink, useRouter } from 'vue-router'
+import { onMounted, ref, watch } from 'vue'
+import { RouterLink, useRouter, useRoute } from 'vue-router'
 import { storeToRefs } from 'pinia'
 import { ArrowRightOnRectangleIcon } from '@heroicons/vue/24/outline'
 import ThemeToggle from '@/components/ThemeToggle.vue'
 import MobileNav from '@/components/MobileNav.vue'
 import ContractUploader from '@/components/ContractUploader.vue'
 import ContractList from '@/components/ContractList.vue'
+import SearchBar from '@/components/SearchBar.vue'
+import FilterPanel from '@/components/FilterPanel.vue'
 import { useContractsStore } from '@/stores/contracts'
 import { useAuthStore } from '@/stores/auth'
+import type { ContractSearchFilters } from '@/types'
 
 const router = useRouter()
+const route = useRoute()
 const contractsStore = useContractsStore()
 const authStore = useAuthStore()
 
-const { contracts, loading, error, pagination } = storeToRefs(contractsStore)
+const { contracts, loading, error, pagination, filters, hasActiveFilters, activeFilterCount } =
+  storeToRefs(contractsStore)
 
 const showDeleteConfirm = ref(false)
 const contractToDelete = ref<string | null>(null)
+const searchQuery = ref('')
 
 onMounted(async () => {
+  // Initialize filters from URL query params
+  const query = route.query as Record<string, string>
+  if (Object.keys(query).length > 0) {
+    contractsStore.initFiltersFromQuery(query)
+    searchQuery.value = query.q || ''
+  }
   await contractsStore.fetchContracts()
 })
+
+// Update URL when filters change
+watch(
+  () => contractsStore.getFiltersAsQuery(),
+  (newQuery) => {
+    router.replace({ query: newQuery })
+  },
+  { deep: true },
+)
 
 function handleDeleteRequest(id: string): void {
   contractToDelete.value = id
@@ -47,6 +68,20 @@ function cancelDelete(): void {
 
 async function handlePageChange(page: number): Promise<void> {
   await contractsStore.goToPage(page)
+}
+
+async function handleSearch(query: string): Promise<void> {
+  searchQuery.value = query
+  await contractsStore.search(query)
+}
+
+async function handleFilterChange(newFilters: Partial<ContractSearchFilters>): Promise<void> {
+  await contractsStore.setFilters(newFilters)
+}
+
+async function handleClearFilters(): Promise<void> {
+  searchQuery.value = ''
+  await contractsStore.clearFilters()
 }
 
 async function handleLogout(): Promise<void> {
@@ -174,6 +209,32 @@ async function handleLogout(): Promise<void> {
       <!-- Upload Area -->
       <div class="mb-8">
         <ContractUploader />
+      </div>
+
+      <!-- Search and Filters -->
+      <div class="mb-6 space-y-4">
+        <div class="flex flex-col gap-4 sm:flex-row sm:items-center">
+          <div class="flex-1">
+            <SearchBar
+              v-model="searchQuery"
+              placeholder="Search contracts by title, filename, or summary..."
+              @search="handleSearch"
+            />
+          </div>
+          <div
+            v-if="pagination.total > 0"
+            class="text-sm text-gray-500 dark:text-gray-400 whitespace-nowrap"
+          >
+            {{ pagination.total }} contract{{ pagination.total === 1 ? '' : 's' }}
+            <span v-if="hasActiveFilters">(filtered)</span>
+          </div>
+        </div>
+        <FilterPanel
+          :filters="filters"
+          :active-filter-count="activeFilterCount"
+          @update:filters="handleFilterChange"
+          @clear="handleClearFilters"
+        />
       </div>
 
       <!-- Contract List -->

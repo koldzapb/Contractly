@@ -1,5 +1,11 @@
 import api from './api'
-import type { Contract, ApiResponse, PaginatedResponse, PiiDetectionResult } from '@/types'
+import type {
+  Contract,
+  ApiResponse,
+  PiiDetectionResult,
+  ContractSearchFilters,
+  ContractSearchResponse,
+} from '@/types'
 
 export interface UploadContractData {
   file: File
@@ -48,17 +54,54 @@ export async function uploadContract(
 }
 
 /**
- * Get paginated list of contracts
+ * Get paginated list of contracts with optional search and filters
  */
 export async function getContracts(
-  params: ContractListParams = {},
-): Promise<PaginatedResponse<Contract>> {
-  const response = await api.get<PaginatedResponse<Contract>>('/contracts', {
-    params: {
-      page: params.page || 1,
-      per_page: params.per_page || 15,
-    },
-  })
+  filters: ContractSearchFilters = {},
+): Promise<ContractSearchResponse> {
+  // Build query params, converting arrays to comma-separated strings
+  const params: Record<string, string | number | boolean | undefined> = {
+    page: filters.page || 1,
+    per_page: filters.per_page || 15,
+  }
+
+  if (filters.q) {
+    params.q = filters.q
+  }
+
+  if (filters.status && filters.status.length > 0) {
+    params.status = filters.status.join(',')
+  }
+
+  if (filters.risk_level && filters.risk_level.length > 0) {
+    params.risk_level = filters.risk_level.join(',')
+  }
+
+  if (filters.file_type && filters.file_type.length > 0) {
+    params.file_type = filters.file_type.join(',')
+  }
+
+  if (filters.date_from) {
+    params.date_from = filters.date_from
+  }
+
+  if (filters.date_to) {
+    params.date_to = filters.date_to
+  }
+
+  if (filters.has_deadlines !== undefined) {
+    params.has_deadlines = filters.has_deadlines
+  }
+
+  if (filters.sort_by) {
+    params.sort_by = filters.sort_by
+  }
+
+  if (filters.sort_order) {
+    params.sort_order = filters.sort_order
+  }
+
+  const response = await api.get<ContractSearchResponse>('/contracts', { params })
 
   return response.data
 }

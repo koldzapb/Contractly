@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Repositories\Contracts;
 
+use App\DataTransferObjects\ContractSearchFilters;
 use App\Enums\ContractStatus;
 use App\Models\Contract;
 use App\Models\User;
@@ -97,4 +98,15 @@ interface ContractRepositoryInterface
      * Get recent contracts for a user.
      */
     public function getRecentForUser(User|int $user, int $limit = 5): Collection;
+
+    /**
+     * Search and filter contracts for a user with pagination.
+     *
+     * Supports full-text search across title and filename,
+     * plus filtering by status, risk level, file type, and date range.
+     */
+    public function searchAndFilterForUser(
+        User|int $user,
+        ContractSearchFilters $filters,
+    ): LengthAwarePaginator;
 }

@@ -1037,47 +1037,51 @@ GET /contracts/{id}/export/all
 ### Phase 12A: Backend - Search Infrastructure
 | Status | Task |
 |--------|------|
-| 📋 | Add full-text search index to contracts table |
-| 📋 | Create `SearchController` |
-| 📋 | Create `ContractSearchService` |
-| 📋 | Implement full-text search across title, summary, clauses |
-| 📋 | Create `GET /contracts/search` endpoint |
-| 📋 | Support query parameters: `q`, `risk_level`, `status`, `date_from`, `date_to` |
-| 📋 | Add pagination to search results |
-| 📋 | Write search service tests |
+| ✅ | Add full-text search index to contracts table |
+| ✅ | Create `ContractSearchFilters` DTO |
+| ✅ | Implement full-text search across title, filename, summary |
+| ✅ | Update `GET /contracts` endpoint with search/filter params |
+| ✅ | Support query parameters: `q`, `risk_level`, `status`, `date_from`, `date_to`, `file_type`, `has_deadlines`, `sort_by`, `sort_order` |
+| ✅ | Add pagination to search results |
+| ✅ | Write search service tests (31 tests) |
 
 ### Phase 12B: Backend - Filter Enhancements
 | Status | Task |
 |--------|------|
-| 📋 | Update `ContractRepositoryInterface` with filter methods |
-| 📋 | Add `filterByRiskLevel(RiskLevel $level)` method |
-| 📋 | Add `filterByStatus(ContractStatus $status)` method |
-| 📋 | Add `filterByDateRange(Carbon $from, Carbon $to)` method |
-| 📋 | Add `filterByClauseType(ClauseType $type)` method |
-| 📋 | Update `GET /contracts` to accept filter parameters |
-| 📋 | Write filter tests |
+| ✅ | Update `ContractRepositoryInterface` with `searchAndFilterForUser` method |
+| ✅ | Add filter by risk level (multiple) |
+| ✅ | Add filter by status (multiple) |
+| ✅ | Add filter by file type (multiple) |
+| ✅ | Add filter by date range |
+| ✅ | Add filter by has_deadlines |
+| ✅ | Add sorting by multiple fields |
+| ✅ | Create `FilterContractsRequest` validator |
+| ✅ | Write filter tests |
 
 ### Phase 12C: Frontend - Search UI
 | Status | Task |
 |--------|------|
-| 📋 | Create `SearchBar` component with debounced input |
-| 📋 | Create `FilterPanel` component (collapsible) |
-| 📋 | Create `RiskLevelFilter` checkbox/pill component |
-| 📋 | Create `StatusFilter` component |
-| 📋 | Create `DateRangeFilter` component |
-| 📋 | Update `ContractsView` to include search and filters |
-| 📋 | Persist filter state in URL query params |
+| ✅ | Create `SearchBar` component with debounced input |
+| ✅ | Create `FilterPanel` component (collapsible) |
+| ✅ | Create risk level filter (pill buttons) |
+| ✅ | Create status filter (pill buttons) |
+| ✅ | Create file type filter (pill buttons) |
+| ✅ | Create date range filter |
+| ✅ | Create has deadlines filter |
+| ✅ | Create sort options |
+| ✅ | Update `ContractsView` to include search and filters |
+| ✅ | Persist filter state in URL query params |
 | 📋 | Write search/filter component tests |
 
 ### Phase 12D: Frontend - Search Results
 | Status | Task |
 |--------|------|
-| 📋 | Create `SearchResults` component |
+| ✅ | Show total results count with filter indicator |
 | 📋 | Highlight matching text in results |
-| 📋 | Show "no results" empty state |
-| 📋 | Add clear filters button |
-| 📋 | Update contracts store with search actions |
-| 📋 | Write integration tests |
+| ✅ | Show "no results" empty state (via ContractList) |
+| ✅ | Add clear filters button |
+| ✅ | Update contracts store with search actions |
+| 📋 | Write integration tests
 
 ---
 
@@ -1470,14 +1474,16 @@ Getting Started ✓
 
 ## Current Sprint
 
-**Sprint:** Planning Next Phase
-**Goal:** Select and begin next feature implementation
+**Sprint:** Phase 12 - Search & Filtering
+**Goal:** Enable users to search and filter contracts efficiently
 
 ### Active Tasks
 
 | Status | Task | Notes |
 |--------|------|-------|
-| ⬜ | Choose next feature | Search/Filtering, Email Notifications, Contract Comparison, or Onboarding |
+| ✅ | Backend search infrastructure | Full-text search, filters, pagination |
+| ✅ | Frontend search UI | SearchBar, FilterPanel, URL persistence |
+| 📋 | Frontend component tests | SearchBar.spec.ts, FilterPanel.spec.ts |
 
 ### Completed Phases
 
@@ -1494,12 +1500,12 @@ Getting Started ✓
 | Phase 9 | ✅ Complete | Multi-Format File Support - images and text files |
 | Phase 10 | ✅ Complete | Quick Text Analysis - paste & analyze text directly |
 | Phase 11 | ✅ Complete | Export & Reports - PDF reports, CSV exports, ZIP bundles |
+| Phase 12 | 🔄 In Progress | Search & Filtering - full-text search, filters |
 
 ### Upcoming Phases
 
 | Phase | Status | Priority | Notes |
 |-------|--------|----------|-------|
-| Phase 12 | 📋 Backlog | High | Search & Filtering - full-text search, filters |
 | Phase 13 | 📋 Backlog | Medium | Email Notifications - analysis complete, digests |
 | Phase 14 | 📋 Backlog | High | Contract Comparison - side-by-side diff |
 | Phase 15 | 📋 Backlog | Medium | Onboarding Experience - welcome flow, sample contract |
@@ -1529,11 +1535,11 @@ Getting Started ✓
 | Phase 9 | 18 | 18 | 0 | 0 | 0 | 0 |
 | Phase 10 | 9 | 9 | 0 | 0 | 0 | 0 |
 | Phase 11 | 22 | 22 | 0 | 0 | 0 | 0 |
-| Phase 12 | 22 | 0 | 0 | 0 | 0 | 22 |
+| Phase 12 | 27 | 24 | 0 | 0 | 0 | 3 |
 | Phase 13 | 18 | 0 | 0 | 0 | 0 | 18 |
 | Phase 14 | 24 | 0 | 0 | 0 | 0 | 24 |
 | Phase 15 | 18 | 0 | 0 | 0 | 0 | 18 |
-| **Total** | **404** | **285** | **0** | **0** | **0** | **119** |
+| **Total** | **409** | **309** | **0** | **0** | **0** | **100** |
 
 ---
 
