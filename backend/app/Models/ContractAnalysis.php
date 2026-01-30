@@ -13,17 +13,19 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Carbon;
 
 /**
- * @property string                    $id
- * @property string                    $contract_id
- * @property string                    $summary
- * @property RiskLevel                 $overall_risk_level
- * @property array<int, string>        $key_findings
- * @property string                    $ai_model
- * @property int                       $tokens_used
- * @property int                       $processing_time_ms
- * @property array<string, mixed>|null $raw_response
- * @property Carbon                    $created_at
- * @property Carbon                    $updated_at
+ * @property string                                              $id
+ * @property string                                              $contract_id
+ * @property string                                              $summary
+ * @property RiskLevel                                           $overall_risk_level
+ * @property array<int, string>                                  $key_findings
+ * @property string                                              $ai_model
+ * @property int                                                 $tokens_used
+ * @property int                                                 $processing_time_ms
+ * @property array<string, mixed>|null                           $raw_response
+ * @property Carbon                                              $created_at
+ * @property Carbon                                              $updated_at
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, ContractClause>   $clauses
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, ContractDeadline> $deadlines
  */
 class ContractAnalysis extends Model
 {

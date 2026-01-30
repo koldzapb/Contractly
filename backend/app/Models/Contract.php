@@ -20,26 +20,27 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Carbon;
 
 /**
- * @property string         $id
- * @property int            $user_id
- * @property string         $title
- * @property string         $original_filename
- * @property string         $file_path
- * @property int            $file_size
- * @property FileType       $file_type
- * @property string|null    $mime_type
- * @property int|null       $page_count
- * @property ContractStatus $status
- * @property RiskLevel|null $overall_risk_level
- * @property string|null    $language_detected
- * @property array|null     $document_classification
- * @property array|null     $pii_detection
- * @property bool           $has_redactions
- * @property string|null    $error_message
- * @property Carbon|null    $analyzed_at
- * @property Carbon         $created_at
- * @property Carbon         $updated_at
- * @property Carbon|null    $deleted_at
+ * @property string                      $id
+ * @property int                         $user_id
+ * @property string                      $title
+ * @property string                      $original_filename
+ * @property string                      $file_path
+ * @property int                         $file_size
+ * @property FileType                    $file_type
+ * @property string|null                 $mime_type
+ * @property int|null                    $page_count
+ * @property ContractStatus              $status
+ * @property RiskLevel|null              $overall_risk_level
+ * @property string|null                 $language_detected
+ * @property array|null                  $document_classification
+ * @property array|null                  $pii_detection
+ * @property bool                        $has_redactions
+ * @property string|null                 $error_message
+ * @property Carbon|null                 $analyzed_at
+ * @property Carbon                      $created_at
+ * @property Carbon                      $updated_at
+ * @property Carbon|null                 $deleted_at
+ * @property-read ContractAnalysis|null  $analysis
  */
 class Contract extends Model
 {

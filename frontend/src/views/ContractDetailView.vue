@@ -18,6 +18,7 @@ import DeadlineList from '@/components/DeadlineList.vue'
 import ReminderForm from '@/components/ReminderForm.vue'
 import { ContractChat } from '@/components/chat'
 import { RedactionEditor } from '@/components/pii'
+import ExportMenu from '@/components/ExportMenu.vue'
 import type { ContractDeadline, CreateReminderData } from '@/types'
 
 const route = useRoute()
@@ -254,6 +255,34 @@ function handleGoBack(): void {
   router.push('/contracts')
 }
 
+// Export handlers
+const exportMessage = ref<{ type: 'success' | 'error'; text: string } | null>(null)
+
+function handleExportSuccess(format: string): void {
+  const labels: Record<string, string> = {
+    pdf: 'PDF report',
+    clauses: 'Clauses CSV',
+    deadlines: 'Deadlines CSV',
+    all: 'ZIP archive',
+  }
+  exportMessage.value = {
+    type: 'success',
+    text: `${labels[format] || 'Export'} downloaded successfully`,
+  }
+  // Auto-dismiss after 3 seconds
+  setTimeout(() => {
+    exportMessage.value = null
+  }, 3000)
+}
+
+function handleExportError(message: string): void {
+  exportMessage.value = { type: 'error', text: message }
+  // Auto-dismiss after 5 seconds
+  setTimeout(() => {
+    exportMessage.value = null
+  }, 5000)
+}
+
 // PII handlers
 async function handleApplyRedactions(itemIds: string[]): Promise<void> {
   if (!currentContract.value) return
@@ -472,6 +501,13 @@ onUnmounted(() => {
 
             <!-- Actions -->
             <div class="flex items-center gap-2 flex-shrink-0 ml-4">
+              <ExportMenu
+                v-if="isCompleted"
+                :contract-id="currentContract.id"
+                :contract-title="currentContract.title"
+                @success="handleExportSuccess"
+                @error="handleExportError"
+              />
               <button
                 v-if="isCompleted"
                 type="button"
@@ -582,6 +618,72 @@ onUnmounted(() => {
         </div>
       </div>
     </main>
+
+    <!-- Export Toast Notification -->
+    <Transition
+      enter-active-class="transition ease-out duration-300"
+      enter-from-class="transform translate-y-2 opacity-0"
+      enter-to-class="transform translate-y-0 opacity-100"
+      leave-active-class="transition ease-in duration-200"
+      leave-from-class="transform translate-y-0 opacity-100"
+      leave-to-class="transform translate-y-2 opacity-0"
+    >
+      <div
+        v-if="exportMessage"
+        :class="[
+          'fixed bottom-4 right-4 px-4 py-3 rounded-lg shadow-lg z-50 flex items-center gap-2',
+          exportMessage.type === 'success'
+            ? 'bg-green-100 text-green-800 dark:bg-green-900/80 dark:text-green-200'
+            : 'bg-red-100 text-red-800 dark:bg-red-900/80 dark:text-red-200',
+        ]"
+        role="alert"
+      >
+        <svg
+          v-if="exportMessage.type === 'success'"
+          class="h-5 w-5"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M5 13l4 4L19 7"
+          />
+        </svg>
+        <svg
+          v-else
+          class="h-5 w-5"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+          />
+        </svg>
+        <span class="text-sm font-medium">{{ exportMessage.text }}</span>
+        <button
+          type="button"
+          class="ml-2 hover:opacity-70"
+          @click="exportMessage = null"
+          aria-label="Dismiss"
+        >
+          <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M6 18L18 6M6 6l12 12"
+            />
+          </svg>
+        </button>
+      </div>
+    </Transition>
 
     <!-- Set Reminder Modal -->
     <Teleport to="body">

@@ -10,6 +10,7 @@ use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\ContractChatController;
 use App\Http\Controllers\ContractController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\ExportController;
 use App\Http\Controllers\QuickAnalysisController;
 use App\Http\Controllers\ReminderController;
 use Illuminate\Http\Request;
@@ -88,6 +89,12 @@ Route::middleware(['auth:sanctum', 'throttle:api'])->group(function () {
         Route::delete('/{id}/chat', [ContractChatController::class, 'destroy']);
         Route::post('/{id}/chat', [ContractChatController::class, 'store'])
             ->middleware('throttle:chat');
+
+        // Export endpoints
+        Route::get('/{id}/export/pdf', [ExportController::class, 'pdf']);
+        Route::get('/{id}/export/clauses', [ExportController::class, 'clauses']);
+        Route::get('/{id}/export/deadlines', [ExportController::class, 'deadlines']);
+        Route::get('/{id}/export/all', [ExportController::class, 'all']);
     });
 
     // Reminders

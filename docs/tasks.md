@@ -934,36 +934,36 @@ ALTER TABLE contracts ADD COLUMN mime_type VARCHAR(100) NULL;
 ### Phase 11A: Backend - PDF Report Generation
 | Status | Task |
 |--------|------|
-| 📋 | Install PDF generation package (barryvdh/laravel-dompdf or similar) |
-| 📋 | Create `ReportController` with `generatePdf` method |
-| 📋 | Create `ReportService` for report generation logic |
-| 📋 | Create Blade template for PDF report layout |
-| 📋 | Include: summary, risk badge, key findings, clauses, deadlines |
-| 📋 | Add contract metadata (title, dates, file info) |
-| 📋 | Style report for professional appearance |
-| 📋 | Create `GET /contracts/{id}/report/pdf` endpoint |
-| 📋 | Write report generation tests |
+| ✅ | Install PDF generation package (barryvdh/laravel-dompdf or similar) |
+| ✅ | Create `ExportController` with `pdf` method |
+| ✅ | Create `ReportService` for report generation logic |
+| ✅ | Create Blade template for PDF report layout |
+| ✅ | Include: summary, risk badge, key findings, clauses, deadlines |
+| ✅ | Add contract metadata (title, dates, file info) |
+| ✅ | Style report for professional appearance |
+| ✅ | Create `GET /contracts/{id}/export/pdf` endpoint |
+| ✅ | Write report generation tests |
 
 ### Phase 11B: Backend - CSV Export
 | Status | Task |
 |--------|------|
-| 📋 | Create `ExportService` for data export logic |
-| 📋 | Create `GET /contracts/{id}/export/clauses` endpoint (CSV) |
-| 📋 | Create `GET /contracts/{id}/export/deadlines` endpoint (CSV) |
-| 📋 | Create `GET /contracts/{id}/export/all` endpoint (ZIP with all CSVs) |
-| 📋 | Include proper CSV headers and formatting |
-| 📋 | Handle special characters and encoding |
-| 📋 | Write CSV export tests |
+| ✅ | Create `ExportService` for data export logic |
+| ✅ | Create `GET /contracts/{id}/export/clauses` endpoint (CSV) |
+| ✅ | Create `GET /contracts/{id}/export/deadlines` endpoint (CSV) |
+| ✅ | Create `GET /contracts/{id}/export/all` endpoint (ZIP with all CSVs) |
+| ✅ | Include proper CSV headers and formatting |
+| ✅ | Handle special characters and encoding |
+| ✅ | Write CSV export tests |
 
 ### Phase 11C: Frontend - Export UI
 | Status | Task |
 |--------|------|
-| 📋 | Create `ExportMenu` dropdown component |
-| 📋 | Add export options to `ContractDetailView` |
-| 📋 | Handle download triggers for PDF and CSV |
-| 📋 | Show loading state during generation |
-| 📋 | Add success/error toast notifications |
-| 📋 | Write export component tests |
+| ✅ | Create `ExportMenu` dropdown component |
+| ✅ | Add export options to `ContractDetailView` |
+| ✅ | Handle download triggers for PDF and CSV |
+| ✅ | Show loading state during generation |
+| ✅ | Add success/error toast notifications |
+| ✅ | Write export component tests |
 
 ---
 
@@ -1477,7 +1477,7 @@ Getting Started ✓
 
 | Status | Task | Notes |
 |--------|------|-------|
-| ⬜ | Choose next feature | Export/Reports, Search/Filtering, Email Notifications, Contract Comparison, or Onboarding |
+| ⬜ | Choose next feature | Search/Filtering, Email Notifications, Contract Comparison, or Onboarding |
 
 ### Completed Phases
 
@@ -1493,12 +1493,12 @@ Getting Started ✓
 | Phase 8 | ✅ Complete | AI Contract Chat - contextual Q&A about contracts |
 | Phase 9 | ✅ Complete | Multi-Format File Support - images and text files |
 | Phase 10 | ✅ Complete | Quick Text Analysis - paste & analyze text directly |
+| Phase 11 | ✅ Complete | Export & Reports - PDF reports, CSV exports, ZIP bundles |
 
 ### Upcoming Phases
 
 | Phase | Status | Priority | Notes |
 |-------|--------|----------|-------|
-| Phase 11 | 📋 Backlog | High | Export & Reports - PDF reports, CSV exports |
 | Phase 12 | 📋 Backlog | High | Search & Filtering - full-text search, filters |
 | Phase 13 | 📋 Backlog | Medium | Email Notifications - analysis complete, digests |
 | Phase 14 | 📋 Backlog | High | Contract Comparison - side-by-side diff |
@@ -1528,12 +1528,12 @@ Getting Started ✓
 | Phase 8 | 37 | 36 | 0 | 0 | 0 | 1 |
 | Phase 9 | 18 | 18 | 0 | 0 | 0 | 0 |
 | Phase 10 | 9 | 9 | 0 | 0 | 0 | 0 |
-| Phase 11 | 22 | 0 | 0 | 0 | 0 | 22 |
+| Phase 11 | 22 | 22 | 0 | 0 | 0 | 0 |
 | Phase 12 | 22 | 0 | 0 | 0 | 0 | 22 |
 | Phase 13 | 18 | 0 | 0 | 0 | 0 | 18 |
 | Phase 14 | 24 | 0 | 0 | 0 | 0 | 24 |
 | Phase 15 | 18 | 0 | 0 | 0 | 0 | 18 |
-| **Total** | **404** | **263** | **0** | **0** | **0** | **141** |
+| **Total** | **404** | **285** | **0** | **0** | **0** | **119** |
 
 ---
 
